@@ -50,11 +50,14 @@ Lik fordeling
 
 Teamlead: Asle
 
-Logikkutvikler: TBD
+Logikkutvikler: Simon, Sassan
 
-Grafikkutvikler: TBD
+Grafikkutvikler: Ørjan
 
-Testutvikler: TBD
+Testutvikler: Asle?
+
+Begrunnelse for roller:
+*
 
 Oppfølging av arbeid gjennom github projects, kommunisere om det på møtene
 

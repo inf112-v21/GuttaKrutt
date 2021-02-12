@@ -17,7 +17,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 
-public class HelloWorld extends InputAdapter implements ApplicationListener {
+public class GUI extends InputAdapter implements ApplicationListener {
     private SpriteBatch batch;
     private BitmapFont font;
 
@@ -41,10 +41,16 @@ public class HelloWorld extends InputAdapter implements ApplicationListener {
     boolean playerAlive;
     boolean playerWon;
 
+    Robot[] robots;
+
+    public GUI(Robot[] robots) {
+        this.robots = robots;
+    }
+
     @Override
     public void create() {
         TmxMapLoader mapLoader = new TmxMapLoader();
-        tiledMap = mapLoader.load("TiledTest.tmx");
+        TiledMap tiledMap = mapLoader.load("TiledTest.tmx");
 
         mapWidth = tiledMap.getProperties().get("width", Integer.class);
         mapHeight = tiledMap.getProperties().get("height", Integer.class);
@@ -147,7 +153,7 @@ public class HelloWorld extends InputAdapter implements ApplicationListener {
         float newX = playerPos.x + x;
         float newY = playerPos.y + y;
         if (!playerAlive || playerWon) {
-            System.out.println("Player cannot move, game is over.");
+            System.out.println("inf112.skeleton.app.Player cannot move, game is over.");
             return;
         }
         if (!(newX<0||newY<0||newX>=mapWidth||newY>=mapHeight)) {
@@ -155,11 +161,11 @@ public class HelloWorld extends InputAdapter implements ApplicationListener {
             playerPos.x = newX;
             playerPos.y = newY;
 
-            System.out.println("Player moved to " + newX + ", " + newY);
+            System.out.println("inf112.skeleton.app.Player moved to " + newX + ", " + newY);
 
             checkTile((int)newX, (int)newY);
         } else {
-            System.out.println("Player tried to move to " + newX + ", " + newY + ", but it is outside of the map.");
+            System.out.println("inf112.skeleton.app.Player tried to move to " + newX + ", " + newY + ", but it is outside of the map.");
         }
     }
 
@@ -169,12 +175,12 @@ public class HelloWorld extends InputAdapter implements ApplicationListener {
 
         if (hole != null) {
             playerAlive = false;
-            System.out.println("Player has died.");
+            System.out.println("inf112.skeleton.app.Player has died.");
             System.out.println(hole);
         }
         if (flag != null) {
             playerWon = true;
-            System.out.println("Player has won.");
+            System.out.println("inf112.skeleton.app.Player has won.");
             System.out.println(flag);
         }
     }

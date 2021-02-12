@@ -9,6 +9,13 @@ public class Main {
         cfg.setTitle("test");
         cfg.setWindowedMode(500, 500);
 
-        new Lwjgl3Application(new HelloWorld(), cfg);
+        boolean[][][] matrixMap;
+        Robot[] robots;
+
+        robots[0] = new Robot();
+
+        new Controls(matrixMap, robots);
+
+        new Lwjgl3Application(new GUI(robots), cfg);
     }
 }
