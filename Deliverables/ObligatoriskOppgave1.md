@@ -4,9 +4,6 @@
 ## Spesifikasjon
 ### Beskrivelse
 
-
-
-
 Roborally brett skal vises
 
 Spillere skal kunne bevege seg på brettet med roboter
@@ -46,15 +43,13 @@ Kommuniserer på discord
 
 
 
-Lik fordeling
+Lik arbeidsfordeling
 
 Teamlead: Asle
 
-Logikkutvikler: TBD
+Logikkutvikler: Sassan og Simon
 
-Grafikkutvikler: TBD
-
-Testutvikler: TBD
+Grafikkutvikler: Ørjan
 
 Oppfølging av arbeid gjennom github projects, kommunisere om det på møtene
 
