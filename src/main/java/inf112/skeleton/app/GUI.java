@@ -27,8 +27,8 @@ public class GUI extends InputAdapter implements ApplicationListener {
     TiledMapTileLayer flagLayer;
     TiledMapTileLayer playerLayer;
 
-    int mapWidth;
-    int mapHeight;
+    public int mapWidth;
+    public int mapHeight;
 
     OrthogonalTiledMapRenderer renderer;
     OrthographicCamera camera;

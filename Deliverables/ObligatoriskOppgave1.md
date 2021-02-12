@@ -40,7 +40,7 @@ Som spiller vil jeg kunne besøke et flagg for å vinne.
 - Gitt at spilleren står på ruten med flagg, så vinner spilleren.
 
 ### Del 2
-Møter på onsdag kl 12, tordag kl 12 og fredag kl 14
+Som gruppe har vi avtalt møter på onsdag kl 12, tordag kl 12 og fredag kl 14. Kommunikasjon vil foregå over discord, hvor 
 
 Kommuniserer på discord
 
