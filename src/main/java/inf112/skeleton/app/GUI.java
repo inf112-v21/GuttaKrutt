@@ -122,7 +122,7 @@ public class GUI extends InputAdapter implements ApplicationListener {
     @Override
     public void resume() {
     }
-
+    /*
     @Override
     public boolean keyUp(int keyCode) {
         if (keyCode == Input.Keys.LEFT || keyCode == Input.Keys.A) {
@@ -184,4 +184,5 @@ public class GUI extends InputAdapter implements ApplicationListener {
             System.out.println(flag);
         }
     }
+    */
 }
