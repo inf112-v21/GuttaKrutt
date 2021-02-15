@@ -59,3 +59,5 @@ Testutvikler: TBD
 Oppfølging av arbeid gjennom github projects, kommunisere om det på møtene
 
 Bruker github repoet for å dele og oppbevare filer
+
+testgit
