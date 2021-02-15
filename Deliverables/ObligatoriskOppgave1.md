@@ -61,6 +61,7 @@ den fullstendige koden vår.
 
 Prosjektmetodikk:
 
+
 Teamet vårt har bestemt oss for å bruke kanban med elementer fra scrum. Fra scrum vil vi bruke scrum sprints, der
 hver oblig blir et sprint, hvor vi planlegger en rekke brukerhistorier vi skal gjøre ferdig og ikke arbeide mer enn planlagt.
 Vi skal også bruke et scrum board, så når et nytt scrum sprint begynner tar vi og reseter project boardet vårt.
@@ -69,3 +70,30 @@ til å visualisere hvilken fase arbeidsoppgavene var i. Framover har vi bestemt 
 brukerhistorier som skal løses og arbeidsoppgaver som skal implementeres i sprintet før vi begynner. Grunnen til
 at vi bestemte oss for dette er for å ha bedre struktur i arbeidet vårt, slik at prosjektet blir mer ryddig og oversiktlig
 for å minimere forvirrelse og øke produktivitet.
+
+### Oppsummering møter - oblig 1
+
+03.02 (Onsdag, 12:15-13:50)
+- Introduksjon til teamet
+- Oppretting av repo/tekniske detaljer rundt github
+Prosjekt/opretting av prioritet system
+- Generell orientering rundt faget/prosjektet
+- Gått gjennom arbeidskravene til obligen
+- Begynte ikke skikkelig på obligen pga kun 3/5 møtte opp
+
+10.02 (Onsdag, 12:15-1400)
+- Diskuterte strukturen til applikasjonen
+- Laget et diagram for hele applikasjonen (inkl. objekter og interface)
+- Laget en del brukerhistorier
+
+11.02 (Torsdag, 12:00-13:30)
+- Oppdaterte oss på den grafiske delen (libgdx)
+- Planla timeplan for møter (mandag-kl12/onsdag-kl12/torsdag-kl12)
+
+12.02 (Fredag, 16:00-18:00)
+- Introduksjon til nytt team-medlem Sassan
+- Gjort ferdig hele libgdx tutorial og pushet til github
+- Diskutert nærmere strukturen til logikken og hvordan
+den samspiller med grafikken
+- Deligering av roller
+
