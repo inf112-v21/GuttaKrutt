@@ -39,7 +39,7 @@ Som spiller vil jeg kunne besøke et flagg for å vinne.
 ### Del 1 & 2
 Programmeringsbakgrunnen til teamet:
 
--Asle: Går andre år på bachelor i matematikk og har hatt INF100 og INF101.
+-Asle: Går tredje år på bachelor i matematikk og har hatt INF100 og INF101.
 
 -Ørjan: Går tredje år på datateknologi og har hatt INF100, INF101 og INF102.
 
