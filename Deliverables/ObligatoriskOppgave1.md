@@ -58,3 +58,14 @@ Oppfølging av arbeid vil i hovedsak foregå under
 møtene, hvor vi diskuterer hverandres arbeid og planlegger hvordan vi skal gå videre.
 Fildeling gjør vi i github repoet vårt, hvor vi alle har vår egen branch og en master branch som inneholder
 den fullstendige koden vår.
+
+Prosjektmetodikk:
+
+Teamet vårt har bestemt oss for å bruke kanban med elementer fra scrum. Fra scrum vil vi bruke scrum sprints, der
+hver oblig blir et sprint, hvor vi planlegger en rekke brukerhistorier vi skal gjøre ferdig og ikke arbeide mer enn planlagt.
+Vi skal også bruke et scrum board, så når et nytt scrum sprint begynner tar vi og reseter project boardet vårt.
+Retrospektivt så har vi de to siste ukene ikke hatt en fast arbeidsmetodikk utenom å bruke projectboardet
+til å visualisere hvilken fase arbeidsoppgavene var i. Framover har vi bestemt oss for å være tydelige på hvilke
+brukerhistorier som skal løses og arbeidsoppgaver som skal implementeres i sprintet før vi begynner. Grunnen til
+at vi bestemte oss for dette er for å ha bedre struktur i arbeidet vårt, slik at prosjektet blir mer ryddig og oversiktlig
+for å minimere forvirrelse og øke produktivitet.
