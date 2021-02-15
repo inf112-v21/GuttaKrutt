@@ -97,3 +97,21 @@ Prosjekt/opretting av prioritet system
 den samspiller med grafikken
 - Deligering av roller
 
+### Arbeidsoppgaver
+
+1) Redigere create() metoden for å opprette brettet.
+   Redigere render() metoden for å vise brettet.
+   Finne tile-assets til brettet.
+
+2) Opprette brikken i create() metoden og vise den i render() metoden.
+   Finne robot-assets til brikken.
+
+3) Oprette en ny metode keyUp() som reagerer på arrow- og WASD-taster.
+   Bør kunne også resette brettet. Oprette en ny metode movePlayer() som
+   flytter brikken på brettet.
+
+4) Oprette en ny metode checkTile() som sjekker om robotten er i samme
+   tile som et bretteelement (som et flagg).
+
+5) Legge en betingelse til checkTile() slik at spilleren får en melding
+   når de er i samme tile som flagget (de har vunnet).
