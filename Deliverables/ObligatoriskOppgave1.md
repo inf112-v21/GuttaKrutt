@@ -36,21 +36,25 @@ Som spiller vil jeg kunne besøke et flagg for å vinne.
 - Gitt at det er en spiller og et flagg på brettet, skal spilleren kunne flytte seg til flagget.
 - Gitt at spilleren står på ruten med flagg, så vinner spilleren.
 
-### Del 2
-Møter på onsdag kl 12, tordag kl 12 og fredag kl 14
+### Del 1 & 2
+Programmeringsbakgrunnen til teamet:
 
-Kommuniserer på discord
+-Asle: Går andre år på bachelor i matematikk og har hatt INF100 og INF101.
 
+-Ørjan: Går tredje år på datateknologi og har hatt INF100, INF101 og INF102.
 
+-Simon: Går tredje år på datavitskap og har hatt INF100, INF101 og INF102.
 
-Lik arbeidsfordeling
+-Sassan: Går tredje år på datavitskap og har hatt INF100, INF101 og INF102.
 
-Teamlead: Asle
+Rollene i teamet er Teamlead Asle, Grafikkutvikler Ørjan og Logikkutviklere Sassan og Simon. Siden alle i teamet 
+har ca like mye forkunnskaper i java, så er rollevalg basert på hvilke roller vi følte vi trengte 
+og hva hver enkelt person ønsket å jobbe med. 
 
-Logikkutvikler: Sassan og Simon
-
-Grafikkutvikler: Ørjan
-
-Oppfølging av arbeid gjennom github projects, kommunisere om det på møtene
-
-Bruker github repoet for å dele og oppbevare filer
+Teamet vårt har bestemt oss for å holde møter mandag kl 12, onsdag kl 12 og tordag kl 12
+siden disse tidpunktene passer best for de ulike timeplanene våres. Møtene  vil foregå over discord,
+samt kommunikasjon ellers. Arbeidsfordelingen blir at hver person tar på seg oppgaver som trengs i sitt felt.
+Oppfølging av arbeid vil i hovedsak foregå under
+møtene, hvor vi diskuterer hverandres arbeid og planlegger hvordan vi skal gå videre.
+Fildeling gjør vi i github repoet vårt, hvor vi alle har vår egen branch og en master branch som inneholder
+den fullstendige koden vår.
