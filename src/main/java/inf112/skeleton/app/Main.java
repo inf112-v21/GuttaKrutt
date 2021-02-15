@@ -9,12 +9,9 @@ public class Main {
         cfg.setTitle("test");
         cfg.setWindowedMode(500, 500);
 
-        boolean[][][] matrixMap;
-        Robot[] robots;
 
+        Robot[] robots = new Robot[7];
         robots[0] = new Robot();
-
-        new Controls(matrixMap, robots);
 
         new Lwjgl3Application(new GUI(robots), cfg);
     }

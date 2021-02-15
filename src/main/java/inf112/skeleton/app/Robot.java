@@ -22,11 +22,21 @@ public class Robot {
         return pos;
     }
 
+    public void setPos(Vector2 newPos) {pos = newPos;}
+
     public boolean getAlive() {
         return alive;
     }
 
+    public void setAlive(boolean newAlive) {
+        alive = newAlive;
+    }
+
     public boolean getWon() {
         return won;
+    }
+
+    public void setWon(boolean newWon) {
+        won = newWon;
     }
 }

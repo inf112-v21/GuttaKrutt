@@ -17,7 +17,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 
-public class GUI extends InputAdapter implements ApplicationListener {
+public class GUI implements ApplicationListener {
     private SpriteBatch batch;
     private BitmapFont font;
 
@@ -38,8 +38,6 @@ public class GUI extends InputAdapter implements ApplicationListener {
     TiledMapTileLayer.Cell playerWonCell;
     Vector2 playerPos;
 
-    boolean playerAlive;
-    boolean playerWon;
 
     Robot[] robots;
 
@@ -80,12 +78,15 @@ public class GUI extends InputAdapter implements ApplicationListener {
         playerWonCell = new TiledMapTileLayer.Cell();
         playerWonCell.setTile(new StaticTiledMapTile(playerTextures[0][2]));
 
-        playerPos = new Vector2(0,0);
+        int[][][] matrixMap = new int[2][4][4];
 
-        Gdx.input.setInputProcessor(this);
+        matrixMap[1][2][2] = 6;
+        matrixMap[2][4][4] = 55;
 
-        playerAlive = true;
-        playerWon = false;
+        Controls controls = new Controls(matrixMap, robots);
+
+        Gdx.input.setInputProcessor(controls);
+
 
         batch = new SpriteBatch();
         font = new BitmapFont();
