@@ -9,6 +9,13 @@ kan spille sammen over nettet. Applikasjonen skal fungere som en komplett versjo
 av enkelte funksjoner spillet har, som for eksempel option cards og hammer ruten. Prosjektet lages
 i Maven java.
 
+### Hvordan bygge og kjøre programmet
+
+Åpne command promt (cmd) og skriv følgende kommandoer:
+- cd *lokasjon til spill-filene*
+- mvn clean install
+- mvn exec:java -Dexec.mainClass="inf112.skeleton.app.Main"
+
 
 ### Brukerhistorier
 
