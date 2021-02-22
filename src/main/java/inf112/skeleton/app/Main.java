@@ -10,8 +10,10 @@ public class Main {
         cfg.setWindowedMode(500, 500);
 
 
-        Robot[] robots = new Robot[7];
-        robots[0] = new Robot();
+        Robot[] robots = new Robot[1];
+        for (int i=0;i<1;i++) {
+            robots[i] = new Robot();
+        }
 
         new Lwjgl3Application(new GUI(robots), cfg);
     }

@@ -3,53 +3,78 @@ package inf112.skeleton.app;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.maps.tiled.*;
 
 public class Controls extends InputAdapter {
     Robot[] robots;
-    int[][][] map;
+    TiledMap map;
+    GUI gui;
 
-    public Controls(int[][][] map, Robot[] robots) {
+    public Controls(TiledMap map, Robot[] robots, GUI gui) {
         this.map = map;
         this.robots = robots;
+        this.gui = gui;
     }
 
     public boolean keyUp(int keyCode) {
         Robot robot = robots[0];
         if (keyCode == Input.Keys.LEFT || keyCode == Input.Keys.A) {
-            movePlayer(robot,-1,0);
+            robot.rotate(1);
             return true;
         }
         if (keyCode == Input.Keys.RIGHT || keyCode == Input.Keys.D) {
-            movePlayer(robot,1,0);
+            robot.rotate(-1);
             return true;
         }
         if (keyCode == Input.Keys.DOWN || keyCode == Input.Keys.S) {
-            movePlayer(robot,0,-1);
+            moveBack(robot);
             return true;
         }
         if (keyCode == Input.Keys.UP || keyCode == Input.Keys.W) {
-            movePlayer(robot,0,1);
+            move(robot,1);
+            return true;
+        }
+        if (keyCode == Input.Keys.Q) {
+            robot.rotate(2);
             return true;
         }
 
-        /*
+
         if (keyCode == Input.Keys.R) {
-            create();
+            robots[0] = new Robot();
+            return true;
         }
-        */
+
+        if (keyCode == Input.Keys.F) {
+            robots[0].fireLaser = 20;
+            return true;
+        }
 
         return false;
     }
 
     public void movePlayer(Robot robot, int x, int y) {
         Vector2 oldPos = robot.getPos();
-        float newX = oldPos.x + x;
-        float newY = oldPos.y + y;
+        int oldX = (int) oldPos.x;
+        int oldY = (int) oldPos.y;
+        int newX = oldX + x;
+        int newY = oldY + y;
         if (!robot.getAlive() || robots[0].getWon()) {
             System.out.println("inf112.skeleton.app.Player cannot move, game is over.");
             return;
         }
-        if (!(newX<0||newY<0||newX>5||newY>5)) {
+        int direction;
+        switch (x + "" + y) {
+            case "-10": direction = 1; break;
+            case "0-1": direction = 2; break;
+            case "10": direction = 3; break;
+            default: direction = 0; break;
+        }
+        System.out.println(direction);
+
+        if (!(newX<0||newY<0||newX>5||newY>5)
+                && !getWall(oldX,oldY)[direction]
+                && !getWall(newX,newY)[(direction + 2) % 4]) {
             //GUI.playerLayer.setCell((int) playerPos.x, (int) playerPos.y, null);
             robot.setPos(new Vector2(newX, newY));
 
@@ -63,19 +88,72 @@ public class Controls extends InputAdapter {
 
     public void checkTile(Robot robot) {
         Vector2 pos = robot.getPos();
-        int hole = map[1][(int) pos.x][(int) pos.y];
-        int flag = map[2][(int) pos.x][(int) pos.y];
+        TiledMapTileLayer holeLayer = (TiledMapTileLayer) map.getLayers().get("hole");
+        TiledMapTileLayer.Cell hole = holeLayer.getCell((int) pos.x,(int) pos.y);
 
-        if (hole != 0) {
+        TiledMapTileLayer flagLayer = (TiledMapTileLayer) map.getLayers().get("flag");
+        TiledMapTileLayer.Cell flag = flagLayer.getCell((int) pos.x,(int) pos.y);
+
+        if (hole != null) {
             robots[0].setAlive(false);
             System.out.println("inf112.skeleton.app.Player has died.");
-            System.out.println(hole);
+            System.out.println(hole.getTile().getId());
         }
-        if (flag != 0) {
+        if (flag != null) {
             robot.setWon(true);
             System.out.println("inf112.skeleton.app.Player has won.");
-            System.out.println(flag);
+            System.out.println(flag.getTile().getId());
         }
+
+    }
+
+    public boolean[] getWall(int x, int y) {
+        TiledMapTileLayer.Cell cell = gui.wallLayer.getCell(x, y);
+        int id = 0;
+        if (cell != null) {
+            id = cell.getTile().getId();
+        }
+        boolean[] a;
+        switch(id) {
+            case 8: a = new boolean[]{false,false,true,true}; break;
+            case 16: a = new boolean[]{true, false, false, true}; break;
+            case 24: a = new boolean[]{true, true, false, false}; break;
+            case 31: a = new boolean[]{false, true, true, false}; break;
+            default: a = new boolean[]{false,false,false,false}; break;
+        }
+        return a;
+    }
+
+    public void move(Robot robot, int distance) {
+        distance--;
+        int x = 0;
+        int y = 0;
+        switch (robot.getRotation()){
+            case 0: y++; break;
+            case 1: x--; break;
+            case 2: y--; break;
+            case 3: x++; break;
+            default: y += 10; break;
+        }
+
+        movePlayer(robot, x, y);
+        if (distance>0) {
+            move(robot, distance);
+        }
+    }
+
+    public void moveBack(Robot robot) {
+        int x = 0;
+        int y = 0;
+        switch (robot.getRotation()){
+            case 0: y--; break;
+            case 1: x++; break;
+            case 2: y++; break;
+            case 3: x--; break;
+            default: y += 10; break;
+        }
+
+        movePlayer(robot, x, y);
     }
 
 }

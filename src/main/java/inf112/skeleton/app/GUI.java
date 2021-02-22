@@ -2,8 +2,6 @@ package inf112.skeleton.app;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,11 +9,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.math.Vector2;
+
+import java.util.concurrent.TimeUnit;
 
 public class GUI implements ApplicationListener {
     private SpriteBatch batch;
@@ -26,6 +30,8 @@ public class GUI implements ApplicationListener {
     TiledMapTileLayer holeLayer;
     TiledMapTileLayer flagLayer;
     TiledMapTileLayer playerLayer;
+    TiledMapTileLayer wallLayer;
+    TiledMapTileLayer laserLayer;
 
     public int mapWidth;
     public int mapHeight;
@@ -36,10 +42,11 @@ public class GUI implements ApplicationListener {
     TiledMapTileLayer.Cell playerCell;
     TiledMapTileLayer.Cell playerDiedCell;
     TiledMapTileLayer.Cell playerWonCell;
-    Vector2 playerPos;
 
+    MapLayers layers;
 
     Robot[] robots;
+    Controls controls;
 
     public GUI(Robot[] robots) {
         this.robots = robots;
@@ -48,15 +55,19 @@ public class GUI implements ApplicationListener {
     @Override
     public void create() {
         TmxMapLoader mapLoader = new TmxMapLoader();
-        TiledMap tiledMap = mapLoader.load("TiledTest.tmx");
+        tiledMap = mapLoader.load("TiledTest.tmx");
 
         mapWidth = tiledMap.getProperties().get("width", Integer.class);
         mapHeight = tiledMap.getProperties().get("height", Integer.class);
 
-        boardLayer = (TiledMapTileLayer) tiledMap.getLayers().get("board");
-        holeLayer = (TiledMapTileLayer) tiledMap.getLayers().get("hole");
-        flagLayer = (TiledMapTileLayer) tiledMap.getLayers().get("flag");
-        playerLayer = (TiledMapTileLayer) tiledMap.getLayers().get("player");
+        layers = tiledMap.getLayers();
+
+        boardLayer = getTileLayer("board");
+        holeLayer = getTileLayer("hole");
+        flagLayer = getTileLayer("flag");
+        playerLayer = getTileLayer("player");
+        wallLayer = getTileLayer("wall");
+        laserLayer = getTileLayer("laser");
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 5, 5);
@@ -78,19 +89,22 @@ public class GUI implements ApplicationListener {
         playerWonCell = new TiledMapTileLayer.Cell();
         playerWonCell.setTile(new StaticTiledMapTile(playerTextures[0][2]));
 
-        int[][][] matrixMap = new int[2][4][4];
+        int[][][] matrixMap = new int[3][5][5];
 
         matrixMap[1][2][2] = 6;
         matrixMap[2][4][4] = 55;
 
-        Controls controls = new Controls(matrixMap, robots);
+        controls = new Controls(tiledMap, robots, this);
 
         Gdx.input.setInputProcessor(controls);
-
 
         batch = new SpriteBatch();
         font = new BitmapFont();
         font.setColor(Color.RED);
+    }
+
+    public TiledMapTileLayer getTileLayer(String s) {
+        return (TiledMapTileLayer) layers.get(s);
     }
 
     @Override
@@ -104,12 +118,76 @@ public class GUI implements ApplicationListener {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
 
-        TiledMapTileLayer.Cell currentPlayerCell = playerCell;
-        if (!playerAlive) {currentPlayerCell = playerDiedCell;}
-        if (playerWon) {currentPlayerCell = playerWonCell;}
+        drawRobots();
+        drawLasers();
 
-        playerLayer.setCell((int) playerPos.x,(int) playerPos.y,currentPlayerCell);
         renderer.render();
+    }
+
+    public void drawRobots() {
+        clearLayer(playerLayer);
+        for (Robot robot : robots) {
+            TiledMapTileLayer.Cell currentPlayerCell = playerCell;
+            if (!robot.getAlive()) {currentPlayerCell = playerDiedCell;}
+            if (robot.getWon()) {currentPlayerCell = playerWonCell;}
+
+            currentPlayerCell.setRotation(robot.getRotation());
+
+            playerLayer.setCell((int) robot.getPos().x,(int) robot.getPos().y,currentPlayerCell);
+        }
+    }
+
+    public void drawLasers() {
+        clearLayer(laserLayer);
+        if (robots[0].fireLaser > 0) {
+            int x = (int) robots[0].getPos().x;
+            int y = (int) robots[0].getPos().y;
+            switch (robots[0].getRotation()){
+                case 0: y++; break;
+                case 1: x--; break;
+                case 2: y--; break;
+                case 3: x++; break;
+                default: y += 10; break;
+            }
+
+            drawLaser(x,y,robots[0].getRotation());
+
+            robots[0].fireLaser--;
+        }
+    }
+
+    public void drawLaser(int x,int y, int dir) {
+        TiledMapTileLayer.Cell laser = new TiledMapTileLayer.Cell();
+        laser.setTile(tiledMap.getTileSets().getTile(47));
+        if (dir == 1 || dir == 3) {
+            laser.setTile(tiledMap.getTileSets().getTile(39));
+        }
+        boolean[] test = controls.getWall(x,y);
+        if (test[(dir + 2) % 4]) {
+            return;
+        }
+
+        laserLayer.setCell(x, y, laser);
+
+        switch (dir){
+            case 0: y++; break;
+            case 1: x--; break;
+            case 2: y--; break;
+            case 3: x++; break;
+            default: y += 10; break;
+        }
+
+        if (!test[dir] && y < 5 && y >= 0 && x < 5 && x >= 0) {
+            drawLaser(x,y,dir);
+        }
+    }
+
+    public void clearLayer(TiledMapTileLayer layer) {
+        for (int i=0;i<5;i++) {
+            for (int j=0;j<5;j++) {
+                layer.setCell(i,j,null);
+            }
+        }
     }
 
     @Override
@@ -123,67 +201,4 @@ public class GUI implements ApplicationListener {
     @Override
     public void resume() {
     }
-    /*
-    @Override
-    public boolean keyUp(int keyCode) {
-        if (keyCode == Input.Keys.LEFT || keyCode == Input.Keys.A) {
-            movePlayer(-1,0);
-            return true;
-        }
-        if (keyCode == Input.Keys.RIGHT || keyCode == Input.Keys.D) {
-            movePlayer(1,0);
-            return true;
-        }
-        if (keyCode == Input.Keys.DOWN || keyCode == Input.Keys.S) {
-            movePlayer(0,-1);
-            return true;
-        }
-        if (keyCode == Input.Keys.UP || keyCode == Input.Keys.W) {
-            movePlayer(0,1);
-            return true;
-        }
-
-        if (keyCode == Input.Keys.R) {
-            create();
-        }
-
-        return false;
-    }
-
-    public void movePlayer(int x, int y) {
-        float newX = playerPos.x + x;
-        float newY = playerPos.y + y;
-        if (!playerAlive || playerWon) {
-            System.out.println("inf112.skeleton.app.Player cannot move, game is over.");
-            return;
-        }
-        if (!(newX<0||newY<0||newX>=mapWidth||newY>=mapHeight)) {
-            playerLayer.setCell((int) playerPos.x, (int) playerPos.y, null);
-            playerPos.x = newX;
-            playerPos.y = newY;
-
-            System.out.println("inf112.skeleton.app.Player moved to " + newX + ", " + newY);
-
-            checkTile((int)newX, (int)newY);
-        } else {
-            System.out.println("inf112.skeleton.app.Player tried to move to " + newX + ", " + newY + ", but it is outside of the map.");
-        }
-    }
-
-    public void checkTile(int x, int y) {
-        TiledMapTileLayer.Cell hole = holeLayer.getCell(x, y);
-        TiledMapTileLayer.Cell flag = flagLayer.getCell(x, y);
-
-        if (hole != null) {
-            playerAlive = false;
-            System.out.println("inf112.skeleton.app.Player has died.");
-            System.out.println(hole);
-        }
-        if (flag != null) {
-            playerWon = true;
-            System.out.println("inf112.skeleton.app.Player has won.");
-            System.out.println(flag);
-        }
-    }
-    */
 }

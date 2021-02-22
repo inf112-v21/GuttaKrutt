@@ -6,8 +6,11 @@ public class Robot {
     boolean alive = true;
     boolean won = false;
 
+    int fireLaser = 0;
+
     int damageTokens = 0;
     Vector2 pos = new Vector2(0,0);
+    int rotation = 0;
 
     public Robot() {
     }
@@ -15,7 +18,7 @@ public class Robot {
     public void damage(int dam) {
         int newDT = damageTokens + dam;
 
-        damageTokens = Math.max(Math.min(damageTokens, 10), 0);
+        damageTokens = Math.max(Math.min(newDT, 10), 0);
     }
 
     public Vector2 getPos() {
@@ -24,9 +27,7 @@ public class Robot {
 
     public void setPos(Vector2 newPos) {pos = newPos;}
 
-    public boolean getAlive() {
-        return alive;
-    }
+    public boolean getAlive() { return alive; }
 
     public void setAlive(boolean newAlive) {
         alive = newAlive;
@@ -38,5 +39,10 @@ public class Robot {
 
     public void setWon(boolean newWon) {
         won = newWon;
+    }
+    public int getRotation() { return rotation; }
+
+    public void rotate(int rot) {
+        rotation = Math.floorMod(rotation + rot,4);
     }
 }
