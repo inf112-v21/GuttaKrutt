@@ -25,7 +25,13 @@ public class Robot {
         return pos;
     }
 
+    public int getX() { return (int) pos.x; }
+
+    public int getY() { return (int) pos.y; }
+
     public void setPos(Vector2 newPos) {pos = newPos;}
+
+    public void setPos(int x, int y) { pos = new Vector2(x,y); }
 
     public boolean getAlive() { return alive; }
 

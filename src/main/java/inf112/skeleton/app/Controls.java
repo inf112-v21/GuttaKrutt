@@ -72,7 +72,7 @@ public class Controls extends InputAdapter {
         }
         System.out.println(direction);
 
-        if (!(newX<0||newY<0||newX>5||newY>5)
+        if (!(newX<0||newY<0||newX>4||newY>4)
                 && !getWall(oldX,oldY)[direction]
                 && !getWall(newX,newY)[(direction + 2) % 4]) {
             //GUI.playerLayer.setCell((int) playerPos.x, (int) playerPos.y, null);
@@ -118,7 +118,15 @@ public class Controls extends InputAdapter {
             case 8: a = new boolean[]{false,false,true,true}; break;
             case 16: a = new boolean[]{true, false, false, true}; break;
             case 24: a = new boolean[]{true, true, false, false}; break;
-            case 31: a = new boolean[]{false, true, true, false}; break;
+            case 32: a = new boolean[]{false, true, true, false}; break;
+            case 31: case 44: case 93: case 1: case 9:
+                a = new boolean[]{true,false,false,false}; break;
+            case 30: case 38: case 91: case 4: case 12:
+                a = new boolean[]{false,true,false,false}; break;
+            case 29: case 37: case 87: case 3: case 11:
+                a = new boolean[]{false,false,true,false}; break;
+            case 23: case 46: case 95: case 2: case 10:
+                a = new boolean[]{false,false,false,true}; break;
             default: a = new boolean[]{false,false,false,false}; break;
         }
         return a;
