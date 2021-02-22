@@ -72,17 +72,13 @@ public class Controls extends InputAdapter {
         }
         System.out.println(direction);
 
-        if (!(newX<0||newY<0||newX>4||newY>4)
-                && !getWall(oldX,oldY)[direction]
-                && !getWall(newX,newY)[(direction + 2) % 4]) {
+        if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4]) {
             //GUI.playerLayer.setCell((int) playerPos.x, (int) playerPos.y, null);
             robot.setPos(new Vector2(newX, newY));
 
             System.out.println("inf112.skeleton.app.Player moved to " + newX + ", " + newY);
 
             checkTile(robot);
-        } else {
-            System.out.println("inf112.skeleton.app.Player tried to move to " + newX + ", " + newY + ", but it is outside of the map.");
         }
     }
 
@@ -93,6 +89,15 @@ public class Controls extends InputAdapter {
 
         TiledMapTileLayer flagLayer = (TiledMapTileLayer) map.getLayers().get("flag");
         TiledMapTileLayer.Cell flag = flagLayer.getCell((int) pos.x,(int) pos.y);
+
+        int x = (int) pos.x;
+        int y = (int) pos.y;
+        boolean outSideBorder = (x >= gui.mapWidth || x < 0 || y >= gui.mapHeight || y < 0);
+
+        if(outSideBorder) {
+            robots[0].setAlive(false);
+            System.out.println("inf112-skeleton.app.Player has died outside the border");
+        }
 
         if (hole != null) {
             robots[0].setAlive(false);
