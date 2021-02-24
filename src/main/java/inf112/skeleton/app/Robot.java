@@ -12,13 +12,20 @@ public class Robot {
     Vector2 pos = new Vector2(0,0);
     int rotation = 0;
 
-    public Robot() {
+    public Robot() {}
+    
+    public Robot(int x, int y) {
+        this.pos = new Vector2(x, y);
     }
 
-    public void damage(int dam) {
+    public void addDamage(int dam) {
         int newDT = damageTokens + dam;
 
         damageTokens = Math.max(Math.min(newDT, 10), 0);
+    }
+    
+    public int getDamage() {
+        return damageTokens;
     }
 
     public Vector2 getPos() {
