@@ -4,48 +4,77 @@
 ## Spesifikasjon
 ### Beskrivelse
 
-Roborally brett skal vises
+Det overordnede målet for applikasjonen er å lage vår egen digitale versjon av roborally som flere spillere
+kan spille sammen over nettet. Applikasjonen skal fungere som en komplett versjon av roborally, med unntak
+av enkelte funksjoner spillet har, som for eksempel option cards og hammer ruten. Prosjektet lages
+i Maven java.
 
-Spillere skal kunne bevege seg på brettet med roboter
+### Hvordan bygge og kjøre programmet
 
-Samlebånd skal flytte roboter som står på de
+Åpne command promt (cmd) og skriv følgende kommandoer:
+- cd *lokasjon til spill-filene*
+- mvn clean install
+- mvn exec:java -Dexec.mainClass="inf112.skeleton.app.Main"
 
 
 ### Brukerhistorier
 
-Brukere: Spiller, utvikler
+Brukerhistoriene under er arrangert i prioritert rekkefølge.
 
-Som spiller vil jeg kunne se brettet og faste objekter slik at innlevelsen øker.  
-        Akseptansekriterier:
+1) Som spiller vil jeg kunne se brettet og faste objekter slik at innlevelsen øker.  
+
+  Akseptansekriterier:
 - Gitt at det er et brett i spillet, så vises brettet grafisk.
 - Gitt at det er objekt på brettet, så vises objekter
+Som spiller vil jeg kunne se spillebrikken min slik at jeg vet hvor på brettet jeg står. 
+  
+Arbeidsoppgaver:
 
-Som spiller vil jeg kunne se spillebrikken min slik at jeg vet hvor på brettet jeg står.
-        Akseptansekriterier:
+- Redigere create() metoden for å opprette brettet.
+- Redigere render() metoden for å vise brettet.
+- Finne tile-assets til brettet.
+        
+Akseptansekriterier:
 - Gitt at en spillerbrikke eksisterer, så skal brikken vises grafisk.
 - Gitt at brikken flytter seg skal grafikken oppdateres med den nye posisjonen.
 - Gitt at spillerbrikken ligger på en posisjon på brettet skal brikken 
   vises grafisk på denne posisjonen
+  
+Arbeidsoppgaver:
 
-Som spiller vil jeg kunne flytte robotten min.
+- Opprette brikken i create() metoden og vise den i render() metoden.
+- Finne robot-assets til brikken.
+
+2) Som spiller vil jeg kunne flytte robotten min.
         Akseptansekriterier:
 - Gitt at spilleren trykker på flyttetastene skal spillerbrikken flytte seg henholdsvis.
 
-Som spiller vil jeg kunne besøke et flagg for å vinne.
+Arbeidsoppgaver:
+
+- Opprette en ny metode keyUp() som reagerer på arrow- og WASD-taster.
+- Bør kunne også resette brettet. Opprette en ny metode movePlayer() som
+flytter brikken på brettet.
+
+3) Som spiller vil jeg kunne besøke et flagg for å vinne.
         Akseptansekriterier:
 - Gitt at det er en spiller og et flagg på brettet, skal spilleren kunne flytte seg til flagget.
 - Gitt at spilleren står på ruten med flagg, så vinner spilleren.
 
+Arbeidsoppgaver:
+
+- Legge en betingelse til checkTile() slik at spilleren får en melding
+når de er i samme tile som flagget (de har vunnet).
+
 ### Del 1 & 2
 Programmeringsbakgrunnen til teamet:
 
--Asle: Går tredje år på bachelor i matematikk og har hatt INF100 og INF101.
+- Asle: Går tredje år på bachelor i matematikk og har hatt INF100 og INF101.
 
--Ørjan: Går tredje år på datateknologi og har hatt INF100, INF101 og INF102.
+- Ørjan: Går tredje år på datateknologi og har hatt INF100, INF101 og INF102.
 
--Simon: Går tredje år på datavitskap og har hatt INF100, INF101 og INF102.
+- Simon: Går tredje år på datavitskap og har hatt INF100, INF101 og INF102.
 
--Sassan: Går tredje år på datavitskap og har hatt INF100, INF101 og INF102.
+- Sassan: Går tredje år på datavitskap og har hatt INF100, INF101 og INF102.
 
 Rollene i teamet er Teamlead Asle, Grafikkutvikler Ørjan og Logikkutviklere Sassan og Simon. Siden alle i teamet 
 har ca like mye forkunnskaper i java, så er rollevalg basert på hvilke roller vi følte vi trengte 
@@ -96,22 +125,3 @@ Prosjekt/opretting av prioritet system
 - Diskutert nærmere strukturen til logikken og hvordan
 den samspiller med grafikken
 - Deligering av roller
-
-### Arbeidsoppgaver
-
-1) Redigere create() metoden for å opprette brettet.
-   Redigere render() metoden for å vise brettet.
-   Finne tile-assets til brettet.
-
-2) Opprette brikken i create() metoden og vise den i render() metoden.
-   Finne robot-assets til brikken.
-
-3) Oprette en ny metode keyUp() som reagerer på arrow- og WASD-taster.
-   Bør kunne også resette brettet. Oprette en ny metode movePlayer() som
-   flytter brikken på brettet.
-
-4) Oprette en ny metode checkTile() som sjekker om robotten er i samme
-   tile som et bretteelement (som et flagg).
-
-5) Legge en betingelse til checkTile() slik at spilleren får en melding
-   når de er i samme tile som flagget (de har vunnet).
