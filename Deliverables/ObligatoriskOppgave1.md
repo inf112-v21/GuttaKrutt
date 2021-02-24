@@ -60,6 +60,7 @@ flytter brikken på brettet.
 - Gitt at det er en spiller og et flagg på brettet, skal spilleren kunne flytte seg til flagget.
 - Gitt at spilleren står på ruten med flagg, så vinner spilleren.
 
+
 Arbeidsoppgaver:
 
 - Legge en betingelse til checkTile() slik at spilleren får en melding
