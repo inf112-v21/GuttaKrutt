@@ -1,17 +1,23 @@
 package inf112.skeleton.app;
 
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
+import java.util.Map;
+import static org.junit.Assert.assertEquals;
 
 public class MatrixMapGeneratorTest {
     @Test
-    public void FromFileTest() {
-        MatrixMapGenerator gen = new MatrixMapGenerator();
-        gen.fromFile("assets/TiledTest.tmx");
+    public void FromFileMatrixTest() {
+        int[][][] map = new MatrixMapGenerator().fromFile("assets/TiledTest.tmx").getMatrixMap();
 
-        int[][][] map = gen.matrixMap;
+        assertEquals(5, map[0][0][0]);
+        assertEquals(55, map[2][4][4]);
+    }
 
-        assertTrue(map[0][0][0] == 5);
-        assertTrue(map[2][4][0] == 55);
+    @Test
+    public void FromFileMapTest() {
+        Map<String,int[][]> map = new MatrixMapGenerator().fromFile("assets/TiledTest.tmx").getHashMap();
+
+        assertEquals(5, map.get("board")[0][0]);
+        assertEquals(55, map.get("flag")[4][4]);
     }
 }
