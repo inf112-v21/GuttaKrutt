@@ -12,32 +12,6 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 
-/*
-public class GameServer {
-
-    public static void main(String[] args) throws IOException {
-        Server server = new Server();
-        server.start();
-        server.bind(54555, 54777);
-        Network.register(server);
-
-        Listener listener = new Listener() {
-        public void received (Connection connection, Object object) {
-            if (object instanceof Network.SomeRequest) {
-                Network.SomeRequest request = (Network.SomeRequest)object;
-                System.out.println(request.text);
-
-                Network.SomeResponse response = new Network.SomeResponse();
-                response.text = "Thanks";
-                connection.sendTCP(response);
-            }
-        }
-    };
-        server.addListener(listener);
-
-    }
-}
-*/
 public class GameServer {
     Server server;
 
