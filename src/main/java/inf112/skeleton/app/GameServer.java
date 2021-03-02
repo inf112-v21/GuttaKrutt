@@ -1,4 +1,4 @@
-package inf112.skeleton.app;
+/*package inf112.skeleton.app;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 
-/*
+
 public class GameServer {
 
     public static void main(String[] args) throws IOException {
@@ -37,7 +37,7 @@ public class GameServer {
 
     }
 }
-*/
+
 public class GameServer {
     Server server;
 
@@ -147,3 +147,4 @@ public class GameServer {
         new GameServer();
     }
 }
+*/

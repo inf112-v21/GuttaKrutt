@@ -57,6 +57,10 @@ public class Controls extends InputAdapter {
             robots[0].fireLaser = 20;
             return true;
         }
+        if (keyCode == Input.Keys.I) {
+            map[4][robots[0].getX()][robots[0].getY()] = 1;
+            return true;
+        }
 
         return false;
     }
@@ -88,6 +92,9 @@ public class Controls extends InputAdapter {
 
             checkTile(robot);
         }
+        laserSpawner();
+        if(robots[0].getDamage()==10)
+            robots[0].setAlive(false);
     }
 
     public void checkTile(Robot robot) {
@@ -103,6 +110,7 @@ public class Controls extends InputAdapter {
             System.out.println(x + ", "+ y);
             int hole = map[1][x][y];
             int flag = map[2][x][y];
+            int laser = map[5][x][y];
 
             if (hole != 0) {
                 robots[0].setAlive(false);
@@ -167,6 +175,79 @@ public class Controls extends InputAdapter {
             }
             return a;
         } return new boolean[]{false,false,false,false};
+    }
+
+    public void laserSpawner() {
+        int dir;
+        for(int i=0;i<5;i++){
+            for(int j=0;j<5;j++){
+                map[4][i][j]=0;
+            }
+        }
+
+        for(int i = 0; i<5; i++) {
+            for (int j = 0; j < 5; j++) {
+                int id = map[5][i][j];
+                switch (id) {
+                    case 37:
+                        dir = 0;
+                        laser(i,j,dir);
+                        break;
+                    case 38:
+                        dir = 3;
+                        laser(i,j,dir);
+                        break;
+                    case 45:
+                        dir = 2;
+                        laser(i,j,dir);
+                        break;
+                    case 46:
+                        dir = 1;
+                        laser(i,j,dir);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    public void laser(int x, int y, int dir) {
+        boolean outSideBorder = (x >= map[0].length || x < 0 || y >= map[0][0].length || y < 0);
+        if(robots[0].getX()==x && robots[0].getY()==y) {
+            robots[0].addDamage(1);
+            System.out.println("Hit by laser");
+        } else if(!outSideBorder) {
+            switch (dir) {
+                case 0:
+                    checkOverLapLaser(x,y,dir);
+                    if(!getWall(x,y)[dir])
+                        laser(x,y+1,dir);
+                    break;
+                case 1:
+                    checkOverLapLaser(x,y,dir);
+                    if(!getWall(x,y)[dir])
+                        laser(x-1,y,dir);
+                    break;
+                case 2:
+                    checkOverLapLaser(x,y,dir);
+                    if(!getWall(x,y)[dir])
+                        laser(x,y-1,dir);
+                    break;
+                case 3:
+                    checkOverLapLaser(x,y,dir);
+                    if(!getWall(x,y)[dir])
+                        laser(x+1,y,dir);
+                    break;
+            }
+        }
+    }
+
+    public void checkOverLapLaser(int x, int y, int dir) {
+        if(map[4][x][y]==1+(dir % 2))
+            map[4][x][y] = 3;
+        else if(map[4][x][y]==0)
+            map[4][x][y] = 2-(dir % 2);
     }
 
     public void move(Robot robot, int distance) {
