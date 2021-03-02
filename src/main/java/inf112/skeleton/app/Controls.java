@@ -106,7 +106,6 @@ public class Controls extends InputAdapter {
             System.out.println(x + ", "+ y);
             int hole = map[1][x][y];
             int flag = map[2][x][y];
-            int laser = map[5][x][y];
 
             if (hole != 0) {
                 robots[0].setAlive(false);
