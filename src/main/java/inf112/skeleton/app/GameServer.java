@@ -13,6 +13,7 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 
 public class GameServer {
+    /*
     Server server;
 
     public GameServer() throws IOException {
@@ -119,5 +120,60 @@ public class GameServer {
     public static void main (String[] args) throws IOException {
         Log.set(Log.LEVEL_DEBUG);
         new GameServer();
+    }*/
+
+    public static void main(String[] args) throws IOException {
+        Server server = new Server();
+        server.start();
+        server.bind(54555, 54777);
+        Network.register(server);
+
+        server.addListener(new Listener() {
+            public void received (Connection connection, Object object) {
+                System.out.println("Client connected");
+                if (object instanceof Robot){
+                    String answer = "Robot recieved!!";
+                    System.out.println(answer);
+                    Robot robot2 = new Robot(0,1);
+                    connection.sendTCP(robot2);
+                }
+                if (object instanceof TestPacket){
+                    System.out.println("recieved");
+                    TestPacket pac = (TestPacket) object;
+                    System.out.println(pac.text);
+                    TestPacket resend = new TestPacket();
+                    resend.text = "You said: " + pac.text;
+                    connection.sendTCP(resend);
+                }
+            }
+        });
     }
+
+    /*
+    public GameServer() throws IOException {
+        Server server = new Server();
+        server.start();
+        server.bind(54555, 54777);
+        Network.register(server);
+
+        server.addListener(new Listener() {
+            public void received (Connection connection, Object object) {
+                System.out.println("Client connected");
+                if (object instanceof Robot){
+                    String answer = "Robot recieved!!";
+                    System.out.println(answer);
+                    Robot robot2 = new Robot(0,1);
+                    connection.sendTCP(robot2);
+                }
+                if (object instanceof TestPacket){
+                    System.out.println("recieved");
+                    TestPacket pac = (TestPacket) object;
+                    System.out.println(pac.text);
+                    TestPacket resend = new TestPacket();
+                    resend.text = "You said: " + pac;
+                    connection.sendTCP(resend);
+                }
+            }
+        });
+    }*/
 }

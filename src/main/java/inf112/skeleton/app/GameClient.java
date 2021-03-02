@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Scanner;
 
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -29,8 +30,10 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
+import org.lwjgl.system.CallbackI;
 
 public class GameClient {
+    /*
     ChatFrame chatFrame;
     Client client;
     String name;
@@ -239,5 +242,39 @@ public class GameClient {
     public static void main (String[] args) {
         Log.set(Log.LEVEL_DEBUG);
         new GameClient();
+    }*/
+    private static Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        Client client = new Client();
+        client.start();
+        client.connect(5000, "192.168.56.1", 54555, 54777);
+        Network.register(client);
+
+
+            client.addListener(new Listener() {
+                public void received(Connection connection, Object object) {
+                    if (object instanceof Robot) {
+                        System.out.println("Thanks");
+                        connection.sendTCP(new Robot(0,0));
+
+                    }
+                    if (object instanceof TestPacket){
+                        TestPacket rec = (TestPacket) object;
+                        System.out.println(rec.text);
+                    }
+                }
+            });
+        //int count=0;
+        while(client.isConnected()) {
+            String packet = scanner.nextLine();
+            TestPacket p = new TestPacket();
+            p.text = packet;
+            System.out.println(p.text);
+            //if(count==10){break;}
+            //Robot player1 = new Robot(0, 0);
+            //client.sendTCP(player1);
+            client.sendTCP(p);
+            //count++;
+        }
     }
 }
