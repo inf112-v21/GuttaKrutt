@@ -57,6 +57,10 @@ public class Controls extends InputAdapter {
             robots[0].fireLaser = 20;
             return true;
         }
+        if (keyCode == Input.Keys.I) {
+            map[4][robots[0].getX()][robots[0].getY()] = 1;
+            return true;
+        }
 
         return false;
     }
