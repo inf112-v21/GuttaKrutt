@@ -63,4 +63,4 @@ fra GUI'en over til Controls klassen og at laseren kommer fra spesifikke vegger 
 - Ble enige om å utsette refleksjoner/gruppevurdering til onsdagen
 
 03.03 (Onsdag, 12:15-14:00)
-- Gikk gjennom møte-referatene
+- Gikk gjennom møte-referatene 
