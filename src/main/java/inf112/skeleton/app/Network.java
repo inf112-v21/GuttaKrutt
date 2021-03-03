@@ -3,7 +3,9 @@ package inf112.skeleton.app;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 
-// This class is a convenient place to keep things common to both the client and server.
+/**
+ * This class registers each class that is sent over the internet
+ */
 public class Network {
     static public final int port = 54555;
 
@@ -16,8 +18,23 @@ public class Network {
         kryo.register(GameLogic.class);
         kryo.register(com.badlogic.gdx.math.Vector2.class);
         kryo.register(TestPacket.class);
+        kryo.register(RegisterName.class);
+        kryo.register(UpdateNames.class);
+        kryo.register(NumberOfPlayers.class);
     }
 
+    //Field for registering the name of a client
+    static public class RegisterName {
+        public String name;
+    }
 
+    //Field for list of all client names
+    static public class UpdateNames {
+        public String[] names;
+    }
 
+    //Field for number of players
+    static public class NumberOfPlayers {
+        public Integer amount;
+    }
 }

@@ -26,6 +26,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -33,7 +35,7 @@ import com.esotericsoftware.minlog.Log;
 import org.lwjgl.system.CallbackI;
 
 public class GameClient {
-    /*
+/*
     ChatFrame chatFrame;
     Client client;
     String name;
@@ -61,11 +63,7 @@ public class GameClient {
                     return;
                 }
 
-                if (object instanceof Network.ChatMessage) {
-                    Network.ChatMessage chatMessage = (Network.ChatMessage)object;
-                    chatFrame.addMessage(chatMessage.text);
-                    return;
-                }
+
             }
 
             public void disconnected (Connection connection) {
@@ -94,11 +92,7 @@ public class GameClient {
         chatFrame = new ChatFrame(host);
         // This listener is called when the send button is clicked.
         chatFrame.setSendListener(new Runnable() {
-            public void run () {
-                Network.ChatMessage chatMessage = new Network.ChatMessage();
-                chatMessage.text = chatFrame.getSendText();
-                client.sendTCP(chatMessage);
-            }
+
         });
         // This listener is called when the chat window is closed.
         chatFrame.setCloseListener(new Runnable() {
@@ -238,33 +232,63 @@ public class GameClient {
             });
         }
     }
+    */
 
-    public static void main (String[] args) {
-        Log.set(Log.LEVEL_DEBUG);
-        new GameClient();
-    }*/
     private static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) throws IOException {
+        //Initiating client
         Client client = new Client();
         client.start();
         client.connect(5000, "192.168.56.1", 54555, 54777);
         Network.register(client);
+        //final Integer numberOfPlayers;
+        Network.NumberOfPlayers playersInGame = new Network.NumberOfPlayers();
 
+        //Starting the clients game
+        Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
+        cfg.setTitle("test");
+        cfg.setWindowedMode(500, 500);
 
-            client.addListener(new Listener() {
-                public void received(Connection connection, Object object) {
-                    if (object instanceof Robot) {
-                        System.out.println("Thanks");
-                        connection.sendTCP(new Robot(0,0));
+        client.addListener(new Listener() {
+            public void received(Connection connection, Object object) {
+                System.out.println("connected to server");
+                if (object instanceof Robot) {
+                    System.out.println("Thanks");
+                    connection.sendTCP(new Robot(0,0));
 
-                    }
-                    if (object instanceof TestPacket){
-                        TestPacket rec = (TestPacket) object;
-                        System.out.println(rec.text);
-                    }
                 }
-            });
+                if (object instanceof TestPacket){
+                    TestPacket rec = (TestPacket) object;
+                    System.out.println(rec.text);
+                }
+
+                if (object instanceof Network.NumberOfPlayers){
+                    System.out.println("recieved playeramount");
+                    Network.NumberOfPlayers numberOfPlayers = (Network.NumberOfPlayers) object;
+                    playersInGame.amount = numberOfPlayers.amount;
+                }
+            }
+        });
+
+        //Starting the game if enough players joined
+        while(client.isConnected()) {
+            if(playersInGame.amount != null) {
+                System.out.println("amount != null");
+                if (playersInGame.amount > 0) {
+                    System.out.println("using playeramount");
+                    Robot[] robots = new Robot[playersInGame.amount];
+                    for (int i = 0; i < playersInGame.amount; i++) {
+                        robots[i] = new Robot();
+                    }
+
+                    new Lwjgl3Application(new GUI(robots), cfg);
+                    break;
+                }
+            }
+        }
         //int count=0;
+        /*
         while(client.isConnected()) {
             String packet = scanner.nextLine();
             TestPacket p = new TestPacket();
@@ -275,6 +299,8 @@ public class GameClient {
             //client.sendTCP(player1);
             client.sendTCP(p);
             //count++;
-        }
+        }*/
+
+
     }
 }

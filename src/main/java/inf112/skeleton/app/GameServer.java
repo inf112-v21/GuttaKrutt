@@ -7,10 +7,14 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 public class GameServer {
     /*
@@ -123,14 +127,26 @@ public class GameServer {
     }*/
 
     public static void main(String[] args) throws IOException {
+        //Starting a new server
         Server server = new Server();
         server.start();
         server.bind(54555, 54777);
         Network.register(server);
 
+        //Starting the game the server keeps track of
+        Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
+        cfg.setTitle("test");
+        cfg.setWindowedMode(500, 500);
+
+        Network.NumberOfPlayers numberOfPlayers = new Network.NumberOfPlayers();
+
+        //Server listening for connections (clients)
         server.addListener(new Listener() {
             public void received (Connection connection, Object object) {
                 System.out.println("Client connected");
+                numberOfPlayers.amount = server.getConnections().length;
+                server.sendToAllTCP(numberOfPlayers);
+                System.out.println("packet sent");
                 if (object instanceof Robot){
                     String answer = "Robot recieved!!";
                     System.out.println(answer);
@@ -147,6 +163,20 @@ public class GameServer {
                 }
             }
         });
+
+        System.out.println("Waiting for players to join");
+        if(server.getConnections().length > 0) {
+            System.out.println("Game initialising");
+            Robot[] robots = new Robot[numberOfPlayers.amount];
+            for (int i = 0; i < numberOfPlayers.amount; i++) {
+                robots[i] = new Robot();
+            }
+
+            new Lwjgl3Application(new GUI(robots), cfg);
+
+            server.close();
+        }
+
     }
 
     /*
