@@ -216,22 +216,22 @@ public class Controls extends InputAdapter {
             switch (dir) {
                 case 0:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir])
+                    if(!getWall(x,y)[dir] && !getWall(x,y+1)[(dir + 2) % 4])
                         laser(x,y+1,dir);
                     break;
                 case 1:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir])
+                    if(!getWall(x,y)[dir] && !getWall(x-1,y)[(dir + 2) % 4])
                         laser(x-1,y,dir);
                     break;
                 case 2:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir])
+                    if(!getWall(x,y)[dir] && !getWall(x,y-1)[(dir + 2) % 4])
                         laser(x,y-1,dir);
                     break;
                 case 3:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir])
+                    if(!getWall(x,y)[dir] && !getWall(x+1,y)[(dir + 2) % 4])
                         laser(x+1,y,dir);
                     break;
             }
