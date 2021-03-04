@@ -17,10 +17,10 @@ public class Network {
         kryo.register(Controls.class);
         kryo.register(GameLogic.class);
         kryo.register(com.badlogic.gdx.math.Vector2.class);
-        kryo.register(TestPacket.class);
         kryo.register(RegisterName.class);
         kryo.register(UpdateNames.class);
         kryo.register(NumberOfPlayers.class);
+        kryo.register(UpdatePlayer.class);
     }
 
     //Field for registering the name of a client
@@ -31,6 +31,11 @@ public class Network {
     //Field for list of all client names
     static public class UpdateNames {
         public String[] names;
+    }
+
+    //Field for updating the player
+    static public class UpdatePlayer {
+        public Robot playerRobot;
     }
 
     //Field for number of players

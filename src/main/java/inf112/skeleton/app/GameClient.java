@@ -239,16 +239,15 @@ public class GameClient {
     private Client client;
     private Network.NumberOfPlayers playersInGame = new Network.NumberOfPlayers();
     private Player player;
+    private static Integer expectedPlayers = 1;
 
     public GameClient() throws IOException {
         //Initiating client
         this.client = new Client();
         client.start();
-        client.connect(5000, "192.168.10.110", 54555, 54777);
+        String host = inputHost();
+        client.connect(5000, host, 54555, 54777);
         Network.register(client);
-        //final Integer numberOfPlayers;
-
-        //playersInGame.amount = 1;
 
         client.addListener(new Listener() {
             public void received(Connection connection, Object object) {
@@ -258,29 +257,23 @@ public class GameClient {
                     connection.sendTCP(new Robot(0, 0));
 
                 }
-                if (object instanceof TestPacket) {
-                    TestPacket rec = (TestPacket) object;
-                    System.out.println(rec.text);
-                }
-
                 if (object instanceof Network.NumberOfPlayers) {
                     System.out.println("recieved playeramount");
                     Network.NumberOfPlayers numberOfPlayers = (Network.NumberOfPlayers) object;
                     setNumberOfPlayers(numberOfPlayers.amount);
                     System.out.println(playersInGame.amount);
                 }
-                if(object instanceof Robot){
+                if(object instanceof Network.UpdatePlayer){
                     System.out.println("recieved player robot");
-                    Robot playerPos = (Robot) object;
+                    Network.UpdatePlayer player = (Network.UpdatePlayer) object;
                 }
             }
         });
-        //}
+
         //Starting the game if enough players joined
         while (client.isConnected()) {
             if (playersInGame.amount != null) {
-                //System.out.println("amount != null");
-                if (playersInGame.amount > 0) {
+                if (playersInGame.amount == expectedPlayers) {
                     System.out.println("using playeramount");
                     run();
                     break;
@@ -289,37 +282,48 @@ public class GameClient {
         }
     }
 
-        public void updatePlayer(Robot robot){
-            if(!client.isConnected()){
-                System.out.println("You are not connected to a server!");
-            } else {
+    public void updatePlayer(Robot robot){
+        if(!client.isConnected()){
+            System.out.println("You are not connected to a server!");
+        } else {
             client.sendTCP(robot);
-            }
-        }
-
-        public void run () {
-            Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
-            cfg.setTitle("test");
-            cfg.setWindowedMode(500, 500);
-
-            Robot[] robots = new Robot[playersInGame.amount];
-            for (int i = 0; i < playersInGame.amount; i++) {
-                robots[i] = new Robot();
-            }
-
-            new Lwjgl3Application(new GUI(robots), cfg);
-        }
-
-        public void sendMove () {
-
-        }
-
-        public Network.NumberOfPlayers getNumberOfPlayers () {
-            return playersInGame;
-        }
-
-        public Integer setNumberOfPlayers (Integer x){
-            return playersInGame.amount = x;
         }
     }
+
+    public String inputHost(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter host: (Blank for localhost)");
+        String input = scanner.nextLine();
+        if(input == null){
+            return "127.0.0.1";
+        } else {
+            return input;
+        }
+    }
+
+    public void run () {
+        Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
+        cfg.setTitle("test");
+        cfg.setWindowedMode(500, 500);
+
+        Robot[] robots = new Robot[playersInGame.amount];
+        for (int i = 0; i < playersInGame.amount; i++) {
+            robots[i] = new Robot();
+        }
+
+        new Lwjgl3Application(new GUI(robots), cfg);
+    }
+
+    public void sendMove () {
+
+    }
+
+    public Network.NumberOfPlayers getNumberOfPlayers () {
+        return playersInGame;
+    }
+
+    public Integer setNumberOfPlayers (Integer x){
+        return playersInGame.amount = x;
+    }
+}
 
