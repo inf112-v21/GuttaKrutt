@@ -248,6 +248,7 @@ public class GameClient {
         client.start();
         String host = inputHost();
         client.connect(5000, host, 54555, 54777);
+
         Network.register(client);
 
 
