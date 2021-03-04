@@ -7,38 +7,18 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
-
-
-public class GameServer {
-
-    public static void main(String[] args) throws IOException {
-        Server server = new Server();
-        server.start();
-        server.bind(54555, 54777);
-        Network.register(server);
-
-        Listener listener = new Listener() {
-        public void received (Connection connection, Object object) {
-            if (object instanceof Network.SomeRequest) {
-                Network.SomeRequest request = (Network.SomeRequest)object;
-                System.out.println(request.text);
-
-                Network.SomeResponse response = new Network.SomeResponse();
-                response.text = "Thanks";
-                connection.sendTCP(response);
-            }
-        }
-    };
-        server.addListener(listener);
-
-    }
-}
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 public class GameServer {
+    /*
     Server server;
 
     public GameServer() throws IOException {
@@ -145,6 +125,72 @@ public class GameServer {
     public static void main (String[] args) throws IOException {
         Log.set(Log.LEVEL_DEBUG);
         new GameServer();
+    }*/
+
+    public static void main(String[] args) throws IOException {
+        //Starting a new server
+        Server server = new Server();
+        server.start();
+        server.bind(54555, 54777);
+        Network.register(server);
+
+        Network.NumberOfPlayers numberOfPlayers = new Network.NumberOfPlayers();
+
+        //Server listening for connections (clients)
+        server.addListener(new Listener() {
+            public void received (Connection connection, Object object) {
+                System.out.println("Client connected");
+                numberOfPlayers.amount = server.getConnections().length;
+                server.sendToAllTCP(numberOfPlayers);
+                System.out.println("packet sent");
+                if (object instanceof Robot){
+                    String answer = "Robot recieved!!";
+                    System.out.println(answer);
+                    Robot robot2 = new Robot(0,1);
+                    connection.sendTCP(robot2);
+                }
+                if (object instanceof TestPacket){
+                    System.out.println("recieved");
+                    TestPacket pac = (TestPacket) object;
+                    System.out.println(pac.text);
+                    TestPacket resend = new TestPacket();
+                    resend.text = "You said: " + pac.text;
+                    connection.sendTCP(resend);
+                }
+                if(object instanceof Robot){
+                    System.out.println("Recieved player position");
+                    Robot robot = (Robot) object;
+                    server.sendToAllExceptTCP(connection.getID(), robot);
+                }
+            }
+        });
     }
+
+    /*
+    public GameServer() throws IOException {
+        Server server = new Server();
+        server.start();
+        server.bind(54555, 54777);
+        Network.register(server);
+
+        server.addListener(new Listener() {
+            public void received (Connection connection, Object object) {
+                System.out.println("Client connected");
+                if (object instanceof Robot){
+                    String answer = "Robot recieved!!";
+                    System.out.println(answer);
+                    Robot robot2 = new Robot(0,1);
+                    connection.sendTCP(robot2);
+                }
+                if (object instanceof TestPacket){
+                    System.out.println("recieved");
+                    TestPacket pac = (TestPacket) object;
+                    System.out.println(pac.text);
+                    TestPacket resend = new TestPacket();
+                    resend.text = "You said: " + pac;
+                    connection.sendTCP(resend);
+                }
+            }
+        });
+    }*/
 }
-*/

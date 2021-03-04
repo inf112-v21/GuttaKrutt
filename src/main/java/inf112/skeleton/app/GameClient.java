@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Scanner;
 
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -25,34 +26,17 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
+import org.lwjgl.system.CallbackI;
+
+public class GameClient {
 /*
-public class GameClient {
-
-    public static void main(String[] args) throws IOException {
-        Client client = new Client();
-        client.start();
-        client.connect(5000, "192.168.0.4", 54555, 54777);
-
-        Multiplayer.SomeRequest request = new Multiplayer.SomeRequest();
-        request.text = "Here is the request";
-        client.sendTCP(request);
-
-        client.addListener(new Listener() {
-            public void received (Connection connection, Object object) {
-                if (object instanceof Multiplayer.SomeResponse) {
-                    Multiplayer.SomeResponse response = (Multiplayer.SomeResponse)object;
-                    System.out.println(response.text);
-                }
-            }
-        });
-    }
-}
-*/
-public class GameClient {
     ChatFrame chatFrame;
     Client client;
     String name;
@@ -60,6 +44,7 @@ public class GameClient {
     public GameClient() {
         client = new Client();
         client.start();
+
 
         // For consistency, the classes to be sent over the network are
         // registered by the same method for both the client and server.
@@ -79,11 +64,7 @@ public class GameClient {
                     return;
                 }
 
-                if (object instanceof Network.ChatMessage) {
-                    Network.ChatMessage chatMessage = (Network.ChatMessage)object;
-                    chatFrame.addMessage(chatMessage.text);
-                    return;
-                }
+
             }
 
             public void disconnected (Connection connection) {
@@ -112,11 +93,7 @@ public class GameClient {
         chatFrame = new ChatFrame(host);
         // This listener is called when the send button is clicked.
         chatFrame.setSendListener(new Runnable() {
-            public void run () {
-                Network.ChatMessage chatMessage = new Network.ChatMessage();
-                chatMessage.text = chatFrame.getSendText();
-                client.sendTCP(chatMessage);
-            }
+
         });
         // This listener is called when the chat window is closed.
         chatFrame.setCloseListener(new Runnable() {
@@ -256,9 +233,93 @@ public class GameClient {
             });
         }
     }
+    */
 
-    public static void main (String[] args) {
-        Log.set(Log.LEVEL_DEBUG);
-        new GameClient();
+    private static Scanner scanner = new Scanner(System.in);
+    private Client client;
+    private Network.NumberOfPlayers playersInGame = new Network.NumberOfPlayers();
+    private Player player;
+
+    public GameClient() throws IOException {
+        //Initiating client
+        this.client = new Client();
+        client.start();
+        client.connect(5000, "192.168.10.110", 54555, 54777);
+        Network.register(client);
+        //final Integer numberOfPlayers;
+
+        //playersInGame.amount = 1;
+
+        client.addListener(new Listener() {
+            public void received(Connection connection, Object object) {
+                //System.out.println("connected to server");
+                if (object instanceof Robot) {
+                    System.out.println("Thanks");
+                    connection.sendTCP(new Robot(0, 0));
+
+                }
+                if (object instanceof TestPacket) {
+                    TestPacket rec = (TestPacket) object;
+                    System.out.println(rec.text);
+                }
+
+                if (object instanceof Network.NumberOfPlayers) {
+                    System.out.println("recieved playeramount");
+                    Network.NumberOfPlayers numberOfPlayers = (Network.NumberOfPlayers) object;
+                    setNumberOfPlayers(numberOfPlayers.amount);
+                    System.out.println(playersInGame.amount);
+                }
+                if(object instanceof Robot){
+                    System.out.println("recieved player robot");
+                    Robot playerPos = (Robot) object;
+                }
+            }
+        });
+        //}
+        //Starting the game if enough players joined
+        while (client.isConnected()) {
+            if (playersInGame.amount != null) {
+                //System.out.println("amount != null");
+                if (playersInGame.amount > 0) {
+                    System.out.println("using playeramount");
+                    run();
+                    break;
+                }
+            }
+        }
     }
-}
+
+        public void updatePlayer(Robot robot){
+            if(!client.isConnected()){
+                System.out.println("You are not connected to a server!");
+            } else {
+            client.sendTCP(robot);
+            }
+        }
+
+        public void run () {
+            Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
+            cfg.setTitle("test");
+            cfg.setWindowedMode(500, 500);
+
+            Robot[] robots = new Robot[playersInGame.amount];
+            for (int i = 0; i < playersInGame.amount; i++) {
+                robots[i] = new Robot();
+            }
+
+            new Lwjgl3Application(new GUI(robots), cfg);
+        }
+
+        public void sendMove () {
+
+        }
+
+        public Network.NumberOfPlayers getNumberOfPlayers () {
+            return playersInGame;
+        }
+
+        public Integer setNumberOfPlayers (Integer x){
+            return playersInGame.amount = x;
+        }
+    }
+
