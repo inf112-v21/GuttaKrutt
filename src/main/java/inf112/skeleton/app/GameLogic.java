@@ -1,5 +1,6 @@
 package inf112.skeleton.app;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,11 +15,16 @@ public class GameLogic {
     List<Integer> rotright_priority = Collections.nCopies(18, 1);
     List<Integer> rotleft_priority = Collections.nCopies(18, 1);
     List<Integer> uturn_priority = Collections.nCopies(6, 1);
+    List<Player> playerList = new ArrayList<Player>();
 
     public GameLogic() {
         turn=0;
         deck = new Deck();
         buildDeck();
+        for (int i=0; i<4; i++) {
+            Player player = new Player();
+            playerList.add(player);
+        }
     }
 
     public void buildDeck() {
@@ -58,9 +64,18 @@ public class GameLogic {
 
     public void doTurn() {
         turn++;
+        dealCards();
     }
 
     public int getTurn() {
         return turn;
+    }
+
+    public List<Player> getPlayers() { return playerList; }
+
+    public void dealCards() {
+        for (Player p : playerList) {
+
+        }
     }
 }
