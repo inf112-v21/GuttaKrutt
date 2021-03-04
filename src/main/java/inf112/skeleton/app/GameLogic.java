@@ -15,7 +15,7 @@ public class GameLogic {
     List<Integer> rotright_priority = Collections.nCopies(18, 1);
     List<Integer> rotleft_priority = Collections.nCopies(18, 1);
     List<Integer> uturn_priority = Collections.nCopies(6, 1);
-    List<Player> playerList = new ArrayList<Player>();
+    List<Player> playerList = new ArrayList<>();
 
     public GameLogic() {
         turn=0;
@@ -75,7 +75,9 @@ public class GameLogic {
 
     public void dealCards() {
         for (Player p : playerList) {
-
+            for (int i=0; i < (9-p.getRobot().getDamage()); i++) {
+                p.cardList.add(deck.take());
+            }
         }
     }
 }
