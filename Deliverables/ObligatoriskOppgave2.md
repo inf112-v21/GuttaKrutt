@@ -24,6 +24,17 @@ med regelboken.
    - Gitt at en laser peker ut fra en rute med en vegg, skal laseren
     blokkeres hvis veggen ligger på den siden som laseren peker mot
 
+4) Som spiller vil jeg kunne hoste en server slik at andre spillere kan koble seg til serveren min
+
+    Akseptansekriterier:
+    -  A
+    -  B
+    -  C
+    
+    Arbeidsoppgaver:
+    - A
+    - B
+    - C
 ### Oppsummering møter - oblig 1
 
 17.02 (Onsdag, 12:15-14:00)
