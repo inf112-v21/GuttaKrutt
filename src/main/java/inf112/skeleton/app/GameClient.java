@@ -240,6 +240,7 @@ public class GameClient {
     private Network.NumberOfPlayers playersInGame = new Network.NumberOfPlayers();
     private Player player;
     private static Integer expectedPlayers = 1;
+    boolean gotPackage = false;
 
     public GameClient() throws IOException {
         //Initiating client
@@ -248,6 +249,7 @@ public class GameClient {
         String host = inputHost();
         client.connect(5000, host, 54555, 54777);
         Network.register(client);
+
 
         client.addListener(new Listener() {
             public void received(Connection connection, Object object) {
@@ -266,6 +268,11 @@ public class GameClient {
                 if(object instanceof Network.UpdatePlayer){
                     System.out.println("recieved player robot");
                     Network.UpdatePlayer player = (Network.UpdatePlayer) object;
+                }
+                if(object instanceof Network.TestPacket){
+                    System.out.println("Recieved test packet");
+                    Network.TestPacket packet = (Network.TestPacket) object;
+                    gotPackage = true;
                 }
             }
         });
@@ -286,7 +293,9 @@ public class GameClient {
         if(!client.isConnected()){
             System.out.println("You are not connected to a server!");
         } else {
-            client.sendTCP(robot);
+            Network.UpdatePlayer packet = new Network.UpdatePlayer();
+            packet.playerRobot = robot;
+            client.sendTCP(packet);
         }
     }
 
@@ -318,6 +327,10 @@ public class GameClient {
 
     }
 
+    public Client getClient(){
+        return client;
+    }
+
     public Network.NumberOfPlayers getNumberOfPlayers () {
         return playersInGame;
     }
@@ -325,5 +338,9 @@ public class GameClient {
     public Integer setNumberOfPlayers (Integer x){
         return playersInGame.amount = x;
     }
+    /*
+    public void setGotPackage(boolean bool){
+        gotPackage = bool;
+    }*/
 }
 

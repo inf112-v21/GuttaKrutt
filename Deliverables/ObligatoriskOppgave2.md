@@ -24,17 +24,32 @@ med regelboken.
    - Gitt at en laser peker ut fra en rute med en vegg, skal laseren
     blokkeres hvis veggen ligger på den siden som laseren peker mot
 
-4) Som spiller vil jeg kunne hoste en server slik at andre spillere kan koble seg til serveren min
+4) Som spiller vil jeg kunne hoste en server slik at andre spillere kan koble seg til serveren min.
 
     Akseptansekriterier:
-    -  A
-    -  B
-    -  C
+    - Gitt at hosten har internett, så skal hosten kunne kjøre en server.
+    - Gitt at serveren kjører, så skal andre spillere kunne koble seg til serveren.
     
     Arbeidsoppgaver:
-    - A
-    - B
+    - Implementere GameServer klasse, som skal hoste en kryonet server
+    - Implementere GameClient klasse, som skal klare å sende informasjon til serveren,
+      samt motta informasjon fra serveren.
     - C
+   
+5) Som spiller i et multiplayer spill vil jeg kunne se hvordan robotene til de andre 
+   spillerene beveger seg slik at jeg kan planlegge rundt de andres bevegelser.
+   
+   Akseptansekriterier:
+   - Gitt at alle spillerene er koblet til serveren, skal alle kunne se hverandre i sitt eget spill.
+   - Gitt at alle spillerene er koblet til samme server, skal de kunne se hverandres bevegelser.
+   - B
+   
+   Arbeidsoppgaver:
+   - Implementere at hver spiller sender en oppdatering av roboten sin hver gang etter de beveger seg.
+   - Implementere at hver spiller holder oversikt over oppdateringene til de andre robotene.
+   - Implementere at serveren tar imot oppdateringer fra spillerene og videresender oppdateringene
+   til de andre spillerene.
+   
 ### Oppsummering møter - oblig 1
 
 17.02 (Onsdag, 12:15-14:00)
@@ -64,7 +79,7 @@ gjør det mulig å teste kartet/controls uten å kjøre applikasjonen
 - Simon implementerte online funksjonalitet, opprettet en enkel online chat
 - Sassan pprettet Card og Deck klassen og begynte å jobbe med en gameLogic klasse som
 omhandler disse 2 klassene.
-  
+
 25.02 (Torsdag, 12:00-14:00)
 - 
 

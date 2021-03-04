@@ -8,15 +8,9 @@ import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.esotericsoftware.minlog.Log;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 public class GameServer {
     /*
@@ -132,6 +126,7 @@ public class GameServer {
     Integer expectedNumberOfPlayers;
     boolean playerCountSent = false;
 
+
     public GameServer() throws IOException {
         server = new Server();
         server.start();
@@ -162,6 +157,11 @@ public class GameServer {
                     Network.UpdatePlayer player = (Network.UpdatePlayer) object;
                     server.sendToAllExceptTCP(connection.getID(), player);
                 }
+                if(object instanceof Network.TestPacket){
+                    System.out.println("Recieved test packet");
+                    Network.TestPacket packet = (Network.TestPacket) object;
+                    connection.sendTCP(packet);
+                }
             }
         });
     }
@@ -172,8 +172,6 @@ public class GameServer {
         Integer input = scanner.nextInt();
         return input;
     }
-
-
 
     public static void main(String[] args) throws IOException {
         GameServer server = new GameServer();

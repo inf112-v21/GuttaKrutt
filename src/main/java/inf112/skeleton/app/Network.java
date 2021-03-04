@@ -21,6 +21,7 @@ public class Network {
         kryo.register(UpdateNames.class);
         kryo.register(NumberOfPlayers.class);
         kryo.register(UpdatePlayer.class);
+        kryo.register(TestPacket.class);
     }
 
     //Field for registering the name of a client
@@ -41,5 +42,9 @@ public class Network {
     //Field for number of players
     static public class NumberOfPlayers {
         public Integer amount;
+    }
+
+    static public  class TestPacket{
+        public String packet;
     }
 }
