@@ -244,7 +244,7 @@ public class GameClient {
         //Initiating client
         this.client = new Client();
         client.start();
-        client.connect(5000, "192.168.10.110", 54555, 54777);
+        client.connect(5000, "127.0.0.1", 54555, 54777);
         Network.register(client);
         //final Integer numberOfPlayers;
 
