@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -235,72 +236,89 @@ public class GameClient {
     */
 
     private static Scanner scanner = new Scanner(System.in);
+    private Client client;
+    private Network.NumberOfPlayers playersInGame = new Network.NumberOfPlayers();
+    private Player player;
 
-    public static void main(String[] args) throws IOException {
+    public GameClient() throws IOException {
         //Initiating client
-        Client client = new Client();
+        this.client = new Client();
         client.start();
-        client.connect(5000, "192.168.56.1", 54555, 54777);
+        client.connect(5000, "192.168.10.110", 54555, 54777);
         Network.register(client);
         //final Integer numberOfPlayers;
-        Network.NumberOfPlayers playersInGame = new Network.NumberOfPlayers();
 
-        //Starting the clients game
-        Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
-        cfg.setTitle("test");
-        cfg.setWindowedMode(500, 500);
+        //playersInGame.amount = 1;
 
         client.addListener(new Listener() {
             public void received(Connection connection, Object object) {
-                System.out.println("connected to server");
+                //System.out.println("connected to server");
                 if (object instanceof Robot) {
                     System.out.println("Thanks");
-                    connection.sendTCP(new Robot(0,0));
+                    connection.sendTCP(new Robot(0, 0));
 
                 }
-                if (object instanceof TestPacket){
+                if (object instanceof TestPacket) {
                     TestPacket rec = (TestPacket) object;
                     System.out.println(rec.text);
                 }
 
-                if (object instanceof Network.NumberOfPlayers){
+                if (object instanceof Network.NumberOfPlayers) {
                     System.out.println("recieved playeramount");
                     Network.NumberOfPlayers numberOfPlayers = (Network.NumberOfPlayers) object;
-                    playersInGame.amount = numberOfPlayers.amount;
+                    setNumberOfPlayers(numberOfPlayers.amount);
+                    System.out.println(playersInGame.amount);
+                }
+                if(object instanceof Robot){
+                    System.out.println("recieved player robot");
+                    Robot playerPos = (Robot) object;
                 }
             }
         });
-
+        //}
         //Starting the game if enough players joined
-        while(client.isConnected()) {
-            if(playersInGame.amount != null) {
-                System.out.println("amount != null");
+        while (client.isConnected()) {
+            if (playersInGame.amount != null) {
+                //System.out.println("amount != null");
                 if (playersInGame.amount > 0) {
                     System.out.println("using playeramount");
-                    Robot[] robots = new Robot[playersInGame.amount];
-                    for (int i = 0; i < playersInGame.amount; i++) {
-                        robots[i] = new Robot();
-                    }
-
-                    new Lwjgl3Application(new GUI(robots), cfg);
+                    run();
                     break;
                 }
             }
         }
-        //int count=0;
-        /*
-        while(client.isConnected()) {
-            String packet = scanner.nextLine();
-            TestPacket p = new TestPacket();
-            p.text = packet;
-            System.out.println(p.text);
-            //if(count==10){break;}
-            //Robot player1 = new Robot(0, 0);
-            //client.sendTCP(player1);
-            client.sendTCP(p);
-            //count++;
-        }*/
-
-
     }
-}
+
+        public void updatePlayer(Robot robot){
+            if(!client.isConnected()){
+                System.out.println("You are not connected to a server!");
+            } else {
+            client.sendTCP(robot);
+            }
+        }
+
+        public void run () {
+            Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
+            cfg.setTitle("test");
+            cfg.setWindowedMode(500, 500);
+
+            Robot[] robots = new Robot[playersInGame.amount];
+            for (int i = 0; i < playersInGame.amount; i++) {
+                robots[i] = new Robot();
+            }
+
+            new Lwjgl3Application(new GUI(robots), cfg);
+        }
+
+        public void sendMove () {
+
+        }
+
+        public Network.NumberOfPlayers getNumberOfPlayers () {
+            return playersInGame;
+        }
+
+        public Integer setNumberOfPlayers (Integer x){
+            return playersInGame.amount = x;
+        }
+    }
