@@ -89,11 +89,6 @@ public class GUI implements ApplicationListener {
         playerWonCell = new TiledMapTileLayer.Cell();
         playerWonCell.setTile(new StaticTiledMapTile(playerTextures[0][2]));
 
-        int[][][] matrixMap = new int[3][5][5];
-
-        matrixMap[1][2][2] = 6;
-        matrixMap[2][4][4] = 55;
-
         controls = new Controls(tiledMap, robots, this);
 
         Gdx.input.setInputProcessor(controls);
@@ -139,47 +134,43 @@ public class GUI implements ApplicationListener {
 
     public void drawLasers() {
         clearLayer(laserLayer);
-        if (robots[0].fireLaser > 0) {
-            int x = (int) robots[0].getPos().x;
-            int y = (int) robots[0].getPos().y;
-            switch (robots[0].getRotation()){
-                case 0: y++; break;
-                case 1: x--; break;
-                case 2: y--; break;
-                case 3: x++; break;
-                default: y += 10; break;
+
+        for(int i = 0; i<laserLayer.getWidth(); i++) {
+            for (int j = 0; j < laserLayer.getHeight(); j++) {
+                if(controls.map[4][i][j]!=0)
+                    drawLaser(i,j);
             }
-
-            drawLaser(x,y,robots[0].getRotation());
-
-            robots[0].fireLaser--;
         }
     }
 
-    public void drawLaser(int x,int y, int dir) {
+    public void drawLaser(int x,int y) {
         TiledMapTileLayer.Cell laser = new TiledMapTileLayer.Cell();
+        int typeOfLaser = controls.map[4][x][y];
+        switch (typeOfLaser) {
+            case 1:
+                laser.setTile(tiledMap.getTileSets().getTile(39));
+                break;
+            case 2:
+                laser.setTile(tiledMap.getTileSets().getTile(47));
+                break;
+            case 3:
+                laser.setTile(tiledMap.getTileSets().getTile(40));
+                break;
+        }/*
         laser.setTile(tiledMap.getTileSets().getTile(47));
-        if (dir == 1 || dir == 3) {
+        if (controls.map[4][x][y]==1) {
             laser.setTile(tiledMap.getTileSets().getTile(39));
         }
+        if (controls.map[4][x][y]==3)
+            laser.setTile(tiledMap.getTileSets().getTile(40));
+            */
+        /*
         boolean[] test = controls.getWall(x,y);
         if (test[(dir + 2) % 4]) {
             return;
         }
-
+        */
         laserLayer.setCell(x, y, laser);
-
-        switch (dir){
-            case 0: y++; break;
-            case 1: x--; break;
-            case 2: y--; break;
-            case 3: x++; break;
-            default: y += 10; break;
-        }
-
-        if (!test[dir] && y < 5 && y >= 0 && x < 5 && x >= 0) {
-            drawLaser(x,y,dir);
-        }
     }
 
     public void clearLayer(TiledMapTileLayer layer) {
