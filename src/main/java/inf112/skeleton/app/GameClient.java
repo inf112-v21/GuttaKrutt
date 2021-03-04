@@ -322,3 +322,4 @@ public class GameClient {
             return playersInGame.amount = x;
         }
     }
+
