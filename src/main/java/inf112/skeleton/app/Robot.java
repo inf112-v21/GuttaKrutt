@@ -8,6 +8,9 @@ public class Robot {
 
     int fireLaser = 0;
 
+    Deck personalDeck = new Deck();
+    Deck programRegister = new Deck();
+
     int damageTokens = 0;
     Vector2 pos = new Vector2(0,0);
     int rotation = 0;
@@ -53,6 +56,7 @@ public class Robot {
     public void setWon(boolean newWon) {
         won = newWon;
     }
+
     public int getRotation() { return rotation; }
 
     public void rotate(int rot) {
