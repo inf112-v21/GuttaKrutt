@@ -7,7 +7,6 @@ import com.esotericsoftware.kryonet.EndPoint;
  * This class registers each class that is sent over the internet
  */
 public class Network {
-    static public final int port = 54555;
 
     // This registers objects that are going to be sent over the network.
     static public void register (EndPoint endPoint) {
