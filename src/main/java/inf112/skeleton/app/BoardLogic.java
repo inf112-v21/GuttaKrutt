@@ -5,21 +5,21 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.maps.tiled.*;
 
-public class Controls extends InputAdapter {
+public class BoardLogic extends InputAdapter {
     Robot[] robots;
     int[][][] map;
 
-    public Controls(int[][][] map, Robot[] robots) {
+    public BoardLogic(int[][][] map, Robot[] robots) {
         this.robots = robots;
         this.map = map;
     }
 
-    public Controls(TiledMap map, Robot[] robots, GUI gui) {
+    public BoardLogic(TiledMap map, Robot[] robots, GUI gui) {
         this.map = new MatrixMapGenerator().fromTiledMap(map).getMap();
         this.robots = robots;
     }
 
-    public Controls(Robot[] robots) {
+    public BoardLogic(Robot[] robots) {
         map = new MatrixMapGenerator().fromFile("TiledTest.tmx").getMap();
         this.robots = robots;
     }

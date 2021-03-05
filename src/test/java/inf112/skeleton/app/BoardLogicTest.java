@@ -4,17 +4,17 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ControlsTest {
+public class BoardLogicTest {
 
     int[][][] map;
     Robot[] robots;
-    Controls controls;
+    BoardLogic boardLogic;
 
     public void SetUpEmptyMap(Robot[] robots) {
         this.robots = robots;
         this.map = new int[6][5][5];
         GenerateEmptyMap(map);
-        this.controls = new Controls(map, robots);
+        this.boardLogic = new BoardLogic(map, robots);
     }
 
     public void GenerateEmptyMap(int[][][] map) {
@@ -37,7 +37,7 @@ public class ControlsTest {
         SetUpEmptyMap(robots);
         map[5][4][4] = 46;
 
-        controls.laserSpawner();
+        boardLogic.laserSpawner();
 
         assertEquals(1,map[4][4][4]);
         assertEquals(1,map[4][3][4]);
@@ -54,7 +54,7 @@ public class ControlsTest {
         map[5][4][2] = 46;
         map[5][2][0] = 37;
 
-        controls.laserSpawner();
+        boardLogic.laserSpawner();
 
         assertEquals(2,map[4][2][0]);
         assertEquals(2,map[4][2][1]);
@@ -81,7 +81,7 @@ public class ControlsTest {
         robots[1].setPos(4,2);
         robots[2].setPos(2,0);
         robots[3].setPos(0,2);
-        controls.laserSpawner();
+        boardLogic.laserSpawner();
 
         assertEquals(0,map[4][1][4]);
         /*assertEquals(0,map[4][4][3]);
@@ -95,7 +95,7 @@ public class ControlsTest {
         SetUpEmptyMap(robots);
         map[5][4][2] = 46;
         robots[0].setPos(2,1);
-        controls.movePlayer(robots[0],2,2);
+        boardLogic.movePlayer(robots[0],2,2);
 
         assertEquals(9,robots[0].getDamage());
     }

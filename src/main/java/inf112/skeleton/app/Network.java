@@ -14,7 +14,7 @@ public class Network {
         Kryo kryo = endPoint.getKryo();
         kryo.register(Robot.class);
         kryo.register(Player.class);
-        kryo.register(Controls.class);
+        kryo.register(BoardLogic.class);
         kryo.register(GameLogic.class);
         kryo.register(com.badlogic.gdx.math.Vector2.class);
         kryo.register(RegisterName.class);
