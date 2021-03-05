@@ -1,8 +1,9 @@
-/*package inf112.skeleton.app;
+package inf112.skeleton.app;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -10,35 +11,9 @@ import javax.swing.JLabel;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import com.esotericsoftware.minlog.Log;
-
 
 public class GameServer {
-
-    public static void main(String[] args) throws IOException {
-        Server server = new Server();
-        server.start();
-        server.bind(54555, 54777);
-        Network.register(server);
-
-        Listener listener = new Listener() {
-        public void received (Connection connection, Object object) {
-            if (object instanceof Network.SomeRequest) {
-                Network.SomeRequest request = (Network.SomeRequest)object;
-                System.out.println(request.text);
-
-                Network.SomeResponse response = new Network.SomeResponse();
-                response.text = "Thanks";
-                connection.sendTCP(response);
-            }
-        }
-    };
-        server.addListener(listener);
-
-    }
-}
-
-public class GameServer {
+    /*
     Server server;
 
     public GameServer() throws IOException {
@@ -145,6 +120,60 @@ public class GameServer {
     public static void main (String[] args) throws IOException {
         Log.set(Log.LEVEL_DEBUG);
         new GameServer();
+    }*/
+
+    Server server;
+    Integer expectedNumberOfPlayers;
+    boolean playerCountSent = false;
+
+
+    public GameServer() throws IOException {
+        server = new Server();
+        server.start();
+        server.bind(54555, 54777);
+        Network.register(server);
+        expectedNumberOfPlayers = inputExpectedPlayers();
+        Network.NumberOfPlayers numberOfPlayers = new Network.NumberOfPlayers();
+
+        //Server listening for connections (clients)
+        server.addListener(new Listener() {
+            public void received (Connection connection, Object object) {
+                System.out.println("Client connected");
+
+                if(server.getConnections().length == expectedNumberOfPlayers && !playerCountSent) {
+                    playerCountSent = true;
+                    numberOfPlayers.amount = expectedNumberOfPlayers;
+                    server.sendToAllTCP(numberOfPlayers);
+                    System.out.println("packet sent");
+                }
+                if (object instanceof Robot){
+                    String answer = "Robot recieved!!";
+                    System.out.println(answer);
+                    Robot robot2 = new Robot(0,1);
+                    connection.sendTCP(robot2);
+                }
+                if(object instanceof Network.UpdatePlayer){
+                    System.out.println("Recieved player position");
+                    Network.UpdatePlayer player = (Network.UpdatePlayer) object;
+                    server.sendToAllExceptTCP(connection.getID(), player);
+                }
+                if(object instanceof Network.TestPacket){
+                    System.out.println("Recieved test packet");
+                    Network.TestPacket packet = (Network.TestPacket) object;
+                    connection.sendTCP(packet);
+                }
+            }
+        });
+    }
+
+    public Integer inputExpectedPlayers(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter expected number of players:");
+        Integer input = scanner.nextInt();
+        return input;
+    }
+
+    public static void main(String[] args) throws IOException {
+        GameServer server = new GameServer();
     }
 }
-*/
