@@ -9,17 +9,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-
-import java.util.concurrent.TimeUnit;
 
 public class GUI implements ApplicationListener {
     private SpriteBatch batch;
@@ -46,7 +40,7 @@ public class GUI implements ApplicationListener {
     MapLayers layers;
 
     Robot[] robots;
-    Controls controls;
+    BoardLogic boardLogic;
 
     public GUI(Robot[] robots) {
         this.robots = robots;
@@ -89,9 +83,9 @@ public class GUI implements ApplicationListener {
         playerWonCell = new TiledMapTileLayer.Cell();
         playerWonCell.setTile(new StaticTiledMapTile(playerTextures[0][2]));
 
-        controls = new Controls(tiledMap, robots, this);
+        boardLogic = new BoardLogic(tiledMap, robots, this);
 
-        Gdx.input.setInputProcessor(controls);
+        Gdx.input.setInputProcessor(boardLogic);
 
         batch = new SpriteBatch();
         font = new BitmapFont();
@@ -137,7 +131,7 @@ public class GUI implements ApplicationListener {
 
         for(int i = 0; i<laserLayer.getWidth(); i++) {
             for (int j = 0; j < laserLayer.getHeight(); j++) {
-                if(controls.map[4][i][j]!=0)
+                if(boardLogic.map[4][i][j]!=0)
                     drawLaser(i,j);
             }
         }
@@ -145,7 +139,7 @@ public class GUI implements ApplicationListener {
 
     public void drawLaser(int x,int y) {
         TiledMapTileLayer.Cell laser = new TiledMapTileLayer.Cell();
-        int typeOfLaser = controls.map[4][x][y];
+        int typeOfLaser = boardLogic.map[4][x][y];
         switch (typeOfLaser) {
             case 1:
                 laser.setTile(tiledMap.getTileSets().getTile(39));
