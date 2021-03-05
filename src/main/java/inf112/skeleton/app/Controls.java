@@ -213,6 +213,7 @@ public class Controls extends InputAdapter {
             robots[0].addDamage(1);
             System.out.println("Hit by laser");
         } else if(!outSideBorder) {
+            //dir : 0 = north, 1 = west, 2 = south, 3 = east
             switch (dir) {
                 case 0:
                     checkOverLapLaser(x,y,dir);
@@ -239,6 +240,7 @@ public class Controls extends InputAdapter {
     }
 
     public void checkOverLapLaser(int x, int y, int dir) {
+        //Hvis laseren er horisontal skal ruten ha verdi 1, hvis en er vertikal skal ruten ha 2.
         if(map[4][x][y]==1+(dir % 2))
             map[4][x][y] = 3;
         else if(map[4][x][y]==0)
