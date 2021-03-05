@@ -23,36 +23,6 @@ med regelboken.
     blokkeres hvis veggen ligger på den siden som laseren kommer fra
    - Gitt at en laser peker ut fra en rute med en vegg, skal laseren
     blokkeres hvis veggen ligger på den siden som laseren peker mot
-     
-6) Som spiller vil jeg få utdelt kort fra en kortstokk slik at jeg kan velge fem kort å bruke hver runde.
-
-   Akseptansekriterier:
-   - Gitt at en spiller har X damageTokens, skal den spilleren få
-     utdelt 9-X kort.
-   - Gitt at en spiller har valgt kortene sine, skal den ikke kunne
-     se på eller forandre sine kort.
-     
-   Arbeidsoppgaver:
-   - en metode dealCard() som skal ha en for-loop som deler ut kort og
-     kjører (9-damageTokens) mange ganger hos hver spiller.
-   - en nettverk-styrt tur som avslutter når alle spillere har valgt
-     kortene sine, der spillere må vente til turen er ferdig.
-
-7) Som robot vil jeg få fem kort som jeg kan bruke til å utføre
-   forskjellige handlinger.
-   
-   Akseptansekriterier:
-   - Gitt at bare en spiller er igjen som ikke har valgt kortene til
-     robotten, skal det kjøres en timer på 30 sekunder.
-   - Gitt at robotten ikke er shut-down og har fått fem kort, skal alle
-     handlingene utføres i riktig rekkefølge.
-     
-   Arbeidsoppgaver:
-   - en runTimer() metode i serveren som kjøres når alle spillere utenom
-     en har valgt kortene sine og venter på at turen blir ferdig.
-   - en programCards() metode som setter kortene i en liste med riktig
-     rekkefølge og sier til Board klassen hva alle board elementene skal
-     gjøre.
 
 4) Som spiller vil jeg kunne hoste en server slik at andre spillere kan koble seg til serveren min.
 
