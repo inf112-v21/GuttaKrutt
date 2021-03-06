@@ -9,7 +9,7 @@ public class Robot {
     int fireLaser = 0;
 
     Deck personalDeck = new Deck();
-    Deck programRegister = new Deck();
+    Card[] programRegister = new Card[5];
 
     int damageTokens = 0;
     Vector2 pos = new Vector2(0,0);

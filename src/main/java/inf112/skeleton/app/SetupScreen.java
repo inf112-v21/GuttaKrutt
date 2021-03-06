@@ -79,7 +79,7 @@ public class SetupScreen implements Screen {
         renderer.setView(camera);
 
         mapPort = new StretchViewport(5, 5, camera);
-        mapPort.setScreenBounds(600, 300, 300, 300);
+        mapPort.setScreenBounds(Gdx.graphics.getWidth()-500, 300, 300, 300);
 
         TextButton playButton = new TextButton("Play!", RoboRally.skin);
         playButton.setWidth(Gdx.graphics.getWidth()/10);

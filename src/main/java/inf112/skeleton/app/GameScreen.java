@@ -17,10 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import java.util.ArrayList;
 
 public class GameScreen implements Screen {
     Game game;
@@ -47,6 +50,7 @@ public class GameScreen implements Screen {
     MapLayers layers;
 
     Robot[] robots;
+    Player[] players;
     Controls controls;
 
     FillViewport gamePort;
@@ -55,7 +59,8 @@ public class GameScreen implements Screen {
     int uiHeight;
 
     Table robotsTable;
-    Table testTable;
+    Table controlsTable;
+    Table PRTable;
 
     public GameScreen(Game game, Robot[] robots, String map) {
         this.game = game;
@@ -65,6 +70,24 @@ public class GameScreen implements Screen {
                 return controls.keyUp(keyCode);
             }
         };
+
+        players = new Player[robots.length];
+        for (int i=0;i<players.length;i++) {
+            players[i] = new Player();
+            players[i].cardList = new ArrayList<Card>();
+            players[i].cardList.add(new Card(Card.CardType.MOVE1,123));
+            players[i].cardList.add(new Card(Card.CardType.MOVE2,456));
+            players[i].cardList.add(new Card(Card.CardType.MOVE3,789));
+            players[i].cardList.add(new Card(Card.CardType.UTURN,1));
+            players[i].cardList.add(new Card(Card.CardType.ROTLEFT,123));
+            players[i].cardList.add(new Card(Card.CardType.ROTRIGHT,123));
+            players[i].cardList.add(new Card(Card.CardType.BACKUP,123));
+
+        }
+
+        for (int i=0;i<robots.length;i++) {
+            robots[i] = players[i].getRobot();
+        }
 
         this.robots = robots;
 
@@ -113,11 +136,6 @@ public class GameScreen implements Screen {
 
         controls = new Controls(new MatrixMapGenerator().fromTiledMap(tiledMap).getMap(), robots);
 
-        testTable = new Table();
-        testTable.setFillParent(true);
-        stage.addActor(testTable);
-        testTable.setDebug(true);
-
         robotsTable = new Table();
         stage.addActor(robotsTable);
         robotsTable.setSize(uiWidth,Gdx.graphics.getHeight()-uiWidth);
@@ -143,11 +161,45 @@ public class GameScreen implements Screen {
                 return true;
             }
         });
+
+        controlsTable = new Table();
+        stage.addActor(controlsTable);
+        controlsTable.setSize(Gdx.graphics.getWidth(),uiHeight);
+
+        controlsTable.setDebug(true);
+
+        Screen thisScreen = this;
+
+        PRTable = new Table();
+
+        controlsTable.add(PRTable);
+
+        TextButton button = new TextButton("Edit",RoboRally.skin);
+        button.addListener(new InputListener(){
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new CardSelectScreen(game, players, thisScreen));
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
+        controlsTable.add(button);
     }
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+        PRTable.reset();
+        for (Card card : players[0].getRobot().programRegister) {
+            Image image = new Image(CardSelectScreen.drawCard(card));
+            if (card == null) {
+                image.setColor(Color.GRAY);
+            }
+            PRTable.add(image);
+        }
     }
 
     public TiledMapTileLayer getTileLayer(String s) {
@@ -236,14 +288,11 @@ public class GameScreen implements Screen {
         gamePort.update(i- uiWidth,i1- uiHeight);
         gamePort.setScreenY(uiHeight);
 
-
         stage.getViewport().update(i,i1,true);
         stage.getViewport().getCamera().update();
 
         robotsTable.setSize(uiWidth,i1-uiWidth);
         robotsTable.setX(i-uiWidth);
-        System.out.println(testTable.getX());
-
     }
 
     @Override
