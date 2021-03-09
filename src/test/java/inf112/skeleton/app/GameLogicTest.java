@@ -53,10 +53,22 @@ public class GameLogicTest {
     }
 
     @Test
-    public void ShouldDealCards() { }
+    public void ShouldDealCards() {
+        GameLogic game = new GameLogic();
+        game.doTurn();
+        for (int i=0; i<game.getPlayers().size(); i++){
+            assertEquals(9, game.getPlayers().get(i).getCards().size());
+        }
+    }
 
     @Test
-    public void ShouldProgramRegisters() { }
+    public void ShouldProgramRegisters() {
+        GameLogic game = new GameLogic();
+        game.doTurn();
+        for (int i=0; i<game.getPlayers().size(); i++){
+            assertEquals(5, game.getPlayers().get(i).getRegisters().size());
+        }
+    }
 
     @Test
     public void ShouldAskPowerDown() { }

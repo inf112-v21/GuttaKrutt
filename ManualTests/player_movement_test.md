@@ -12,13 +12,13 @@ To start the game, first run GameServer.main(). Then start Main.main().
 ### Testing movement
 1. Press W or UP.
     - The player should have moved up one tile.
-    
+
 2. Press S or DOWN.
     - The player should have moved back to its starting point.
-    
+
 3. Press D or RIGHT, and then W or UP.
     - The player should have turned to the right and moved to the right.
-    
+
 ### Testing wall collision inside tile
 1. Move to (1,1). Possible Route: W, D, W.
 2. There should be a wall at the top and to the right in the tile.

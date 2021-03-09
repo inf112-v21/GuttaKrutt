@@ -5,21 +5,21 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.maps.tiled.*;
 
-public class Controls extends InputAdapter {
+public class BoardLogic extends InputAdapter {
     Robot[] robots;
     int[][][] map;
 
-    public Controls(int[][][] map, Robot[] robots) {
+    public BoardLogic(int[][][] map, Robot[] robots) {
         this.robots = robots;
         this.map = map;
     }
 
-    public Controls(TiledMap map, Robot[] robots, GUI gui) {
+    public BoardLogic(TiledMap map, Robot[] robots, GUI gui) {
         this.map = new MatrixMapGenerator().fromTiledMap(map).getMap();
         this.robots = robots;
     }
 
-    public Controls(Robot[] robots) {
+    public BoardLogic(Robot[] robots) {
         map = new MatrixMapGenerator().fromFile("TiledTest.tmx").getMap();
         this.robots = robots;
     }
@@ -207,31 +207,33 @@ public class Controls extends InputAdapter {
         }
     }
 
+    //Denne funksjonen er en laser som rekursivt iterer over brettet
     public void laser(int x, int y, int dir) {
         boolean outSideBorder = (x >= map[0].length || x < 0 || y >= map[0][0].length || y < 0);
         if(robots[0].getX()==x && robots[0].getY()==y) {
             robots[0].addDamage(1);
             System.out.println("Hit by laser");
         } else if(!outSideBorder) {
+            //dir : 0 = north, 1 = west, 2 = south, 3 = east
             switch (dir) {
                 case 0:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir])
+                    if(!getWall(x,y)[dir] && !getWall(x,y+1)[(dir + 2) % 4])
                         laser(x,y+1,dir);
                     break;
                 case 1:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir])
+                    if(!getWall(x,y)[dir] && !getWall(x-1,y)[(dir + 2) % 4])
                         laser(x-1,y,dir);
                     break;
                 case 2:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir])
+                    if(!getWall(x,y)[dir] && !getWall(x,y-1)[(dir + 2) % 4])
                         laser(x,y-1,dir);
                     break;
                 case 3:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir])
+                    if(!getWall(x,y)[dir] && !getWall(x+1,y)[(dir + 2) % 4])
                         laser(x+1,y,dir);
                     break;
             }
@@ -239,6 +241,8 @@ public class Controls extends InputAdapter {
     }
 
     public void checkOverLapLaser(int x, int y, int dir) {
+        //Hvis laseren er horisontal skal ruten ha verdi 1, hvis en er vertikal skal ruten ha 2.
+        //Hvis 2 lasere krysser skal ruten ha verdi 3
         if(map[4][x][y]==1+(dir % 2))
             map[4][x][y] = 3;
         else if(map[4][x][y]==0)
