@@ -2,13 +2,14 @@ package inf112.skeleton.app;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /* contains all information about a player */
 public class Player {
 
     Robot robot;
-    List<Card> cardList = new ArrayList<>();
-    List<Card> registers = new ArrayList<>();
+    Deck cardList = new Deck();
+    UUID uuid = UUID.randomUUID();
 
     /* constructor class which initiates a new robot
     * alongside the player */
@@ -20,10 +21,7 @@ public class Player {
         return robot;
     }
 
-    public List<Card> getCards() { return cardList; }
+    public Deck getCards() { return cardList; }
 
-    public List<Card> getRegisters() { return registers; }
-
-    /* programs one register at a time */
-    public void addRegister(Card c) { registers.add(c); }
+    public UUID getID() { return uuid; }
 }

@@ -78,13 +78,9 @@ public class BoardLogic extends InputAdapter {
             case "10": direction = 3; break;
             default: direction = 0; break;
         }
-        System.out.println(direction);
 
         if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4]) {
-            //GUI.playerLayer.setCell((int) playerPos.x, (int) playerPos.y, null);
             robot.setPos(new Vector2(newX, newY));
-
-            System.out.println("inf112.skeleton.app.Player moved to " + newX + ", " + newY);
 
             checkTile(robot);
         }
@@ -103,7 +99,6 @@ public class BoardLogic extends InputAdapter {
             robots[0].setAlive(false);
             System.out.println("inf112-skeleton.app.Player has died outside the border");
         } else {
-            System.out.println(x + ", "+ y);
             int hole = map[1][x][y];
             int flag = map[2][x][y];
 
