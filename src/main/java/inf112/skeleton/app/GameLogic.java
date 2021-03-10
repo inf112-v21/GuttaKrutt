@@ -127,7 +127,7 @@ public class GameLogic {
         }
 
         for (Player player : playerList) {
-            player.getRobot().setProgramRegister(new Card[5]);
+            player.cardList = new Deck();
         }
     }
 

@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class SetupScreen implements Screen {
@@ -87,6 +88,12 @@ public class SetupScreen implements Screen {
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                try {
+                    new GameServer(false, (int) robotsList.getSelected());
+                    new GameClient("localhost",true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 game.setScreen(new GameScreen(game, (int) robotsList.getSelected(), selected));
             }
             @Override

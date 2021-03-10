@@ -25,16 +25,12 @@ public class MenuScreen implements Screen {
         title.setWidth(305);
         stage.addActor(title);
 
-        TextButton playButton = new TextButton("Play!", RoboRally.skin);
-        playButton.setWidth(Gdx.graphics.getWidth()/2);
-        playButton.setPosition(Gdx.graphics.getWidth()/2-playButton.getWidth()/2,Gdx.graphics.getHeight()/2-playButton.getHeight()/2);
-        playButton.addListener(new InputListener(){
+        TextButton hostButton = new TextButton("Host", RoboRally.skin);
+        hostButton.setWidth(Gdx.graphics.getWidth()/2);
+        hostButton.setPosition(Gdx.graphics.getWidth()/2-hostButton.getWidth()/2,Gdx.graphics.getHeight()/2-hostButton.getHeight()/2);
+        hostButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                Robot[] robots = new Robot[1];
-                for (int i=0;i<1;i++) {
-                    robots[i] = new Robot();
-                }
                 game.setScreen(new SetupScreen(game));
             }
             @Override
@@ -42,7 +38,22 @@ public class MenuScreen implements Screen {
                 return true;
             }
         });
-        stage.addActor(playButton);
+        stage.addActor(hostButton);
+
+        TextButton joinButton = new TextButton("Join", RoboRally.skin);
+        joinButton.setWidth(Gdx.graphics.getWidth()/2);
+        joinButton.setPosition(Gdx.graphics.getWidth()/2-hostButton.getWidth()/2,Gdx.graphics.getHeight()/2-hostButton.getHeight()/2-100);
+        joinButton.addListener(new InputListener(){
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new SetupScreen(game));
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+        stage.addActor(joinButton);
     }
 
     @Override

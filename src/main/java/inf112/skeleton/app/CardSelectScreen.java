@@ -113,9 +113,9 @@ public class CardSelectScreen implements Screen {
             int i = cardList.indexOf(card);
             cardList.remove(card);
 
-            Cell cell = table.getCell(table.getChild(i));
-            cell.getActor().remove();
-            cell.reset();
+            if(currentCard != null) {
+                cardList.add(currentCard);
+            }
 
             makeTable();
 

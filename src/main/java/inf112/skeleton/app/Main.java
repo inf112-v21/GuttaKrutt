@@ -10,5 +10,7 @@ public class Main {
         cfg.setWindowedMode(1400, 800);
 
         new Lwjgl3Application(new RoboRally(), cfg);
+
+        System.exit(0);
     }
 }
