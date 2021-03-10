@@ -17,7 +17,6 @@ public class GameClient {
     private static Scanner scanner = new Scanner(System.in);
     private Client client;
     private Network.NumberOfPlayers playersInGame = new Network.NumberOfPlayers();
-    //private Player player;
     private static Integer expectedPlayers = 1;
     public boolean gotPackage = false;
     public boolean clientTesting;
