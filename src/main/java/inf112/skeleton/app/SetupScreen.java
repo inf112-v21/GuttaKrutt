@@ -87,11 +87,7 @@ public class SetupScreen implements Screen {
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                Robot[] robots = new Robot[(int) robotsList.getSelected()];
-                for (int i=0;i<robots.length;i++) {
-                    robots[i] = new Robot();
-                }
-                game.setScreen(new GameScreen(game, robots, selected));
+                game.setScreen(new GameScreen(game, (int) robotsList.getSelected(), selected));
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {

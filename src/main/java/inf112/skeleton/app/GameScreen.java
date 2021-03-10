@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class GameScreen implements Screen {
     Game game;
@@ -50,8 +50,9 @@ public class GameScreen implements Screen {
     MapLayers layers;
 
     Robot[] robots;
-    Player[] players;
-    Controls controls;
+    List<Player> players;
+    BoardLogic boardLogic;
+    GameLogic gameLogic;
 
     FillViewport gamePort;
 
@@ -62,34 +63,14 @@ public class GameScreen implements Screen {
     Table controlsTable;
     Table PRTable;
 
-    public GameScreen(Game game, Robot[] robots, String map) {
+    public GameScreen(Game game, int playerNumber, String map) {
         this.game = game;
         stage = new Stage(new ScreenViewport()) {
             @Override
             public boolean keyUp(int keyCode) {
-                return controls.keyUp(keyCode);
+                return boardLogic.keyUp(keyCode);
             }
         };
-
-        players = new Player[robots.length];
-        for (int i=0;i<players.length;i++) {
-            players[i] = new Player();
-            players[i].cardList = new ArrayList<Card>();
-            players[i].cardList.add(new Card(Card.CardType.MOVE1,123));
-            players[i].cardList.add(new Card(Card.CardType.MOVE2,456));
-            players[i].cardList.add(new Card(Card.CardType.MOVE3,789));
-            players[i].cardList.add(new Card(Card.CardType.UTURN,1));
-            players[i].cardList.add(new Card(Card.CardType.ROTLEFT,123));
-            players[i].cardList.add(new Card(Card.CardType.ROTRIGHT,123));
-            players[i].cardList.add(new Card(Card.CardType.BACKUP,123));
-
-        }
-
-        for (int i=0;i<robots.length;i++) {
-            robots[i] = players[i].getRobot();
-        }
-
-        this.robots = robots;
 
         TmxMapLoader mapLoader = new TmxMapLoader();
         tiledMap = mapLoader.load(map);
@@ -106,12 +87,23 @@ public class GameScreen implements Screen {
         wallLayer = getTileLayer("wall");
         laserLayer = getTileLayer("laser");
 
+        gameLogic = new GameLogic(playerNumber, this);
+
+        players = gameLogic.playerList;
+
+        robots = new Robot[players.size()];
+        for (int i=0;i<robots.length;i++) {
+            robots[i] = players.get(i).getRobot();
+        }
+
+        boardLogic = new BoardLogic(new MatrixMapGenerator().fromTiledMap(tiledMap).getMap(), robots);
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 5, 5);
         camera.position.x = 2.5F;
 
-        gamePort = new FillViewport((Gdx.graphics.getWidth()- uiWidth)/200,
-                (Gdx.graphics.getHeight()- uiHeight)/200,camera);
+        gamePort = new FillViewport((Gdx.graphics.getWidth()- uiWidth)/200F,
+                (Gdx.graphics.getHeight()- uiHeight)/200F,camera);
 
         uiWidth = 100;
         uiHeight = 200;
@@ -133,8 +125,6 @@ public class GameScreen implements Screen {
 
         playerWonCell = new TiledMapTileLayer.Cell();
         playerWonCell.setTile(new StaticTiledMapTile(playerTextures[0][2]));
-
-        controls = new Controls(new MatrixMapGenerator().fromTiledMap(tiledMap).getMap(), robots);
 
         robotsTable = new Table();
         stage.addActor(robotsTable);
@@ -178,7 +168,22 @@ public class GameScreen implements Screen {
         button.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new CardSelectScreen(game, players, thisScreen));
+                game.setScreen(new CardSelectScreen(game, players.get(0), thisScreen));
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
+        controlsTable.add(button);
+
+        button = new TextButton("Do Turn",RoboRally.skin);
+        button.addListener(new InputListener(){
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                Thread thread = new Thread(() -> gameLogic.doTurn());
+                thread.start();
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -193,7 +198,7 @@ public class GameScreen implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
         PRTable.reset();
-        for (Card card : players[0].getRobot().programRegister) {
+        for (Card card : players.get(0).getRobot().programRegister) {
             Image image = new Image(CardSelectScreen.drawCard(card));
             if (card == null) {
                 image.setColor(Color.GRAY);
@@ -210,6 +215,9 @@ public class GameScreen implements Screen {
     public void render(float v) {
         Gdx.gl.glClearColor(0.2F, 0.2F, 0.2F, 0);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+        //if (Thread.activeCount() > 2) {
+        //    Gdx.input.setInputProcessor(null);
+        //}
 
         //Board
         gamePort.apply();
@@ -231,6 +239,10 @@ public class GameScreen implements Screen {
 
         stage.act();
         stage.draw();
+
+        //if (Thread.activeCount() < 3) {
+        //    Gdx.input.setInputProcessor(stage);
+        //}
     }
 
 
@@ -252,7 +264,7 @@ public class GameScreen implements Screen {
 
         for(int i = 0; i<laserLayer.getWidth(); i++) {
             for (int j = 0; j < laserLayer.getHeight(); j++) {
-                if(controls.map[4][i][j]!=0)
+                if(boardLogic.map[4][i][j]!=0)
                     drawLaser(i,j);
             }
         }
@@ -260,7 +272,7 @@ public class GameScreen implements Screen {
 
     public void drawLaser(int x,int y) {
         TiledMapTileLayer.Cell laser = new TiledMapTileLayer.Cell();
-        int typeOfLaser = controls.map[4][x][y];
+        int typeOfLaser = boardLogic.map[4][x][y];
         switch (typeOfLaser) {
             case 1:
                 laser.setTile(tiledMap.getTileSets().getTile(39));
@@ -293,6 +305,8 @@ public class GameScreen implements Screen {
 
         robotsTable.setSize(uiWidth,i1-uiWidth);
         robotsTable.setX(i-uiWidth);
+
+        controlsTable.setSize(i,uiHeight);
     }
 
     @Override

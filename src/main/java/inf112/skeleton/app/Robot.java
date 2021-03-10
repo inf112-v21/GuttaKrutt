@@ -8,7 +8,6 @@ public class Robot {
 
     int fireLaser = 0;
 
-    Deck personalDeck = new Deck();
     Card[] programRegister = new Card[5];
 
     int damageTokens = 0;
@@ -30,6 +29,10 @@ public class Robot {
     public int getDamage() {
         return damageTokens;
     }
+
+    public Card[] getProgramRegister() { return programRegister; }
+
+    public void setProgramRegister(Card[] cards) { this.programRegister = cards; }
 
     public Vector2 getPos() {
         return pos;

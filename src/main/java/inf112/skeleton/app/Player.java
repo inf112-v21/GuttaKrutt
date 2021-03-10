@@ -7,8 +7,7 @@ import java.util.List;
 public class Player {
 
     Robot robot;
-    List<Card> cardList = new ArrayList<>();
-    List<Card> registers = new ArrayList<>();
+    Deck cardList = new Deck();
 
     /* constructor class which initiates a new robot
     * alongside the player */
@@ -20,10 +19,5 @@ public class Player {
         return robot;
     }
 
-    public List<Card> getCards() { return cardList; }
-
-    public List<Card> getRegisters() { return registers; }
-
-    /* programs one register at a time */
-    public void addRegister(Card c) { registers.add(c); }
+    public Deck getCards() { return cardList; }
 }

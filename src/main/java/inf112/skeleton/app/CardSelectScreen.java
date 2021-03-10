@@ -7,9 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,53 +15,40 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import java.util.List;
-
 public class CardSelectScreen implements Screen {
     Game game;
     Stage stage;
 
-    List<Card> cardList;
+    Deck cardList;
 
     Table table;
     DragAndDrop dragAndDrop;
 
-    public CardSelectScreen(Game game, Player[] players, Screen prevScreen) {
+    public CardSelectScreen(Game game, Player player, Screen prevScreen) {
         this.game = game;
         stage = new Stage(new ScreenViewport());
-        cardList = players[0].getCardList();
+        cardList = player.getCards();
 
         table = new Table();
         table.setFillParent(true);
-        stage.addActor(table);
 
-        table.setDebug(true);
+        ScrollPane sp = new ScrollPane(table, RoboRally.skin);
+        sp.setBounds(25,300, Gdx.graphics.getWidth()-50,Gdx.graphics.getHeight()-400);
+
+        stage.addActor(sp);
+        table.bottom();
 
         final Skin skin = new Skin();
         skin.add("validTargetImage", new Texture(Gdx.files.internal("Card_Base.png")));
 
         dragAndDrop = new DragAndDrop();
 
-        for (Card card : cardList) {
-            Image image = new Image(drawCard(card));
-            table.add(image).width(164).height(258);
-
-            dragAndDrop.addSource(new DragAndDrop.Source(image) {
-                @Override
-                public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
-                    DragAndDrop.Payload payload = new DragAndDrop.Payload();
-                    payload.setObject(card);
-
-                    payload.setDragActor(new Image(drawCard(card)));
-                    return payload;
-                }
-            });
-        }
+        makeTable();
 
         Array<CustomTarget> targets = new Array<>();
         int x = 200;
         for (int i=0;i<5;i++) {
-            Card card = players[0].getRobot().programRegister[i];
+            Card card = player.getRobot().getProgramRegister()[i];
             Image img = new Image(drawCard(card));
             if (card == null) {
                 img.setColor(Color.GRAY);
@@ -84,8 +68,8 @@ public class CardSelectScreen implements Screen {
                 Card[] cards = new Card[5];
                 for (int i = 0; i < 5; i++) {
                     cards[i] = targets.get(i).currentCard;
-                    players[0].getRobot().programRegister = cards;
                 }
+                player.getRobot().setProgramRegister(cards);
                 game.setScreen(prevScreen);
             }
             @Override
@@ -93,6 +77,7 @@ public class CardSelectScreen implements Screen {
                 return true;
             }
         });
+
 
         button.setBounds(5,5,100,50);
         stage.addActor(button);
@@ -132,23 +117,7 @@ public class CardSelectScreen implements Screen {
             cell.getActor().remove();
             cell.reset();
 
-            if (currentCard != null) {
-                Card card2 = currentCard;
-                Image image = new Image(drawCard(card2));
-                table.add(image).width(164).height(258);
-                cardList.add(card2);
-
-                dragAndDrop.addSource(new DragAndDrop.Source(image) {
-                    @Override
-                    public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
-                        DragAndDrop.Payload payload = new DragAndDrop.Payload();
-                        payload.setObject(card2);
-
-                        payload.setDragActor(new Image(drawCard(card2)));
-                        return payload;
-                    }
-                });
-            }
+            makeTable();
 
             currentCard = card;
         }
@@ -236,6 +205,31 @@ public class CardSelectScreen implements Screen {
         }
 
         return pixmap;
+    }
+
+    public void makeTable() {
+        table.clearChildren();
+        int i = 0;
+        for (Card card : cardList) {
+            if (i % 10 == 0) {
+                table.row();
+            }
+
+            Image image = new Image(drawCard(card));
+            table.add(image).width(123).height(194).pad(2);
+
+            dragAndDrop.addSource(new DragAndDrop.Source(image) {
+                @Override
+                public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
+                    DragAndDrop.Payload payload = new DragAndDrop.Payload();
+                    payload.setObject(card);
+
+                    payload.setDragActor(new Image(drawCard(card)));
+                    return payload;
+                }
+            });
+            i++;
+        }
     }
 
     @Override

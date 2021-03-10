@@ -8,7 +8,7 @@ public class GameLogicTest {
 
     @Test
     public void ShouldBuildDeck() {
-        GameLogic game = new GameLogic();
+        GameLogic game = new GameLogic(4, null);
         Deck deck = game.getDeck();
         int move1=0, move2=0, move3=0, backup=0, rotright=0, rotleft=0, uturn=0;
         for (Card c : deck) {
@@ -47,26 +47,17 @@ public class GameLogicTest {
 
     @Test
     public void ShouldDoTurn() {
-        GameLogic game = new GameLogic();
+        GameLogic game = new GameLogic(4, null);
         game.doTurn();
         assertEquals(1, game.getTurn());
     }
 
     @Test
     public void ShouldDealCards() {
-        GameLogic game = new GameLogic();
+        GameLogic game = new GameLogic(4, null);
         game.doTurn();
         for (int i=0; i<game.getPlayers().size(); i++){
             assertEquals(9, game.getPlayers().get(i).getCards().size());
-        }
-    }
-
-    @Test
-    public void ShouldProgramRegisters() {
-        GameLogic game = new GameLogic();
-        game.doTurn();
-        for (int i=0; i<game.getPlayers().size(); i++){
-            assertEquals(5, game.getPlayers().get(i).getRegisters().size());
         }
     }
 
