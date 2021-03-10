@@ -7,7 +7,6 @@ public class Main {
 
         GameServer server = new GameServer();
         GameClient client = new GameClient();
-        server.server.close();
-
+        server.server.stop();
     }
 }

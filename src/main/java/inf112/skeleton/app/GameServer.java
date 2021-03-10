@@ -7,7 +7,8 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 /**
- * This class
+ * This class contains the logic of the kryonet server. It decides how to respond to incoming information
+ * from clients.
  */
 public class GameServer {
 

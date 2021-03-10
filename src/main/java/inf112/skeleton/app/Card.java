@@ -1,10 +1,12 @@
 package inf112.skeleton.app;
 
+/* contains all information about cards */
 public class Card {
 
     int priority;
     CardType type;
 
+    /* every card belongs to one of the following types: */
     enum CardType {
         MOVE1,
         MOVE2,
@@ -15,6 +17,8 @@ public class Card {
         UTURN
     }
 
+    /* constructor class which sets the priority and
+    * type of the card (two necessary input values) */
     public Card(CardType type, int priority) {
         this.priority = priority;
         this.type = type;
