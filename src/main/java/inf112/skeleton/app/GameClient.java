@@ -100,7 +100,7 @@ public class GameClient {
     }
 
     public void run () {
-        Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
+        /*Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
         cfg.setTitle("test");
         cfg.setWindowedMode(500, 500);
 
@@ -109,7 +109,7 @@ public class GameClient {
             robots[i] = new Robot();
         }
 
-        new Lwjgl3Application(new GUI(robots), cfg);
+        new Lwjgl3Application(new GUI(robots), cfg);*/
     }
 
     public void sendMove () {

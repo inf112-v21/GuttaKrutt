@@ -3,6 +3,9 @@ package inf112.skeleton.app;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 /* controls the main loop of the game and executes the game rules */
 public class GameLogic {
@@ -10,7 +13,7 @@ public class GameLogic {
     GameScreen game;
     int turn;
     Deck deck;
-    List<Player> playerList = new ArrayList<>();
+    Map<UUID,Player> playerList = new HashMap<>();
 
     /* class constructor which sets the initial turn number, builds
     * a deck and initiates the players */
@@ -22,7 +25,7 @@ public class GameLogic {
         deck.shuffle();
         for (int i=0; i<players; i++) {
             Player player = new Player();
-            playerList.add(player);
+            playerList.put(UUID.randomUUID(),player);
         }
         dealCards();
     }
@@ -78,12 +81,12 @@ public class GameLogic {
         return turn;
     }
 
-    public List<Player> getPlayers() { return playerList; }
+    public Map<UUID,Player> getPlayers() { return playerList; }
 
     /* deals cards to each player according to the number
     * of their damage tokens */
     public void dealCards() {
-        for (Player p : playerList) {
+        for (Player p : playerList.values()) {
             for (int i=0; i < (9-p.getRobot().getDamage()); i++) {
                 p.cardList.add(deck.take());
             }

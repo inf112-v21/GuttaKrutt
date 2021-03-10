@@ -9,7 +9,7 @@ public class Player {
 
     Robot robot;
     Deck cardList = new Deck();
-    UUID uuid = UUID.randomUUID();
+    String name;
 
     /* constructor class which initiates a new robot
     * alongside the player */
@@ -23,5 +23,5 @@ public class Player {
 
     public Deck getCards() { return cardList; }
 
-    public UUID getID() { return uuid; }
+    public String getName(){ return name; }
 }
