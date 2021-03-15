@@ -42,7 +42,7 @@ public class GameClient {
         client.start();
         this.clientTesting = clientTesting;
         this.host = host;
-        client.connect(5000, host, 54555, 54777);
+        client.connect(5000, host, 54555);
 
         Network.register(client);
 
