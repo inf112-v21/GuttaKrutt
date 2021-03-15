@@ -1,12 +1,16 @@
 package inf112.skeleton.app;
 
-import java.io.IOException;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 public class Main {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) {
+        Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
+        cfg.setTitle("RoboRally");
+        cfg.setWindowedMode(1400, 800);
 
-        GameServer server = new GameServer();
-        GameClient client = new GameClient();
-        server.server.stop();
+        new Lwjgl3Application(new RoboRally(), cfg);
+
+        System.exit(0);
     }
 }

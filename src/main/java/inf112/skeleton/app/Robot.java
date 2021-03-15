@@ -8,6 +8,8 @@ public class Robot {
 
     int fireLaser = 0;
 
+    Card[] programRegister = new Card[5];
+
     int damageTokens = 0;
     Vector2 pos = new Vector2(0,0);
     int rotation = 0;
@@ -27,6 +29,10 @@ public class Robot {
     public int getDamage() {
         return damageTokens;
     }
+
+    public Card[] getProgramRegister() { return programRegister; }
+
+    public void setProgramRegister(Card[] cards) { this.programRegister = cards; }
 
     public Vector2 getPos() {
         return pos;
@@ -53,6 +59,7 @@ public class Robot {
     public void setWon(boolean newWon) {
         won = newWon;
     }
+
     public int getRotation() { return rotation; }
 
     public void rotate(int rot) {
