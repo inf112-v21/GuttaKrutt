@@ -44,7 +44,7 @@ public class JoinScreen implements Screen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 GameClient client = null;
                 try {
-                    client = new GameClient(host.getMessageText(),true);
+                    client = new GameClient(host.getText(),true);
                     client.getClient().sendTCP(name.getText());
                 } catch (IOException e) {
                     e.printStackTrace();

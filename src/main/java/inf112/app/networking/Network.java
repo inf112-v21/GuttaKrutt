@@ -33,7 +33,7 @@ public class Network {
         kryo.register(HashMap.class);
         kryo.register(UUID.class, new UUIDSerializer());
         kryo.register(Deck.class);
-        kryo.register(Card.class, new CardSerializer());
+        kryo.register(Card.class);
         kryo.register(Card.CardType.class);
         kryo.register(Card[].class);
         kryo.register(com.badlogic.gdx.math.Vector2.class);
@@ -96,32 +96,6 @@ public class Network {
         @Override
         public UUID read(Kryo kryo, Input input, Class<UUID> aClass) {
             return new UUID(input.readInt(),input.readInt());
-        }
-    }
-
-    public static class CardSerializer extends Serializer<Card> {
-
-        @Override
-        public void write(Kryo kryo, Output output, Card card) {
-            output.write(card.getPriority());
-            output.write(card.getTypeInt());
-        }
-
-        @Override
-        public Card read(Kryo kryo, Input input, Class<Card> aClass) {
-            Card.CardType cardType;
-            int type = input.read();
-            switch (type) {
-                case 0: cardType = MOVE1;
-                case 1: cardType = MOVE2;
-                case 2: cardType = MOVE3;
-                case 3: cardType = BACKUP;
-                case 4: cardType = ROTRIGHT;
-                case 5: cardType = ROTLEFT;
-                default: cardType = UTURN;
-            }
-
-            return new Card(cardType,input.read());
         }
     }
 }

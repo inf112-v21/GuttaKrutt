@@ -34,7 +34,7 @@ public class GameServer {
     public GameServer(boolean serverTesting, int numPlayers) throws IOException {
         server = new Server();
         server.start();
-        server.bind(54555, 54777);
+        server.bind(54555);
 
         this.serverTesting = serverTesting;
         Network.register(server);

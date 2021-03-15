@@ -19,6 +19,8 @@ public class Card {
         UTURN
     }
 
+    public Card() {}
+
     /* constructor class which sets the priority and
     * type of the card (two necessary input values) */
     public Card(CardType type, int priority) {
@@ -43,7 +45,7 @@ public class Card {
             case ROTRIGHT: return 4;
             case ROTLEFT: return 5;
             case UTURN: return 6;
+            default: return -1;
         }
-        return 0;
     }
 }
