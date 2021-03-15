@@ -11,7 +11,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -55,8 +54,9 @@ public class GameScreen implements Screen {
 
     MapLayers layers;
 
-    Robot[] robots;
-    List<Player> players;
+    Map<UUID,Player> players;
+    UUID clientUUID;
+
     public BoardLogic boardLogic;
     GameLogic gameLogic;
 
@@ -101,16 +101,8 @@ public class GameScreen implements Screen {
 
         gameLogic = new GameLogic(this, client);
 
-
-        players = new ArrayList<>();
-        for (Map.Entry<UUID,Player> entry : gameLogic.getPlayers().entrySet()) {
-            players.add(entry.getValue());
-        }
-
-        robots = new Robot[players.size()];
-        for (int i=0;i<robots.length;i++) {
-            robots[i] = players.get(i).getRobot();
-        }
+        players = gameLogic.getPlayers();
+        clientUUID = client.clientUUID;
 
         boardLogic = new BoardLogic(new MatrixMapGenerator().fromTiledMap(tiledMap).getMap(), client.getPlayerList());
 
@@ -149,12 +141,12 @@ public class GameScreen implements Screen {
 
         robotsTable.setDebug(true);
 
-        for (Robot robot : robots) {
-            Image img = new Image(playerTextures[0][0]);
-            img.addListener(new TextTooltip(robot.getDamage() + "", RoboRally.skin));
-            robotsTable.add(img).height(uiWidth);
-            robotsTable.row();
-        }
+        //for (Robot robot : robots) {
+        //    Image img = new Image(playerTextures[0][0]);
+        //    img.addListener(new TextTooltip(robot.getDamage() + "", RoboRally.skin));
+        //    robotsTable.add(img).height(uiWidth);
+        //    robotsTable.row();
+        //}
         stage.addListener(new DragListener() {
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
@@ -184,7 +176,7 @@ public class GameScreen implements Screen {
         button.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new CardSelectScreen(game, players.get(0), thisScreen));
+                game.setScreen(new CardSelectScreen(game, players.get(clientUUID), thisScreen));
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -228,7 +220,7 @@ public class GameScreen implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
         PRTable.reset();
-        for (Card card : players.get(0).getRobot().getProgramRegister()) {
+        for (Card card : players.get(clientUUID).getRobot().getProgramRegister()) {
             Image image = new Image(CardSelectScreen.drawCard(card));
             if (card == null) {
                 image.setColor(Color.GRAY);
@@ -258,11 +250,11 @@ public class GameScreen implements Screen {
         //UI
         stage.getViewport().apply();
 
-        int i = 0;
-        for (Actor robot : robotsTable.getChildren()) {
-            ((TextTooltip) robot.getListeners().get(0)).getActor().setText(robots[i].getDamage());
-            i++;
-        }
+        //int i = 0;
+        //for (Actor robot : robotsTable.getChildren()) {
+        //    ((TextTooltip) robot.getListeners().get(0)).getActor().setText(robots[i].getDamage());
+        //    i++;
+        //}
 
         stage.act();
         stage.draw();
@@ -271,7 +263,8 @@ public class GameScreen implements Screen {
 
     public void drawRobots() {
         clearLayer(playerLayer);
-        for (Robot robot : robots) {
+        for (Player player : players.values()) {
+            Robot robot = player.getRobot();
             TiledMapTileLayer.Cell currentPlayerCell = playerCell;
             if (!robot.getAlive()) {currentPlayerCell = playerDiedCell;}
             if (robot.getWon()) {currentPlayerCell = playerWonCell;}

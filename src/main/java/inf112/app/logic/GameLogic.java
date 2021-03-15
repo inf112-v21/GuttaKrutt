@@ -19,7 +19,7 @@ public class GameLogic {
     GameScreen game;
     int turn;
     Deck deck;
-    Map<UUID, Player> playerList = new HashMap<>();
+    Map<UUID, Player> playerList;
     GameClient client;
     UUID uuid;
 
@@ -79,18 +79,35 @@ public class GameLogic {
 
     public void submit() {
         client.updatePlayer(uuid,playerList.get(uuid));
-        System.out.println(playerList.get(uuid).getRobot().getProgramRegister()[0].getType());
+        Card[] cards = playerList.get(uuid).getRobot().getProgramRegister();
+        for (Card card : cards) {
+            if (card == null) {
+                System.out.println("null");
+            } else {
+                System.out.println(card.getType());
+            }
+        }
     }
 
     /* the main loop of the game which starts a new turn,
     * deals cards to players and asks them to program registers. */
     public void doTurn() {
         playerList = client.getPlayerList();
+        for (Player player : playerList.values()) {
+            Card[] cards = player.getRobot().getProgramRegister();
+            for (Card card : cards) {
+                if (card == null) {
+                    System.out.println("null");
+                } else {
+                    System.out.println(card.getType());
+                }
+            }
+            System.out.println();
+        }
         processCards();
         turn++;
         dealCards();
     }
-
 
     public int getTurn() {
         return turn;
