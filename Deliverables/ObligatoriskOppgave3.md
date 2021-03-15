@@ -3,7 +3,7 @@
 ###Brukerhistorier:
 1) turn system
 
-2) multiplayer
+2) Som spiller vil jeg kunne
 
 3) 
 ###Møtereferater:
