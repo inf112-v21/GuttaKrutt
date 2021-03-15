@@ -19,10 +19,10 @@ public class GameServer {
     boolean gotPackage = false;
 
     public GameServer() throws IOException {
-        this(false);
+        this(false,1);
     }
 
-    public GameServer(boolean serverTesting) throws IOException {
+    public GameServer(boolean serverTesting, int numPlayers) throws IOException {
         server = new Server();
         server.start();
         server.bind(54555, 54777);
@@ -31,7 +31,7 @@ public class GameServer {
         Network.register(server);
         //expectedNumberOfPlayers = inputExpectedPlayers();
         //While developing
-        expectedNumberOfPlayers = 1;
+        expectedNumberOfPlayers = numPlayers;
         Network.NumberOfPlayers numberOfPlayers = new Network.NumberOfPlayers();
 
         //Server listening for connections (clients)
