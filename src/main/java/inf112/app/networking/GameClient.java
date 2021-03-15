@@ -68,7 +68,6 @@ public class GameClient {
                     System.out.println("received player robot");
                     Network.UpdatePlayer player = (Network.UpdatePlayer) object;
                     playerList.put(player.uuid,player.player);
-                    System.out.println(player.player.getRobot().getProgramRegister()[0].getType());
                 }
                 if(object instanceof Network.UpdatePlayers){
                     System.out.println("received player robots");
