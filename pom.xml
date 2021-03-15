@@ -82,7 +82,7 @@
             <archive>
               <manifest>
                 <addClasspath>true</addClasspath>
-                <mainClass>inf112.skeleton.app.Main</mainClass>
+                <mainClass>inf112.app.Main</mainClass>
               </manifest>
             </archive>
           </configuration>
