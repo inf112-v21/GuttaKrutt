@@ -11,10 +11,22 @@ Akseptansekriterier:
   gjør en turn, så skal de kunne se hverandres bevegelser på hver sin skjerm.
   
 Arbeidsoppgaver:
-- Implementere hashmap med playerList value som oppdateres av serveren.
+- Implementere updatePlayer metode i GameClient som sender client data til serveren.
+- Implementere hashmap med uuid key og playerList value som oppdateres av serveren.
+- Implementere at man kan sende cards til serveren og at serveren sender cards tilbake til clienten.
 
 3) 
 ###Møtereferater:
+
+
+10.03 (Onsdag, 12:15-14:00)
+- Lagde en konkret plan for hva som må gjennomføres i denne sprinten
+- Bestemte oss for at møte Torsdag (11.03) utgikk
+
+15.03 (Mandag, 12:00-14:00)
+- Fikk implementert en fungerende multiplayer
+- Bestemte oss for å ta "meta"-deloppgavene på Onsdag (24.03)
+- Skrev noen brukerhistorier og la til "To do" i prosjekttavle
 
 ###Retrospektiv
 

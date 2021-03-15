@@ -107,17 +107,6 @@ public class GameClient {
         }
     }
 
-    public String inputHost(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter host: (Blank for localhost)");
-        String input = scanner.nextLine();
-        if(input == null){
-            return "127.0.0.1";
-        } else {
-            return input;
-        }
-    }
-
     public Client getClient(){
         return client;
     }
@@ -130,6 +119,8 @@ public class GameClient {
         return playersInGame.amount = x;
     }
 
-    public Map<UUID,Player> getPlayerList() { return playerList; }
+    public Map<UUID,Player> getPlayerList() {
+        return playerList;
+    }
 }
 
