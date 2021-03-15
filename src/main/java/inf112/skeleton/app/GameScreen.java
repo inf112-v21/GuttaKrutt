@@ -22,8 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextTooltip;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
+import java.util.Map;
 import java.util.List;
+import java.util.UUID;
 
 public class GameScreen implements Screen {
     Game game;
@@ -89,7 +90,11 @@ public class GameScreen implements Screen {
 
         gameLogic = new GameLogic(playerNumber, this);
 
-        players = gameLogic.playerList;
+
+        players = new ArrayList<>();
+        for (Map.Entry<UUID,Player> entry : gameLogic.playerList.entrySet()) {
+            players.add(entry.getValue());
+        }
 
         robots = new Robot[players.size()];
         for (int i=0;i<robots.length;i++) {
