@@ -34,6 +34,10 @@ Arbeidsoppgaver:
 - Bestemte oss for å ta "meta"-deloppgavene på Onsdag (24.03)
 - Skrev noen brukerhistorier og la til "To do" i prosjekttavle
 
+17.03 (Onsdag, 12:15-14:15)
+- Alle var tilstede
+- Simon lagde nye maps
+
 ###Retrospektiv
 
 ###Teknisk informasjon
