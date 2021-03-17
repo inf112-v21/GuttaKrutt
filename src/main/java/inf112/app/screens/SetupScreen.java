@@ -96,7 +96,7 @@ public class SetupScreen implements Screen {
                 GameServer server = null;
                 GameClient client = null;
                 try {
-                    server = new GameServer(false, (int) robotsList.getSelected());
+                    server = new GameServer(false);
                     server.setMap(selected);
                     client = new GameClient("localhost",true);
                     client.getClient().sendTCP(name.getText());
