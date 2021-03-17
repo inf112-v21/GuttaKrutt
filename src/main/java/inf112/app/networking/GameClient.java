@@ -41,7 +41,7 @@ public class GameClient {
         client.start();
         this.clientTesting = clientTesting;
         this.host = host;
-        client.connect(5000, host, 54555, 54777);
+        client.connect(5000, host, 54555);
 
         Network.register(client);
 
@@ -67,7 +67,6 @@ public class GameClient {
                     System.out.println("received player robot");
                     Network.UpdatePlayer player = (Network.UpdatePlayer) object;
                     playerList.put(player.uuid,player.player);
-                    System.out.println(player.player.getRobot().getProgramRegister()[0].getType());
                 }
                 if(object instanceof Network.UpdatePlayers){
                     System.out.println("received player robots");
@@ -107,17 +106,6 @@ public class GameClient {
         }
     }
 
-    public String inputHost(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter host: (Blank for localhost)");
-        String input = scanner.nextLine();
-        if(input == null){
-            return "127.0.0.1";
-        } else {
-            return input;
-        }
-    }
-
     public Client getClient(){
         return client;
     }
@@ -130,6 +118,8 @@ public class GameClient {
         return playersInGame.amount = x;
     }
 
-    public Map<UUID,Player> getPlayerList() { return playerList; }
+    public Map<UUID,Player> getPlayerList() {
+        return playerList;
+    }
 }
 
