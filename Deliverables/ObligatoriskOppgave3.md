@@ -15,7 +15,13 @@ Arbeidsoppgaver:
 - Implementere hashmap med uuid key og playerList value som oppdateres av serveren.
 - Implementere at man kan sende cards til serveren og at serveren sender cards tilbake til clienten.
 
-3) 
+3) Som spiller vil jeg ha flere kart å spille på slik at jeg får mer variasjon i spillet.
+
+Akseptansekriterier:
+- Gitt at en spiller ser på map selection, så skal det være flere kart å velge fra.
+
+Arbeidsoppgaver:
+- Lage kart i Tiled.
 ###Møtereferater:
 
 
