@@ -104,8 +104,11 @@ public class BoardLogic extends InputAdapter {
                 System.out.println("inf112.skeleton.app.Player has died.");
             }
             if (flag != 0) {
-                robot.setWon(true);
-                System.out.println("inf112.skeleton.app.Player has won.");
+                robot.visitsFlag(x, y);
+                if(robot.getFlagVisits() == 3){
+                    robot.setWon(true);
+                    System.out.println("inf112.skeleton.app.Player has won.");
+                }
             }
         }
     }

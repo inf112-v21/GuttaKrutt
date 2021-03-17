@@ -2,7 +2,12 @@ package inf112.app;
 
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
+
 public class Robot {
+    int flagVisits = 0;
+    ArrayList<Vector2> visitedFlags = new ArrayList<>(3);
+
     boolean alive = true;
     boolean won = false;
 
@@ -45,6 +50,20 @@ public class Robot {
     public void setPos(Vector2 newPos) {pos = newPos;}
 
     public void setPos(int x, int y) { pos = new Vector2(x,y); }
+
+    public void visitsFlag(int x, int y){
+        Vector2 flagPos = new Vector2(x, y);
+        if(!visitedFlags.contains(flagPos)){
+            visitedFlags.add(flagPos);
+            flagVisits++;
+        } else{
+            System.out.println("You already visited this flag!");
+        }
+    }
+
+    public int getFlagVisits(){
+        return flagVisits;
+    }
 
     public boolean getAlive() { return alive; }
 
