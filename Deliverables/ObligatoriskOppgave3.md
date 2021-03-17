@@ -22,6 +22,10 @@ Akseptansekriterier:
 
 Arbeidsoppgaver:
 - Lage kart i Tiled.
+
+4) Som spiller ønsker jeg kun å vinne hvis jeg treffer flaggene i riktig rekkefølge, slik at spillet
+er vanskelig og medfører heder og ære når jeg vinnner.
+   
 ###Møtereferater:
 
 
