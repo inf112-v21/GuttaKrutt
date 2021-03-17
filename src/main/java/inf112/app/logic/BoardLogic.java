@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import inf112.app.Player;
 import inf112.app.Robot;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,6 +23,9 @@ public class BoardLogic extends InputAdapter {
         this.players = players;
         this.map = map;
         this.uuid = uuid;
+        for(Player player : players.values()){
+            setFlagPositions(player.getRobot());
+        }
     }
 
     public int[][][] getMap() { return map; }
@@ -103,9 +107,13 @@ public class BoardLogic extends InputAdapter {
                 robot.setAlive(false);
                 System.out.println("inf112.skeleton.app.Player has died.");
             }
-            if (flag != 0) {
-                robot.setWon(true);
-                System.out.println("inf112.skeleton.app.Player has won.");
+            if (flag != 0 && checkFlags(map[2][x][y], robot)) {
+                robot.getFlagVisits().put(map[2][x][y], true);
+                System.out.println("You got the flag!");
+                if(robot.checkWin()){
+                    robot.setWon(true);
+                    System.out.println("You won!");
+                }
             }
         }
     }
@@ -282,4 +290,29 @@ public class BoardLogic extends InputAdapter {
         movePlayer(robot, x, y);
     }
 
+    public void setFlagPositions(Robot robot){
+        Map<Integer, Boolean> flagPositions = new HashMap<>();
+        for (int i = 0; i < map[2].length; i++){
+            for(int j = 0; j < map[2][i].length; j++){
+                if(map[2][i][j] != 0){
+                    flagPositions.put(map[2][i][j], false);
+                }
+            }
+        }
+        robot.setFlagVisits(flagPositions);
+    }
+
+    public boolean checkFlags(int x, Robot robot){
+        if(x == 55){
+            return true;
+        }
+        else if(x == 63 && robot.getFlagVisits().get(55)){
+            return true;
+        }
+        else if(x == 71 &&robot.getFlagVisits().get(63)){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

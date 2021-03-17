@@ -2,7 +2,11 @@ package inf112.app;
 
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Map;
+
 public class Robot {
+    Map<Integer, Boolean> flagVisits;
+
     boolean alive = true;
     boolean won = false;
 
@@ -45,6 +49,17 @@ public class Robot {
     public void setPos(Vector2 newPos) {pos = newPos;}
 
     public void setPos(int x, int y) { pos = new Vector2(x,y); }
+
+    public boolean checkWin(){
+        return !flagVisits.containsValue(false);
+    }
+    public void setFlagVisits(Map<Integer, Boolean> map){
+        flagVisits = map;
+    }
+
+    public Map<Integer, Boolean> getFlagVisits(){
+        return flagVisits;
+    }
 
     public boolean getAlive() { return alive; }
 
