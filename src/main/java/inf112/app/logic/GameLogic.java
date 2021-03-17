@@ -77,37 +77,64 @@ public class GameLogic {
         return deck;
     }
 
-    public void submit() {
+    public void ready() {
+        playerList.get(uuid).setReady(true);
         client.updatePlayer(uuid,playerList.get(uuid));
-        Card[] cards = playerList.get(uuid).getRobot().getProgramRegister();
-        for (Card card : cards) {
-            if (card == null) {
-                System.out.println("null");
-            } else {
-                System.out.println(card.getType());
+
+        loopTillOthersAreReady();
+        //confirmOthersAreReady(0);
+
+
+        processCards();
+        turn++;
+        dealCards();
+        try {
+            Thread.sleep( 2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        playerList.get(uuid).setReady(false);
+        client.updatePlayer(uuid,playerList.get(uuid));
+    }
+
+    public void loopTillOthersAreReady() {
+        boolean allPlayerReady = false;
+        while(!allPlayerReady) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            allPlayerReady = true;
+            for (Player player : playerList.values()) {
+                if (!player.getReady()) {
+                    allPlayerReady = false;
+                }
             }
         }
     }
 
-    /* the main loop of the game which starts a new turn,
-    * deals cards to players and asks them to program registers. */
-    public void doTurn() {
-        playerList = client.getPlayerList();
+/*
+    public void confirmOthersAreReady(int secondsPassed) {
+        boolean allPlayerReady = true;
         for (Player player : playerList.values()) {
-            Card[] cards = player.getRobot().getProgramRegister();
-            for (Card card : cards) {
-                if (card == null) {
-                    System.out.println("null");
-                } else {
-                    System.out.println(card.getType());
-                }
+            if(!player.getReady()) {
+                allPlayerReady = false;
             }
-            System.out.println();
         }
-        processCards();
-        turn++;
-        dealCards();
+        if(!allPlayerReady) {
+            secondsPassed++;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (secondsPassed < 30) {
+                confirmOthersAreReady(secondsPassed);
+            }
+        }
     }
+ */
 
     public int getTurn() {
         return turn;

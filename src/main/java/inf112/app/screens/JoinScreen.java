@@ -26,7 +26,7 @@ public class JoinScreen implements Screen {
 
         stage = new Stage(new ScreenViewport());
 
-        TextField host = new TextField("host", RoboRally.skin);
+        TextField host = new TextField("localhost", RoboRally.skin);
         host.setWidth(Gdx.graphics.getWidth()/2);
         host.setPosition(Gdx.graphics.getWidth()/2-host.getWidth()/2,Gdx.graphics.getHeight()/2);
         stage.addActor(host);

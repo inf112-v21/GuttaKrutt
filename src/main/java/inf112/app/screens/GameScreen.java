@@ -186,6 +186,7 @@ public class GameScreen implements Screen {
 
         controlsTable.add(button);
 
+        /*
         button = new TextButton("Do Turn",RoboRally.skin);
         button.addListener(new InputListener(){
             @Override
@@ -207,6 +208,17 @@ public class GameScreen implements Screen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 gameLogic.submit();
             }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+         */
+
+        button = new TextButton("Ready",RoboRally.skin);
+        button.addListener(new InputListener(){
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {gameLogic.ready(); }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 return true;
