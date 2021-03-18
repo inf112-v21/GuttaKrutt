@@ -184,6 +184,7 @@ public class GameScreen implements Screen {
 
         controlsTable.add(button);
 
+        /*
         button = new TextButton("Do Turn",RoboRally.skin);
         button.addListener(new InputListener(){
             @Override
@@ -205,6 +206,20 @@ public class GameScreen implements Screen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 gameLogic.submit();
             }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+         */
+
+        button = new TextButton("Ready",RoboRally.skin);
+        button.addListener(new InputListener(){
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                Thread thread = new Thread(() -> gameLogic.ready());
+                thread.start();
+                }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 return true;
@@ -264,7 +279,11 @@ public class GameScreen implements Screen {
 
             currentPlayerCell.setRotation(robot.getRotation());
 
+            //System.out.println("player : " + player.getName() + " rot: " + currentPlayerCell.getRotation());
             playerLayer.setCell((int) robot.getPos().x,(int) robot.getPos().y,currentPlayerCell);
+            //System.out.println(playerLayer.getCell((int) robot.getPos().x,(int) robot.getPos().y).getRotation());
+            //System.out.println("player: " + player.getName() + " rot: " + robot.getRotation());
+            //System.out.println(players.values());
         }
     }
 
