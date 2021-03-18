@@ -1,5 +1,6 @@
 package inf112.app;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.Map;
@@ -17,6 +18,8 @@ public class Robot {
     int damageTokens = 0;
     Vector2 pos = new Vector2(0,0);
     int rotation = 0;
+
+    int[] textureRegionIndex = new int[]{0,0};
 
     public Robot() {}
     
@@ -79,5 +82,11 @@ public class Robot {
 
     public void rotate(int rot) {
         rotation = Math.floorMod(rotation + rot,4);
+    }
+
+    public void setTexture(int[] indexes) { textureRegionIndex = indexes; }
+
+    public int[] getTexture() {
+        return textureRegionIndex;
     }
 }

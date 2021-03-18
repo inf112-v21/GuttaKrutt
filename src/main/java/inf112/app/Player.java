@@ -22,6 +22,8 @@ public class Player {
         return robot;
     }
 
+    public void setRobot(Robot robot) { this.robot = robot; }
+
     public Deck getCards() { return cardList; }
 
     public void setCards(Deck deck) { cardList = deck; }

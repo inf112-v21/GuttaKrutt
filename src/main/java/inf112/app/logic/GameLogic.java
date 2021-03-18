@@ -1,5 +1,6 @@
 package inf112.app.logic;
 
+import com.badlogic.gdx.utils.Array;
 import inf112.app.Card;
 import inf112.app.Deck;
 import inf112.app.Player;
@@ -7,11 +8,7 @@ import inf112.app.Robot;
 import inf112.app.networking.GameClient;
 import inf112.app.screens.GameScreen;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /* controls the main loop of the game and executes the game rules */
 public class GameLogic {
@@ -22,6 +19,8 @@ public class GameLogic {
     Map<UUID, Player> playerList;
     GameClient client;
     UUID uuid;
+
+    Card currentCard;
 
     public GameLogic() {this(null,null);}
 
@@ -105,6 +104,7 @@ public class GameLogic {
             System.out.println();
         }
         processCards();
+        currentCard = null;
         turn++;
         dealCards();
     }
@@ -125,46 +125,64 @@ public class GameLogic {
         }
     }
 
-    private void processCards() {
-        Map<UUID,List<Card>> cards = new HashMap<>();
-        for (Map.Entry<UUID,Player> entry : playerList.entrySet()) {
-            List<Card> programRegister = new ArrayList<>();
-            for (Card card : entry.getValue().getRobot().getProgramRegister()) {
-                if (card != null) { programRegister.add(card); }
-            }
-            cards.put(entry.getKey(),programRegister);
-        }
+    public Card getCurrentCard() { return currentCard; }
 
-        while(true) {
-            UUID nextRobot = UUID.randomUUID();
-            int highPriority = 0;
-            for (Map.Entry<UUID,List<Card>> entry : cards.entrySet()) {
-                int priority;
-                if (entry.getValue().size() == 0) {
-                    priority = 0;
-                } else {
-                    priority = entry.getValue().get(0).getPriority();
+    /**
+     * When used in a sort, sorts a list of players by the priority of a card in their program register, starting with the biggest.
+     * Which program registers to compare is inputted in the constructor.
+     */
+    private class CardComparator implements Comparator<Player> {
+        int i;
+
+        public CardComparator(int i) { this.i = i; }
+
+        @Override
+        public int compare(Player p1, Player p2) {
+            Card card1 = p1.getRobot().getProgramRegister()[i];
+            Card card2 = p2.getRobot().getProgramRegister()[i];
+            if (card1 == null || card2 == null) {
+                if (card1 != null) {
+                    return 1;
                 }
-
-                if (highPriority < priority) {
-                    highPriority = priority;
-                    nextRobot = entry.getKey();
+                if (card2 != null) {
+                    return -1;
                 }
+                return 0;
             }
-            if (highPriority == 0) {
-                break;
-            }
-
-            Card card = cards.get(nextRobot).remove(0);
-            useCard(playerList.get(nextRobot).getRobot(),card);
-        }
-
-        for (Player player : playerList.values()) {
-            player.setCards(new Deck());
+            return card2.getPriority() - card1.getPriority();
         }
     }
 
+    /**
+     * Executes the cards in the program register
+     */
+    private void processCards() {
+        for (int i=0;i<5;i++) {
+            Array<Player> queue = new Array<>();
+            for (Player player : playerList.values()) {
+                queue.add(player);
+                player.setCards(new Deck());
+            }
+            queue.sort(new CardComparator(i));
+            for (Player player : queue) {
+                Card card = player.getRobot().getProgramRegister()[i];
+                if (card != null) {
+                    useCard(player.getRobot(), card);
+                    if (i < 9 - player.getRobot().getDamage()) {
+                        player.getRobot().getProgramRegister()[i] = null;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Uses a specific card.
+     * @param robot Robot that the card should be used on
+     * @param card Card to be executed
+     */
     private void useCard(Robot robot, Card card) {
+        currentCard = card;
         switch(card.getType()) {
             case MOVE1: game.boardLogic.move(robot,1); break;
             case MOVE2: game.boardLogic.move(robot,2); break;
