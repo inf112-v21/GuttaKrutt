@@ -98,10 +98,6 @@ public class BoardLogic extends InputAdapter {
         return null;
     }
 
-    public void pushRobot(Robot robot){
-
-    }
-
     public boolean[] getWall(int x, int y) {
         boolean outSideBorder = (x >= map[0].length || x < 0 || y >= map[0][0].length || y < 0);
         if (!outSideBorder) {

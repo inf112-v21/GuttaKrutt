@@ -47,7 +47,9 @@ at robot 2 blir dyttet i motsatt retning av der robot 1 kom fra.
   robot 1, slik at verken av robotene beveger seg.
   
 Arbeidsoppgaver:
-- Implementere robot kollisjon
+- Implementere kode i movePlayer() i BoardLogic som sjekker om den nye posisjonen inneholder
+en robot.
+- Implementere kode i movePlayer() som kjører movePlayer() rekursivt på roboten som blir dyttet.
    
 ###Møtereferater:
 
