@@ -218,7 +218,11 @@ public class GameScreen implements Screen {
         button = new TextButton("Ready",RoboRally.skin);
         button.addListener(new InputListener(){
             @Override
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {gameLogic.ready(); }
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                Thread thread = new Thread(() -> gameLogic.ready());
+                thread.start();
+                //gameLogic.ready();
+                }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 return true;
