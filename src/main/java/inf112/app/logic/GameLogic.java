@@ -95,6 +95,8 @@ public class GameLogic {
         }
         playerList.get(uuid).setReady(false);
         client.updatePlayer(uuid,playerList.get(uuid));
+        for (Player player : playerList.values())
+            System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
     }
 
     public void loopTillOthersAreReady() {
