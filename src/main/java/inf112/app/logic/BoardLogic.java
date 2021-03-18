@@ -102,6 +102,7 @@ public class BoardLogic extends InputAdapter {
         } else {
             int hole = map[1][x][y];
             int flag = map[2][x][y];
+            int enemyRobot = map[3][x][y];
 
             if (hole != 0) {
                 robot.setAlive(false);
@@ -115,6 +116,11 @@ public class BoardLogic extends InputAdapter {
                     System.out.println("You won!");
                 }
             }
+            if (enemyRobot != 0){
+                Robot enemy = checkForRobot(x, y);
+                //Push enemy robot
+                pushRobot(enemy);
+            }
         }
     }
     public Robot checkForRobot(int x, int y) {
@@ -124,6 +130,10 @@ public class BoardLogic extends InputAdapter {
             }
         }
         return null;
+    }
+
+    public void pushRobot(Robot robot){
+
     }
 
     public boolean[] getWall(int x, int y) {
@@ -309,10 +319,15 @@ public class BoardLogic extends InputAdapter {
         else if(x == 63 && robot.getFlagVisits().get(55)){
             return true;
         }
-        else if(x == 71 &&robot.getFlagVisits().get(63)){
+        else if(x == 71 && robot.getFlagVisits().get(63)){
+            return true;
+        }
+        else if(x == 79 && robot.getFlagVisits().get(71)){
             return true;
         } else {
             return false;
         }
     }
+
+
 }
