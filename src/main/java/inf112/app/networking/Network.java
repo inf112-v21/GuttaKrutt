@@ -1,5 +1,7 @@
 package inf112.app.networking;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
@@ -36,6 +38,7 @@ public class Network {
         kryo.register(Card.class);
         kryo.register(Card.CardType.class);
         kryo.register(Card[].class);
+        kryo.register(int[].class);
         kryo.register(com.badlogic.gdx.math.Vector2.class);
         kryo.register(RegisterName.class);
         kryo.register(UpdateNames.class);

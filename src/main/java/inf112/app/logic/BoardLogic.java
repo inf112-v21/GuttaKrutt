@@ -51,7 +51,7 @@ public class BoardLogic extends InputAdapter {
 
 
         if (keyCode == Input.Keys.R) {
-            robot = new Robot();
+            players.get(uuid).setRobot(new Robot());
             return true;
         }
 

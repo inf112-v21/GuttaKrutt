@@ -96,6 +96,10 @@ public class GameClient {
         }
     }
 
+    public void updatePlayer() {
+        updatePlayer(clientUUID,playerList.get(clientUUID));
+    }
+
     public void updatePlayer(UUID uuid, Player player){
         if(!client.isConnected()){
             System.out.println("You are not connected to a server!");
