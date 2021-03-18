@@ -83,6 +83,7 @@ public class GameServer {
 
     public static void main(String[] args) throws IOException {
         GameServer server = new GameServer();
+    }
 
     public void setMap(String mapName) {
         this.mapName = mapName;
