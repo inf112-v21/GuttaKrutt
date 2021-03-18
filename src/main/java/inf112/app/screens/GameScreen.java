@@ -221,7 +221,6 @@ public class GameScreen implements Screen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 Thread thread = new Thread(() -> gameLogic.ready());
                 thread.start();
-                //gameLogic.ready();
                 }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
