@@ -50,7 +50,23 @@ Arbeidsoppgaver:
 - Implementere kode i movePlayer() i BoardLogic som sjekker om den nye posisjonen inneholder
 en robot.
 - Implementere kode i movePlayer() som kjører movePlayer() rekursivt på roboten som blir dyttet.
-   
+
+6) som kort vil jeg ha egen prioritet slik at rekkefølgen til flere kort
+   som tilhører forskjellige spillere alltid er bestemt.
+
+   Akseptansekriterier:
+   - Gitt at en spiller har valgt kortene sine, skal spillerens kort brukes
+     i riktig rekkefølge (i forhold til spillerens andre kort).
+   - Gitt at alle spillere har valgt sine kort, skal kortene på hvert steg
+     brukes i riktig rekkefølge i forhold til prioriteten til andre spillernes
+     kort.
+
+   Arbeidsoppgaver:
+   - Implementere en metode i GameLogic som setter spillerens registers i riktig
+     rekkefølge.
+   - Implementere en metode i GameLogic som sammenligner spillernes første, andre,
+     tredje,... registers og setter de i riktig rekkefølge.
+     
 ###Møtereferater:
 
 
@@ -66,10 +82,13 @@ en robot.
 17.03 (Onsdag, 12:15-14:15)
 - Alle var tilstede
 - Simon lagde nye maps
+- Sassan feilsøkte egen bransje og begynte på kort prioritering
 
 18.03 (Torsdag 12:00-14:00)
 - Alle var tilstede
 - Simon jobbet med robot kollisjon
+- Sassan jobbet med kort prioritering (Ørjan fikk det til) og begynte på testing
+
 ###Retrospektiv
 
 ###Teknisk informasjon
