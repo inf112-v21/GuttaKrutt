@@ -297,8 +297,8 @@ public class GameScreen implements Screen {
     }
 
     public void clearLayer(TiledMapTileLayer layer) {
-        for (int i=0;i<5;i++) {
-            for (int j=0;j<5;j++) {
+        for (int i=0;i<mapWidth;i++) {
+            for (int j=0;j<mapHeight;j++) {
                 layer.setCell(i,j,null);
             }
         }

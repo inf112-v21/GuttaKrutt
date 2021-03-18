@@ -53,14 +53,14 @@ public class GameServer {
                         UUID uuid = UUID.randomUUID();
                         playerList.put(uuid,new Player((String) object));
                         connectionList.put(connection.getID(),uuid);
-                        server.sendToTCP(connection.getID(),uuid);
+                        connection.sendTCP(uuid);
 
                         Network.UpdatePlayers players = new Network.UpdatePlayers();
                         players.playerList = playerList;
                         server.sendToAllTCP(players);
                         Network.MapName map = new Network.MapName();
                         map.mapName = mapName;
-                        server.sendToTCP(connection.getID(), map);
+                        connection.sendTCP(map);
                     }
                 }
                 if(object instanceof Network.UpdatePlayer){
@@ -83,7 +83,6 @@ public class GameServer {
 
     public static void main(String[] args) throws IOException {
         GameServer server = new GameServer();
-    }
 
     public void setMap(String mapName) {
         this.mapName = mapName;

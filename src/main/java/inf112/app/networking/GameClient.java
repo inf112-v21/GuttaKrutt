@@ -17,12 +17,8 @@ import inf112.app.Player;
  */
 public class GameClient {
 
-    private static Scanner scanner = new Scanner(System.in);
     public UUID clientUUID;
     private Client client;
-    private Network.NumberOfPlayers playersInGame = new Network.NumberOfPlayers();
-    //private Player player;
-    private static Integer expectedPlayers = 1;
     public boolean gotPackage = false;
     public boolean clientTesting;
     private String host;
@@ -58,12 +54,6 @@ public class GameClient {
                 if (object instanceof UUID) {
                     clientUUID = (UUID) object;
                 }
-                if (object instanceof Network.NumberOfPlayers) {
-                    System.out.println("received playeramount");
-                    Network.NumberOfPlayers numberOfPlayers = (Network.NumberOfPlayers) object;
-                    setNumberOfPlayers(numberOfPlayers.amount);
-                    System.out.println(playersInGame.amount);
-                }
                 if(object instanceof Network.UpdatePlayer){
                     System.out.println("received player robot");
                     Network.UpdatePlayer player = (Network.UpdatePlayer) object;
@@ -81,19 +71,6 @@ public class GameClient {
                 }
             }
         });
-
-        //Starting the game if enough players joined
-        while (client.isConnected()) {
-            if(clientTesting) {
-                break;
-            }
-            else if (playersInGame.amount != null) {
-                if (playersInGame.amount == expectedPlayers) {
-                    System.out.println("using playeramount");
-                    break;
-                }
-            }
-        }
     }
 
     public void updatePlayer() {
@@ -111,29 +88,12 @@ public class GameClient {
         }
     }
 
-    public String inputHost(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter host: (Blank for localhost)");
-        String input = scanner.nextLine();
-        if(input == null){
-            return "127.0.0.1";
-        } else {
-            return input;
-        }
-    }
-
     public Client getClient(){
         return client;
     }
 
-    public Network.NumberOfPlayers getNumberOfPlayers () {
-        return playersInGame;
+    public Map<UUID,Player> getPlayerList() {
+        return playerList;
     }
-
-    public Integer setNumberOfPlayers (Integer x){
-        return playersInGame.amount = x;
-    }
-
-    public Map<UUID,Player> getPlayerList() { return playerList; }
 }
 

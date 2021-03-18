@@ -14,6 +14,7 @@ import inf112.app.Robot;
 import inf112.app.logic.BoardLogic;
 import inf112.app.logic.GameLogic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -49,6 +50,7 @@ public class Network {
         kryo.register(RunGame.class);
         kryo.register(MapName.class);
         kryo.register(TestPacket.class);
+        kryo.register(ArrayList.class);
     }
 
     //Field for registering the name of a client
