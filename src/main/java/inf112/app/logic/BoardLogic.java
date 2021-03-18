@@ -80,6 +80,10 @@ public class BoardLogic extends InputAdapter {
             default: direction = 0; break;
         }
 
+        Robot enemy = checkForRobot(newX, newY);
+        if(enemy != null){
+            movePlayer(enemy, (newX-oldX), (newY-oldY));
+        }
         if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4]) {
             robot.setPos(new Vector2(newX, newY));
 
@@ -102,7 +106,6 @@ public class BoardLogic extends InputAdapter {
         } else {
             int hole = map[1][x][y];
             int flag = map[2][x][y];
-            int enemyRobot = map[3][x][y];
 
             if (hole != 0) {
                 robot.setAlive(false);
@@ -115,11 +118,6 @@ public class BoardLogic extends InputAdapter {
                     robot.setWon(true);
                     System.out.println("You won!");
                 }
-            }
-            if (enemyRobot != 0){
-                Robot enemy = checkForRobot(x, y);
-                //Push enemy robot
-                pushRobot(enemy);
             }
         }
     }
