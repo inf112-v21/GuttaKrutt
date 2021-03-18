@@ -67,6 +67,9 @@ en robot.
 - Alle var tilstede
 - Simon lagde nye maps
 
+18.03 (Torsdag 12:00-14:00)
+- Alle var tilstede
+- Simon jobbet med robot kollisjon
 ###Retrospektiv
 
 ###Teknisk informasjon
