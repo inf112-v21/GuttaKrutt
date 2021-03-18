@@ -1,5 +1,7 @@
 package inf112.app.networking;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
@@ -12,6 +14,7 @@ import inf112.app.Robot;
 import inf112.app.logic.BoardLogic;
 import inf112.app.logic.GameLogic;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -36,6 +39,7 @@ public class Network {
         kryo.register(Card.class);
         kryo.register(Card.CardType.class);
         kryo.register(Card[].class);
+        kryo.register(int[].class);
         kryo.register(com.badlogic.gdx.math.Vector2.class);
         kryo.register(RegisterName.class);
         kryo.register(UpdateNames.class);
@@ -46,6 +50,7 @@ public class Network {
         kryo.register(RunGame.class);
         kryo.register(MapName.class);
         kryo.register(TestPacket.class);
+        kryo.register(ArrayList.class);
     }
 
     //Field for registering the name of a client

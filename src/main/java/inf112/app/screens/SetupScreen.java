@@ -61,14 +61,6 @@ public class SetupScreen implements Screen {
 
         selected = (String) list.getSelected();
 
-        SelectBox robotsList = new SelectBox(RoboRally.skin);
-        Array<Integer> numbers = new Array();
-        numbers.addAll(new Integer[]{1,2,3,4,5,6,7,8},0,8);
-
-        robotsList.setItems(numbers);
-        table.add(robotsList);
-
-
         mapLoader = new TmxMapLoader();
         tiledMap = mapLoader.load(selected);
 
@@ -82,7 +74,7 @@ public class SetupScreen implements Screen {
         mapPort = new StretchViewport(5, 5, camera);
         mapPort.setScreenBounds(Gdx.graphics.getWidth()-500, 300, 300, 300);
 
-        TextField name = new TextField("name", RoboRally.skin);
+        TextField name = new TextField("", RoboRally.skin);
         name.setWidth(Gdx.graphics.getWidth()/2);
         name.setPosition(Gdx.graphics.getWidth()/2-name.getWidth()/2,Gdx.graphics.getHeight()/2-100);
         stage.addActor(name);
@@ -96,7 +88,7 @@ public class SetupScreen implements Screen {
                 GameServer server = null;
                 GameClient client = null;
                 try {
-                    server = new GameServer(false, (int) robotsList.getSelected());
+                    server = new GameServer();
                     server.setMap(selected);
                     client = new GameClient("localhost",true);
                     client.getClient().sendTCP(name.getText());

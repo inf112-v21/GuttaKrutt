@@ -1,8 +1,13 @@
 package inf112.app;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Map;
+
 public class Robot {
+    Map<Integer, Boolean> flagVisits;
+
     boolean alive = true;
     boolean won = false;
 
@@ -13,6 +18,8 @@ public class Robot {
     int damageTokens = 0;
     Vector2 pos = new Vector2(0,0);
     int rotation = 0;
+
+    int[] textureRegionIndex = new int[]{0,0};
 
     public Robot() {}
     
@@ -46,6 +53,17 @@ public class Robot {
 
     public void setPos(int x, int y) { pos = new Vector2(x,y); }
 
+    public boolean checkWin(){
+        return !flagVisits.containsValue(false);
+    }
+    public void setFlagVisits(Map<Integer, Boolean> map){
+        flagVisits = map;
+    }
+
+    public Map<Integer, Boolean> getFlagVisits(){
+        return flagVisits;
+    }
+
     public boolean getAlive() { return alive; }
 
     public void setAlive(boolean newAlive) {
@@ -64,5 +82,11 @@ public class Robot {
 
     public void rotate(int rot) {
         rotation = Math.floorMod(rotation + rot,4);
+    }
+
+    public void setTexture(int[] indexes) { textureRegionIndex = indexes; }
+
+    public int[] getTexture() {
+        return textureRegionIndex;
     }
 }

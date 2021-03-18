@@ -28,10 +28,10 @@ public class GameServer {
     public boolean run = false;
 
     public GameServer() throws IOException {
-        this(false,1);
+        this(false);
     }
 
-    public GameServer(boolean serverTesting, int numPlayers) throws IOException {
+    public GameServer(boolean serverTesting) throws IOException {
         server = new Server();
         server.start();
         server.bind(54555);
@@ -41,10 +41,6 @@ public class GameServer {
 
         playerList = new HashMap<>();
         connectionList = new HashMap<>();
-        //expectedNumberOfPlayers = inputExpectedPlayers();
-        //While developing
-        expectedNumberOfPlayers = numPlayers;
-        Network.NumberOfPlayers numberOfPlayers = new Network.NumberOfPlayers();
 
         //Server listening for connections (clients)
         server.addListener(new Listener() {
@@ -57,22 +53,15 @@ public class GameServer {
                         UUID uuid = UUID.randomUUID();
                         playerList.put(uuid,new Player((String) object));
                         connectionList.put(connection.getID(),uuid);
-                        server.sendToTCP(connection.getID(),uuid);
+                        connection.sendTCP(uuid);
 
                         Network.UpdatePlayers players = new Network.UpdatePlayers();
                         players.playerList = playerList;
                         server.sendToAllTCP(players);
                         Network.MapName map = new Network.MapName();
                         map.mapName = mapName;
-                        server.sendToTCP(connection.getID(), map);
+                        connection.sendTCP(map);
                     }
-                }
-
-                if(server.getConnections().length == expectedNumberOfPlayers && !playerCountSent) {
-                    playerCountSent = true;
-                    numberOfPlayers.amount = expectedNumberOfPlayers;
-                    server.sendToAllTCP(numberOfPlayers);
-                    System.out.println("packet sent");
                 }
                 if(object instanceof Network.UpdatePlayer){
                     System.out.println("Received player update");
@@ -91,12 +80,6 @@ public class GameServer {
     }
 
     public Server getServer() { return server; }
-
-    public Integer inputExpectedPlayers(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter expected number of players:");
-        return scanner.nextInt();
-    }
 
     public static void main(String[] args) throws IOException {
         GameServer server = new GameServer();
