@@ -26,6 +26,31 @@ Arbeidsoppgaver:
 4) Som spiller ønsker jeg kun å vinne hvis jeg treffer flaggene i riktig rekkefølge, slik at spillet
 er vanskelig og medfører heder og ære når jeg vinnner.
    
+Akseptansekriterier:
+- Gitt at det er 0 < x < 5 flagg på kartet, så må en spiller besøke flaggene i riktig rekkefølge
+for å vinne spillet.
+  
+Arbeidsoppgaver:
+- Implementere hashmap flagVisits i Robot som holder styr på hvilke flagg spilleren har besøkt.
+- Implementere metode checkFlag() i BoardLogic som sjekker f.eks at robot har besøkt flagg 1 og 2 før den kan få nr 3.
+- Implementere metode setFlagPositions() i BoardLogic som fyller ut flagVisits med riktig mengde flagg
+på starten av spillet.
+- Implementere checkWin() i Robot som sjekker om roboten har tatt alle flaggene.
+
+5) Som spiller ønsker jeg at jeg kan dytte andre roboter når jeg kolliderer med dem, slik at jeg
+kan ødelegge for de andre spillerene.
+   
+Akseptansekriterier:
+- Gitt at robot 1 beveger seg inn i ruten der robot 2 står, skal det skje en kollisjon som gjør
+at robot 2 blir dyttet i motsatt retning av der robot 1 kom fra.
+- Gitt at robot 2 ville blitt dyttet inn i en vegg, skal robot 2 oppføre seg som en vegg for
+  robot 1, slik at verken av robotene beveger seg.
+  
+Arbeidsoppgaver:
+- Implementere kode i movePlayer() i BoardLogic som sjekker om den nye posisjonen inneholder
+en robot.
+- Implementere kode i movePlayer() som kjører movePlayer() rekursivt på roboten som blir dyttet.
+   
 ###Møtereferater:
 
 

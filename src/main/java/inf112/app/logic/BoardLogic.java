@@ -30,38 +30,6 @@ public class BoardLogic extends InputAdapter {
 
     public int[][][] getMap() { return map; }
 
-    public boolean keyUp(int keyCode) {
-        Robot robot = players.get(uuid).getRobot();
-        if (keyCode == Input.Keys.LEFT || keyCode == Input.Keys.A) {
-            robot.rotate(1);
-            return true;
-        }
-        if (keyCode == Input.Keys.RIGHT || keyCode == Input.Keys.D) {
-            robot.rotate(-1);
-            return true;
-        }
-        if (keyCode == Input.Keys.DOWN || keyCode == Input.Keys.S) {
-            moveBack(robot);
-            return true;
-        }
-        if (keyCode == Input.Keys.UP || keyCode == Input.Keys.W) {
-            move(robot,1);
-            return true;
-        }
-        if (keyCode == Input.Keys.Q) {
-            robot.rotate(2);
-            return true;
-        }
-
-
-        if (keyCode == Input.Keys.R) {
-            robot = new Robot();
-            return true;
-        }
-
-        return false;
-    }
-
     public void movePlayer(Robot robot, int x, int y) {
         Vector2 oldPos = robot.getPos();
         int oldX = (int) oldPos.x;
@@ -80,7 +48,11 @@ public class BoardLogic extends InputAdapter {
             default: direction = 0; break;
         }
 
-        if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4]) {
+        Robot enemy = checkForRobot(newX, newY);
+        if(enemy != null){
+            movePlayer(enemy, (newX-oldX), (newY-oldY));
+        }
+        if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4] && checkForRobot(newX, newY) == null) {
             robot.setPos(new Vector2(newX, newY));
 
             checkTile(robot);
@@ -309,10 +281,15 @@ public class BoardLogic extends InputAdapter {
         else if(x == 63 && robot.getFlagVisits().get(55)){
             return true;
         }
-        else if(x == 71 &&robot.getFlagVisits().get(63)){
+        else if(x == 71 && robot.getFlagVisits().get(63)){
+            return true;
+        }
+        else if(x == 79 && robot.getFlagVisits().get(71)){
             return true;
         } else {
             return false;
         }
     }
+
+
 }
