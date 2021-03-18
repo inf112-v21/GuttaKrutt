@@ -88,6 +88,7 @@ en robot.
 - Alle var tilstede
 - Simon jobbet med robot kollisjon
 - Sassan jobbet med kort prioritering (Ørjan fikk det til) og begynte på testing
+- Ørjan jobbet med å vise hvilket kort som blir spilt
 
 ###Retrospektiv
 
