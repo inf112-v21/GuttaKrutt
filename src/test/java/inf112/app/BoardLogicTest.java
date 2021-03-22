@@ -1,5 +1,6 @@
 package inf112.app;
 
+import com.badlogic.gdx.math.Vector2;
 import inf112.app.logic.BoardLogic;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,8 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class BoardLogicTest {
 
@@ -117,23 +117,57 @@ public class BoardLogicTest {
         }
         boardLogic.laserSpawner();
 
+        assertEquals(0, map[3][2][4]);
         assertEquals(0,map[4][1][4]);
         /*assertEquals(0,map[4][4][3]);
         assertEquals(0,map[4][3][0]);
         assertEquals(0,map[4][0][1]);*/
     }
 
-    //@Test
+    @Test
     public void PlayerTakesDamageWhenMovingIntoLaser() {
-        Map<UUID,Player> players = new HashMap<>();
-        Player player = new Player();
-        players.put(UUID.randomUUID(),player);
-        SetUpEmptyMap(players);
-        map[5][4][2] = 46;
-        player.getRobot().setPos(2,1);
-        boardLogic.movePlayer(player.getRobot(),2,2);
+        for(Player player : players.values()) {
+            //Setting up laserwall and spawns laser
+            map[5][4][2] = 46;
+            boardLogic.laserSpawner();
 
-        assertEquals(9,player.getRobot().getDamage());
+            //Placing player one tile below laser and checking that there is zero damage
+            player.getRobot().setPos(2, 1);
+            assertEquals(0, player.getRobot().getDamage());
+
+            //Moving into laser and checking if robot took damage
+            boardLogic.movePlayer(player.getRobot(), 0, 1);
+            assertEquals(1, player.getRobot().getDamage());
+        }
+    }
+
+    @Test
+    public void playerDiesIfMovingIntoLaserTenTimesTest(){
+        for(Player player : players.values()) {
+            //Setting up laserwall and spawns laser
+            map[5][4][2] = 46;
+            boardLogic.laserSpawner();
+
+            //Placing player one tile below laser and checking that there is zero damage
+            player.getRobot().setPos(2, 1);
+            assertEquals(0, player.getRobot().getDamage());
+            int playerDamage = 0;
+
+            //Moving into laser ten times and asserting that the player has expected number
+            //of damage tokens
+            for(int i = 0; i < 20; i++) {
+                if(i % 2 == 0){
+                    playerDamage++;
+                    boardLogic.movePlayer(player.getRobot(), 0, 1);
+                    assertEquals(playerDamage, player.getRobot().getDamage());
+                }
+                else
+                    boardLogic.movePlayer(player.getRobot(), 0, -1);
+            }
+            //Checking if player has max damage tokens, in which case the player should be dead
+            assertEquals(10, player.getRobot().getDamage());
+            assertFalse(player.getRobot().getAlive());
+        }
     }
 
     @Test
@@ -240,6 +274,62 @@ public class BoardLogicTest {
 
             //Now the player should have won
             assertTrue(player.getRobot().getWon());
+        }
+    }
+
+    @Test
+    public void playerCollisionTest(){
+        Map<UUID,Player> players = new HashMap<>();
+        for(int i=0; i<2; i++)
+            players.put(UUID.randomUUID(),new Player());
+        SetUpEmptyMap(players);
+
+        int i = 0;
+        //Placing player1 at pos = (1,2) and player2 at pos = (2,2)
+        for(Player player : players.values()){
+            if(i==0){
+                player.getRobot().setPos(1,2);
+            }
+            if(i==1) {
+                player.getRobot().setPos(2, 2);
+            }
+            i++;
+        }
+
+        i = 0;
+        //Player1 moves into the tile player2 is in (2,2), which should push player2
+        //from pos (2,2) to (3,2)
+        for(Player player : players.values()){
+            if(i==0){
+                boardLogic.movePlayer(player.getRobot(), 1,0);
+            }
+            i++;
+        }
+
+        //Expected position for player1
+        int expected1X = 2;
+        int expected1Y = 2;
+        //Expected position for player2
+        int expected2X = 3;
+        int expected2Y = 2;
+
+        i=0;
+        for(Player player : players.values()){
+            if(i==0) {
+                //Checking X value before collision is wrong
+                assertEquals(false, player.getRobot().getX() == 1);
+                //Checking new X value after collision is right
+                assertEquals(expected1X, player.getRobot().getX());
+                assertEquals(expected1Y, player.getRobot().getY());
+            }
+            if(i==1) {
+                //Checking X value before collision is wrong
+                assertEquals(false, player.getRobot().getX() == 2);
+                //Checking new X value after collision is right
+                assertEquals(expected2X, player.getRobot().getX());
+                assertEquals(expected2Y, player.getRobot().getY());
+            }
+            i++;
         }
     }
 }
