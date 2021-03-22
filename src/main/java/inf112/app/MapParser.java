@@ -16,7 +16,7 @@ import java.util.Map;
  * Generates an int[][][] and Map<String,int[][]> from either a .tmx
  * file (from Tiled) or a TiledMap object.
  */
-public class MatrixMapGenerator {
+public class MapParser {
     int[][][] matrixMap;
     Map<String,int[][]> hashMap = new HashMap<>();
 
@@ -37,7 +37,7 @@ public class MatrixMapGenerator {
      * @param fileName Path to the file
      * @return Returns itself, so it can be easily chained into a getMap() function.
      */
-    public MatrixMapGenerator fromFile(String fileName) {
+    public MapParser fromFile(String fileName) {
         try {
             File tmxMap = new File(fileName); //Loads file in as File object.
 
@@ -88,7 +88,7 @@ public class MatrixMapGenerator {
      * @param tiledMap TiledMap object to be converted.
      * @return Returns itself, so it can be easily chained into a getMap() function.
      */
-    public MatrixMapGenerator fromTiledMap(TiledMap tiledMap) {
+    public MapParser fromTiledMap(TiledMap tiledMap) {
         matrixMap = new int[tiledMap.getLayers().size()][][];
 
         MapLayers layers = tiledMap.getLayers();
