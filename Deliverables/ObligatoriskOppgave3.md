@@ -90,6 +90,10 @@ en robot.
 - Sassan jobbet med kort prioritering (Ørjan fikk det til) og begynte på testing
 - Ørjan jobbet med å vise hvilket kort som blir spilt
 
+22.03 (Mandag 14:00 - 16:15)
+- Asle, Sassan og Simon var på møtet
+- Simon skrev test kode
+
 ###Retrospektiv
 
 ###Teknisk informasjon
