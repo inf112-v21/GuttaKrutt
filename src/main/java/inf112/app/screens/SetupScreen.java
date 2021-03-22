@@ -21,14 +21,13 @@ import inf112.app.networking.GameServer;
 import inf112.app.RoboRally;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class SetupScreen implements Screen {
     Stage stage;
-    ArrayList<String> maps;
+    Array<String> maps;
     String selected;
 
-    List list;
+    List<String> list;
 
     TmxMapLoader mapLoader;
     TiledMap tiledMap;
@@ -37,12 +36,16 @@ public class SetupScreen implements Screen {
     OrthogonalTiledMapRenderer renderer;
     StretchViewport mapPort;
 
+    TextField name;
+    Label nameField;
+    TextButton playButton;
+
     public SetupScreen(Game game) {
         stage = new Stage(new ScreenViewport());
 
         FileHandle directory = Gdx.files.internal("assets");
 
-        maps = new ArrayList<>();
+        maps = new Array<>();
 
         for (FileHandle file : directory.list()) {
             if (file.extension().equals("tmx")) {
@@ -55,18 +58,18 @@ public class SetupScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
 
-        list = new List(RoboRally.skin);
-        list.setItems(maps.toArray());
+        list = new List<>(RoboRally.skin);
+        list.setItems(maps);
         table.add(list);
 
-        selected = (String) list.getSelected();
+        selected = list.getSelected();
 
         mapLoader = new TmxMapLoader();
         tiledMap = mapLoader.load(selected);
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 5, 5);
-        camera.position.x = 2.5F;
+        int size = Math.max((int) tiledMap.getProperties().get("width"),(int) tiledMap.getProperties().get("height"));
+        camera.setToOrtho(false, size, size);
 
         renderer = new OrthogonalTiledMapRenderer(tiledMap, 1F/300);
         renderer.setView(camera);
@@ -74,14 +77,18 @@ public class SetupScreen implements Screen {
         mapPort = new StretchViewport(5, 5, camera);
         mapPort.setScreenBounds(Gdx.graphics.getWidth()-500, 300, 300, 300);
 
-        TextField name = new TextField("", RoboRally.skin);
-        name.setWidth(Gdx.graphics.getWidth()/2);
-        name.setPosition(Gdx.graphics.getWidth()/2-name.getWidth()/2,Gdx.graphics.getHeight()/2-100);
+        name = new TextField("", RoboRally.skin);
+        name.setWidth(Gdx.graphics.getWidth()/2F);
+        name.setPosition(Gdx.graphics.getWidth()/2F-name.getWidth()/2-40,40);
         stage.addActor(name);
 
-        TextButton playButton = new TextButton("Play!", RoboRally.skin);
-        playButton.setWidth(Gdx.graphics.getWidth()/10);
-        playButton.setPosition(Gdx.graphics.getWidth()/10-playButton.getWidth()/10,Gdx.graphics.getHeight()/10-playButton.getHeight()/10);
+        nameField = new Label("Name:", RoboRally.skin);
+        nameField.setPosition(Gdx.graphics.getWidth()/2F-name.getWidth()/2F-40,name.getHeight()+50);
+        stage.addActor(nameField);
+
+        playButton = new TextButton("Play!", RoboRally.skin);
+        playButton.setWidth(100);
+        playButton.setPosition(Gdx.graphics.getWidth()-40-playButton.getWidth(),40);
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -117,9 +124,11 @@ public class SetupScreen implements Screen {
 
         if(!selected.equals(list.getSelected())) {
             System.out.println(selected + ", " + list.getSelected());
-            selected = (String) list.getSelected();
+            selected = list.getSelected();
             tiledMap = mapLoader.load(selected);
             renderer = new OrthogonalTiledMapRenderer(tiledMap, 1F/300);
+            int size = Math.max((int) tiledMap.getProperties().get("width"),(int) tiledMap.getProperties().get("height"));
+            camera.setToOrtho(false, size, size);
             renderer.setView(camera);
         }
 
@@ -133,7 +142,17 @@ public class SetupScreen implements Screen {
 
     @Override
     public void resize(int i, int i1) {
+        stage.getViewport().update(i,i1,true);
+        stage.getViewport().getCamera().update();
 
+        mapPort.setScreenBounds(Math.min(Gdx.graphics.getWidth()/4*3,Gdx.graphics.getWidth()-300), Gdx.graphics.getHeight()/2-150, 300, 300);
+
+        name.setWidth(Gdx.graphics.getWidth()/2F);
+        name.setPosition(Gdx.graphics.getWidth()/2F-name.getWidth()/2-40,40);
+
+        nameField.setPosition(Gdx.graphics.getWidth()/2F-name.getWidth()/2-40,name.getHeight()+50);
+
+        playButton.setPosition(Gdx.graphics.getWidth()-40-playButton.getWidth(),40);
     }
 
     @Override
