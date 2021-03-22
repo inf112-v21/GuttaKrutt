@@ -93,6 +93,8 @@ en robot.
 22.03 (Mandag 14:00 - 16:15)
 - Asle, Sassan og Simon var på møtet
 - Simon skrev test kode
+- Sassan forsøkte å teste metodene fra forrige gang og implementerte powerDown
+  funksjonalitet (ikke ferdig)
 
 ###Retrospektiv
 
