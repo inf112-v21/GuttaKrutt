@@ -332,4 +332,61 @@ public class BoardLogicTest {
             i++;
         }
     }
+
+    @Test
+    public void playerTryingToPushOtherPlayerIntoWallTest(){
+        Map<UUID,Player> players = new HashMap<>();
+        for(int i=0; i<2; i++)
+            players.put(UUID.randomUUID(),new Player());
+        SetUpEmptyMap(players);
+
+        map[5][2][2] = 16;
+
+        int i = 0;
+        //Placing player1 at pos = (1,2) and player2 at pos = (2,2)
+        for(Player player : players.values()){
+            if(i==0){
+                player.getRobot().setPos(1,2);
+            }
+            if(i==1) {
+                player.getRobot().setPos(2, 2);
+            }
+            i++;
+        }
+
+        //Player1 tries to move into the tile player2 is in (2,2), but the wall stops player1
+        //from pushing player2, positions of both player should be the same as starting positions
+        for(Player player : players.values()){
+            if(i==0){
+                boardLogic.movePlayer(player.getRobot(), 1,0);
+            }
+            i++;
+        }
+
+        //Expected position for player1
+        int expected1X = 1;
+        int expected1Y = 2;
+        //Expected position for player2
+        int expected2X = 2;
+        int expected2Y = 2;
+
+        i=0;
+        for(Player player : players.values()){
+            if(i==0) {
+                //Checking X position player1 would be standing on if there was no wall is false
+                assertEquals(false, player.getRobot().getX() == 2);
+                //Checking X value after tried collision is right
+                assertEquals(expected1X, player.getRobot().getX());
+                assertEquals(expected1Y, player.getRobot().getY());
+            }
+            if(i==1) {
+                //Checking X position player2 would be standing on if there was no wall is false
+                assertEquals(false, player.getRobot().getX() == 3);
+                //Checking X value after collision is right
+                assertEquals(expected2X, player.getRobot().getX());
+                assertEquals(expected2Y, player.getRobot().getY());
+            }
+            i++;
+        }
+    }
 }
