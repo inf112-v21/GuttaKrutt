@@ -30,6 +30,9 @@ public class BoardLogic extends InputAdapter {
 
     public int[][][] getMap() { return map; }
 
+    /**
+     * Moves the input robot by old x-position + input x, and old y-position + input y.
+     */
     public void movePlayer(Robot robot, int x, int y) {
         Vector2 oldPos = robot.getPos();
         int oldX = (int) oldPos.x;
