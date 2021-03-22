@@ -180,6 +180,7 @@ public class GameLogic {
                 }
             }
         }
+        currentCard = null;
     }
 
     /**
