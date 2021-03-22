@@ -4,7 +4,7 @@ import org.junit.Test;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
-public class MatrixMapGeneratorTest {
+public class MapParserTest {
     @Test
     public void FromFileMatrixTest() {
         int[][][] map = new MapParser().fromFile("assets/TiledTest.tmx").getMatrixMap();
