@@ -41,8 +41,6 @@ public class GameServer {
 
         playerList = new HashMap<>();
         connectionList = new HashMap<>();
-        //While developing
-
 
         //Server listening for connections (clients)
         server.addListener(new Listener() {
@@ -81,8 +79,10 @@ public class GameServer {
         });
     }
 
-    public Server getServer() {
-        return server;
+    public Server getServer() { return server; }
+
+    public static void main(String[] args) throws IOException {
+        GameServer server = new GameServer();
     }
 
     public void setMap(String mapName) {

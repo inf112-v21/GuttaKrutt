@@ -3,7 +3,10 @@ package inf112.app.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -14,21 +17,61 @@ import inf112.app.RoboRally;
 import inf112.app.networking.GameClient;
 import inf112.app.networking.GameServer;
 import inf112.app.networking.Network;
+import org.lwjgl.system.CallbackI;
 
 public class LobbyScreen implements Screen {
     Game game;
     GameClient client;
     Stage stage;
-    Label names;
+    Table names;
+    ButtonGroup robots;
+    Label label;
+
+    TextureRegion[][] robot;
 
     public LobbyScreen(Game game, GameClient client) {
         this.game = game;
         this.client = client;
         stage = new Stage(new ScreenViewport());
 
-        names = new Label("", RoboRally.skin);
+        names = new Table();
         names.setBounds(50,300,100,500);
         stage.addActor(names);
+
+        Texture robotTexture = new Texture("Robot1.png");
+
+        robot = TextureRegion.split(robotTexture,300,300);
+
+        robots = new ButtonGroup();
+
+        Table table = new Table();
+        stage.addActor(table);
+
+        for (TextureRegion[] tr : robot) {
+            ImageButton button = new ImageButton(new Image(tr[0]).getDrawable());
+            button.addListener(new InputListener(){
+               @Override
+               public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                   client.getPlayerList().get(client.clientUUID).getRobot().setTexture(new int[]{robots.getCheckedIndex(),0});
+                   client.updatePlayer();
+               }
+               @Override
+               public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                   return true;
+               }
+            });
+
+            robots.add(button);
+            table.add(button).width(150);
+        }
+
+        robots.setMinCheckCount(1);
+        robots.setMaxCheckCount(1);
+
+        table.setPosition(1000,500);
+
+        label = new Label("",RoboRally.skin);
+        table.add(label);
     }
 
     public LobbyScreen(Game game, GameClient client, GameServer server) {
@@ -41,9 +84,6 @@ public class LobbyScreen implements Screen {
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 server.getServer().sendToAllTCP(new Network.RunGame());
-                Network.UpdatePlayers players = new Network.UpdatePlayers();
-                players.playerList = server.playerList;
-                server.getServer().sendToAllTCP(players);
                 server.run = true;
             }
             @Override
@@ -67,11 +107,18 @@ public class LobbyScreen implements Screen {
         stage.act();
         stage.draw();
 
-        String nameString = "";
+        names.reset();
         for (Player player : client.getPlayerList().values()) {
-            nameString += player.getName() + "\n";
+            names.add(new Label(player.getName(),RoboRally.skin));
+            int[] tr = player.getRobot().getTexture();
+            if (tr != null) {
+                Image image = new Image(robot[tr[0]][tr[1]]);
+                names.add(image).width(50).height(50);
+            }
+            names.row();
         }
-        names.setText(nameString);
+
+        label.setText(robots.getCheckedIndex());
 
         if(client.run) {
             game.setScreen(new GameScreen(game, client));

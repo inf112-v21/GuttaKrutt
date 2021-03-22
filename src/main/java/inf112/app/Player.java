@@ -6,6 +6,7 @@ public class Player {
     Robot robot;
     Deck cardList = new Deck();
     String name;
+    Boolean ready;
 
     /* constructor class which initiates a new robot
     * alongside the player */
@@ -16,11 +17,18 @@ public class Player {
     public Player(String name) {
         robot = new Robot();
         this.name = name;
+        this.ready = false;
     }
+
+    public Boolean getReady() {return ready; }
+
+    public void setReady(Boolean newReady) {ready = newReady; }
 
     public Robot getRobot() {
         return robot;
     }
+
+    public void setRobot(Robot robot) { this.robot = robot; }
 
     public Deck getCards() { return cardList; }
 

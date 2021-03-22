@@ -46,7 +46,7 @@ public class GameLogicTest {
         assertEquals(6, uturn);
     }
 
-    @Test
+    /*@Test
     public void ShouldDoTurn() {
         GameLogic game = new GameLogic();
         game.doTurn();
@@ -60,7 +60,7 @@ public class GameLogicTest {
         for (int i=0; i<game.getPlayers().size(); i++){
             assertEquals(9, game.getPlayers().get(i).getCards().size());
         }
-    }
+    }*/
 
     @Test
     public void ShouldAskPowerDown() { }
