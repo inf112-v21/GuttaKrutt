@@ -82,9 +82,11 @@ public class GameLogic {
 
         loopTillOthersAreReady();
         //confirmOthersAreReady(0);
-
-
+        game.boardLogic.activateBlueConveyorBelt();
         processCards();
+        game.boardLogic.activateBlueConveyorBelt();
+        game.boardLogic.activateYellowConveyorBelt();
+        client.updatePlayer(uuid,playerList.get(uuid));
         turn++;
         dealCards();
         try {
