@@ -83,13 +83,19 @@ public class GameLogic {
         loopTillOthersAreReady();
         //confirmOthersAreReady(0);
 
+        game.boardLogic.activateBlueConveyorBelt();
+        processCards();
+        game.boardLogic.activateBlueConveyorBelt();
+        game.boardLogic.activateYellowConveyorBelt();
+        client.updatePlayer(uuid,playerList.get(uuid));
+        turn++;
+
         if (!playerList.get(uuid).getRobot().getPowerDown()) {
-            processCards();
-            turn++;
             dealCards();
         }
         else {
             playerList.get(uuid).getRobot().setPowerDown(false);
+            client.updatePlayer(uuid,playerList.get(uuid));
         }
         try {
             Thread.sleep( 2000);
@@ -106,6 +112,7 @@ public class GameLogic {
         Robot robot = playerList.get(uuid).getRobot();
         if (robot.getDamage() > 0) {
             robot.setPowerDown(true);
+            client.updatePlayer(uuid,playerList.get(uuid));
         }
     }
 
