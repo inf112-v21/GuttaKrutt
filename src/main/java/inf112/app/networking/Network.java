@@ -42,8 +42,6 @@ public class Network {
         kryo.register(int[].class);
         kryo.register(com.badlogic.gdx.math.Vector2.class);
         kryo.register(RegisterName.class);
-        kryo.register(UpdateNames.class);
-        kryo.register(NumberOfPlayers.class);
         kryo.register(UpdatePlayer.class);
         kryo.register(UpdatePlayers.class);
         kryo.register(NewConnection.class);
@@ -56,11 +54,6 @@ public class Network {
     //Field for registering the name of a client
     static public class RegisterName {
         public String name;
-    }
-
-    //Field for list of all client names
-    static public class UpdateNames {
-        public String[] names;
     }
 
     //Field for updating the player
@@ -80,11 +73,6 @@ public class Network {
 
     static public class NewConnection {}
     static public class RunGame {}
-
-    //Field for number of players
-    static public class NumberOfPlayers {
-        public Integer amount;
-    }
 
     static public  class TestPacket{
         public String packet;

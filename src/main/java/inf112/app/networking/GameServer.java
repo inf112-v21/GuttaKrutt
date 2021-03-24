@@ -18,8 +18,6 @@ import inf112.app.Player;
 public class GameServer {
 
     Server server;
-    Integer expectedNumberOfPlayers;
-    boolean playerCountSent = false;
     boolean serverTesting;
     public boolean gotPackage = false;
     public Map<UUID,Player> playerList;
@@ -80,10 +78,6 @@ public class GameServer {
     }
 
     public Server getServer() { return server; }
-
-    public static void main(String[] args) throws IOException {
-        GameServer server = new GameServer();
-    }
 
     public void setMap(String mapName) {
         this.mapName = mapName;

@@ -1,6 +1,5 @@
 package inf112.app;
 
-import com.badlogic.gdx.math.Vector2;
 import inf112.app.logic.BoardLogic;
 import org.junit.Before;
 import org.junit.Test;

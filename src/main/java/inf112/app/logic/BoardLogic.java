@@ -1,8 +1,9 @@
 package inf112.app.logic;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
+import inf112.app.MapParser;
 import inf112.app.Player;
 import inf112.app.Robot;
 
@@ -14,18 +15,26 @@ import java.util.UUID;
 public class BoardLogic extends InputAdapter {
     Map<UUID,Player> players;
     int[][][] map;
-    UUID uuid;
+    Map<String,int[][]> hashMap;
 
-    public BoardLogic(int[][][] map, Map<UUID,Player> players) {
-        this(map,players,players.keySet().stream().findFirst().get());
-    }
-
-    public BoardLogic(int[][][] map, Map<UUID, Player> players, UUID uuid) {
+    public BoardLogic(int[][][] map, Map<UUID, Player> players) {
         this.players = players;
         this.map = map;
-        this.uuid = uuid;
         for(Player player : players.values()){
             setFlagPositions(player.getRobot());
+        }
+    }
+
+    public BoardLogic(TiledMap tiledMap, Map<UUID, Player> players) {
+        this.players = players;
+        MapParser mapParser = new MapParser().fromTiledMap(tiledMap);
+        this.map = mapParser.getMatrixMap();
+        this.hashMap = mapParser.getHashMap();
+        int i = 0; Vector2[] startingSpots = getStartingSpots();
+        for(Player player : players.values()){
+            setFlagPositions(player.getRobot());
+            player.getRobot().setPos(startingSpots[i]);
+            i++;
         }
     }
 
@@ -412,5 +421,35 @@ public class BoardLogic extends InputAdapter {
         }
     }
 
+    public Vector2[] getStartingSpots() {
+        Vector2[] startingSpots = new Vector2[8];
+
+        for (int i = 0; i < 8; i++) {
+            int id;
+            switch (i) {
+                case 0: id = 121; break;
+                case 1: id = 122; break;
+                case 2: id = 123; break;
+                case 3: id = 124; break;
+                case 4: id = 129; break;
+                case 5: id = 130; break;
+                case 6: id = 131; break;
+                default: id = 132; break;
+            }
+
+            int[][] layer = hashMap.get("starting spots");
+            if (layer == null) {
+                startingSpots[i] = new Vector2(0,0);
+            } else {
+                for (int x = 0; x < layer.length; x++) {
+                    for (int y = 0; y < layer[0].length; y++) {
+                        if (layer[x][y] == id) { startingSpots[i] = new Vector2(x,y); }
+                    }
+                }
+                if (startingSpots[i] == null) { startingSpots[i] = new Vector2(0,0); }
+            }
+        }
+        return startingSpots;
+    }
 
 }
