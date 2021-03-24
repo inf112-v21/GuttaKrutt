@@ -110,6 +110,21 @@ Arbeidsoppgaver:
 - Endre på ready() metoden i GameLogic slik at spilleren ikke får delta i
   spillet når powerDown variabelen er lik true.
      
+
+7) som spiller ønsker jeg at et hvert spiller-trekk blir presentert på en korrekt måte i de andre spiller-klientene slik at jeg vet at jeg spiller det samme spillet som de andre spillerene
+
+Akseptansekriterier:
+- Gitt at en spiller har valgt kortene sine, skal denne spilleren også ha valgt
+de samme kortene i de andre klientene.
+- Gitt at alle spillerene har valgt kort, skal spillet utføres på en deterministisk
+måte slik at alle klientene viser det samme resultatet på brettet etter en runde.
+  
+Arbeidsoppgaver:
+- Implementere en metode som får klienten til å vente helt til alle spillerene har
+låst inn kortene sine.
+- Når alle spillene har låst inn kortene sine skal klienten bruke den sist oppdaterte
+informasjonen til å spille ut runden.
+  
 ###Møtereferater:
 
 10.03 (Onsdag, 12:15-14:00)
@@ -122,7 +137,8 @@ Arbeidsoppgaver:
 - Skrev noen brukerhistorier og la til "To do" i prosjekttavle
 
 17.03 (Onsdag, 12:15-14:15)
-- Alle var tilstede
+- Alle var tilstede 
+- La til ting på project-boardet som vi begynte å jobbe med
 - Simon lagde nye maps
 - Sassan feilsøkte egen bransje og begynte på kort prioritering
 - Asle kombinerte knappene "Submit" og "Do turn" til en knapp "Do turn"
@@ -133,7 +149,12 @@ Arbeidsoppgaver:
 - Simon jobbet med robot kollisjon
 - Sassan jobbet med kort prioritering (Ørjan fikk det til) og begynte på testing
 - Ørjan jobbet med å vise hvilket kort som blir spilt
+<<<<<<< HEAD
 - Asle fikset bugs angående synkronisering av rotasjon
+=======
+- Asle jobbet med at flerspiller-logikken ble synkronisert
+
+>>>>>>> 8205e294db08f5f0ad148a6fb72fabc346b6deb7
 
 22.03 (Mandag 14:00 - 16:15)
 - Asle, Sassan og Simon var på møtet

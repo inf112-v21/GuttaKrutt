@@ -30,7 +30,7 @@ public class GameLogic {
         this.game = game;
         this.client = client;
         turn=0;
-        deck = new Deck();
+        deck = new Deck(1);
         buildDeck();
         deck.shuffle();
         playerList = client.getPlayerList();
@@ -82,9 +82,11 @@ public class GameLogic {
 
         loopTillOthersAreReady();
         //confirmOthersAreReady(0);
-
-
+        game.boardLogic.activateBlueConveyorBelt();
         processCards();
+        game.boardLogic.activateBlueConveyorBelt();
+        game.boardLogic.activateYellowConveyorBelt();
+        client.updatePlayer(uuid,playerList.get(uuid));
         turn++;
         dealCards();
         try {
@@ -114,28 +116,6 @@ public class GameLogic {
             }
         }
     }
-
-/*
-    public void confirmOthersAreReady(int secondsPassed) {
-        boolean allPlayerReady = true;
-        for (Player player : playerList.values()) {
-            if(!player.getReady()) {
-                allPlayerReady = false;
-            }
-        }
-        if(!allPlayerReady) {
-            secondsPassed++;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (secondsPassed < 30) {
-                confirmOthersAreReady(secondsPassed);
-            }
-        }
-    }
- */
 
     public int getTurn() {
         return turn;
@@ -189,7 +169,6 @@ public class GameLogic {
             Array<Player> queue = new Array<>();
             for (Player player : playerList.values()) {
                 queue.add(player);
-                player.setCards(new Deck());
             }
             queue.sort(new CardComparator(i));
             for (Player player : queue) {
@@ -198,10 +177,12 @@ public class GameLogic {
                     useCard(player.getRobot(), card);
                     if (i < 9 - player.getRobot().getDamage()) {
                         player.getRobot().getProgramRegister()[i] = null;
+                        deck.insert(card);
                     }
                 }
             }
         }
+        clearCards();
         currentCard = null;
     }
 
@@ -226,5 +207,18 @@ public class GameLogic {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Discards the players' cards back into the deck
+     */
+    private void clearCards() {
+        for (Player player : playerList.values()) {
+            for (Card card : player.getCards()) {
+                deck.insert(card);
+            }
+            player.setCards(new Deck());
+        }
+        deck.shuffle();
     }
 }
