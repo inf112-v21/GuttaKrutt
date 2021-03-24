@@ -88,7 +88,7 @@ public class GameLogic {
         turn++;
         dealCards();
         try {
-            Thread.sleep( 2000);
+            Thread.sleep( 000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
