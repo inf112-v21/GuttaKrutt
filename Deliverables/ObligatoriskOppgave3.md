@@ -109,21 +109,6 @@ Arbeidsoppgaver:
   hos player lik true.
 - Endre på ready() metoden i GameLogic slik at spilleren ikke får delta i
   spillet når powerDown variabelen er lik true.
-     
-
-7) som spiller ønsker jeg at et hvert spiller-trekk blir presentert på en korrekt måte i de andre spiller-klientene slik at jeg vet at jeg spiller det samme spillet som de andre spillerene
-
-Akseptansekriterier:
-- Gitt at en spiller har valgt kortene sine, skal denne spilleren også ha valgt
-de samme kortene i de andre klientene.
-- Gitt at alle spillerene har valgt kort, skal spillet utføres på en deterministisk
-måte slik at alle klientene viser det samme resultatet på brettet etter en runde.
-  
-Arbeidsoppgaver:
-- Implementere en metode som får klienten til å vente helt til alle spillerene har
-låst inn kortene sine.
-- Når alle spillene har låst inn kortene sine skal klienten bruke den sist oppdaterte
-informasjonen til å spille ut runden.
   
 ###Møtereferater:
 
