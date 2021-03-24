@@ -82,9 +82,11 @@ public class GameLogic {
 
         loopTillOthersAreReady();
         //confirmOthersAreReady(0);
-
-
+        game.boardLogic.activateBlueConveyorBelt();
         processCards();
+        game.boardLogic.activateBlueConveyorBelt();
+        game.boardLogic.activateYellowConveyorBelt();
+        client.updatePlayer(uuid,playerList.get(uuid));
         turn++;
         dealCards();
         try {
@@ -114,28 +116,6 @@ public class GameLogic {
             }
         }
     }
-
-/*
-    public void confirmOthersAreReady(int secondsPassed) {
-        boolean allPlayerReady = true;
-        for (Player player : playerList.values()) {
-            if(!player.getReady()) {
-                allPlayerReady = false;
-            }
-        }
-        if(!allPlayerReady) {
-            secondsPassed++;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (secondsPassed < 30) {
-                confirmOthersAreReady(secondsPassed);
-            }
-        }
-    }
- */
 
     public int getTurn() {
         return turn;

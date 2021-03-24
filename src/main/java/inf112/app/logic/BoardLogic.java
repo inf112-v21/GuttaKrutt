@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import inf112.app.Player;
 import inf112.app.Robot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -233,6 +234,123 @@ public class BoardLogic extends InputAdapter {
             map[4][x][y] = 2-(dir % 2);
     }
 
+
+    public void activateBlueConveyorBelt() {
+        activateConveyorBelts(4);
+    }
+
+    public void activateYellowConveyorBelt() {
+        activateConveyorBelts(3);
+    }
+
+    private void activateConveyorBelts(int conveyorLayer) {
+        class PlayerMove {
+            Robot specificrobot;
+            int x;
+            int y;
+
+            PlayerMove(Robot robot, int x, int y) {
+                this.specificrobot = robot;
+                this.x = x;
+                this.y = y;
+            }
+        }
+        ArrayList<PlayerMove> moves = new ArrayList<>();
+        for (int i=0; i<map[0].length; i++) {
+            for (int j=0; j<map[0][0].length; j++) {
+                int type = map[conveyorLayer][i][j];
+                Robot movingRobot = checkForRobot(i, j);
+                /*if(movingRobot!=null)
+                    System.out.println("Robot is not null, position: " + i + j + ", And the type of layer is " + type);
+                 */
+                switch (type) {
+                    case 42:
+                    case 43:
+                    case 49:
+                    case 26:
+                    case 27:
+                    case 13:
+                        if (movingRobot!=null) {
+                            PlayerMove move = new PlayerMove(movingRobot,0, 1);
+                            moves.add(move);
+                            }
+                        break;
+                    case 34:
+                    case 44:
+                    case 51:
+                    case 18:
+                    case 28:
+                    case 22:
+                        if (movingRobot!=null) {
+                            PlayerMove move = new PlayerMove(movingRobot,-1, 0);
+                            moves.add(move);
+                        }
+                        break;
+                    case 33:
+                    case 36:
+                    case 50:
+                    case 17:
+                    case 20:
+                    case 21:
+                        if (movingRobot!=null) {
+                            PlayerMove move = new PlayerMove(movingRobot,0, -1);
+                            moves.add(move);
+                        }
+                        break;
+                    case 35:
+                    case 41:
+                    case 52:
+                    case 19:
+                    case 25:
+                    case 14:
+                        if (movingRobot!=null) {
+                            PlayerMove move = new PlayerMove(movingRobot,1, 0);
+                            moves.add(move);
+                        }
+                        break;
+                }
+            }
+        }
+        for (PlayerMove move : moves) {
+            Robot potentialRobot = checkForRobot(move.specificrobot.getX() + move.x, move.specificrobot.getY() + move.y);
+            if (potentialRobot == null) {
+                movePlayer(move.specificrobot, move.x, move.y);
+            }
+        }
+    }
+    /*
+    Yellow:
+      rotate:
+        33: East -> South
+        34: South -> West
+        35: South -> East
+        36: West -> South
+        41: North -> East
+        42: West -> North
+        43: East -> North
+        44: North -> West
+      straight:
+        49: South -> North
+        50: North -> South
+        51: East -> West
+        52: West -> East
+
+    Blue:
+      rotate:
+        17: East -> South
+        18: South -> West
+        19: South -> East
+        20: West -> South
+        25: North -> East
+        26: West -> North
+        27: East -> North
+        28: North -> West
+      straight:
+        13: South -> North
+        14: West -> East
+        21: North -> South
+        22: East -> West
+*/
     public void move(Robot robot, int distance) {
         distance--;
         int x = 0;
