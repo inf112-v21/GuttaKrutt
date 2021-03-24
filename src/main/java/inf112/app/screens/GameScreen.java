@@ -107,7 +107,7 @@ public class GameScreen implements Screen {
         players = gameLogic.getPlayers();
         clientUUID = client.clientUUID;
 
-        boardLogic = new BoardLogic(new MapParser().fromTiledMap(tiledMap).getMap(), client.getPlayerList());
+        boardLogic = new BoardLogic(tiledMap, client.getPlayerList());
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 5, 5);
