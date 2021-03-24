@@ -82,6 +82,21 @@ en robot.
    - Implementere en metode i GameLogic som sammenligner spillernes første, andre,
      tredje,... registers og setter de i riktig rekkefølge.
      
+
+7) som spiller ønsker jeg at et hvert spiller-trekk blir presentert på en korrekt måte i de andre spiller-klientene slik at jeg vet at jeg spiller det samme spillet som de andre spillerene
+
+Akseptansekriterier:
+- Gitt at en spiller har valgt kortene sine, skal denne spilleren også ha valgt
+de samme kortene i de andre klientene.
+- Gitt at alle spillerene har valgt kort, skal spillet utføres på en deterministisk
+måte slik at alle klientene viser det samme resultatet på brettet etter en runde.
+  
+Arbeidsoppgaver:
+- Implementere en metode som får klienten til å vente helt til alle spillerene har
+låst inn kortene sine.
+- Når alle spillene har låst inn kortene sine skal klienten bruke den sist oppdaterte
+informasjonen til å spille ut runden.
+  
 ###Møtereferater:
 
 
@@ -95,7 +110,8 @@ en robot.
 - Skrev noen brukerhistorier og la til "To do" i prosjekttavle
 
 17.03 (Onsdag, 12:15-14:15)
-- Alle var tilstede
+- Alle var tilstede 
+- La til ting på project-boardet som vi begynte å jobbe med
 - Simon lagde nye maps
 - Sassan feilsøkte egen bransje og begynte på kort prioritering
 
@@ -104,6 +120,14 @@ en robot.
 - Simon jobbet med robot kollisjon
 - Sassan jobbet med kort prioritering (Ørjan fikk det til) og begynte på testing
 - Ørjan jobbet med å vise hvilket kort som blir spilt
+- Asle jobbet med at flerspiller-logikken ble synkronisert
+
+
+22.03 (Mandag 14:00 - 16:15)
+- Asle, Sassan og Simon var på møtet
+- Simon skrev test kode
+- Sassan forsøkte å teste metodene fra forrige gang og implementerte powerDown
+  funksjonalitet (ikke ferdig)
 
 ###Retrospektiv
 

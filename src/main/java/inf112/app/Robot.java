@@ -63,6 +63,7 @@ public class Robot {
     public boolean checkWin(){
         return !flagVisits.containsValue(false);
     }
+
     public void setFlagVisits(Map<Integer, Boolean> map){
         flagVisits = map;
     }

@@ -68,7 +68,11 @@ public class GameScreen implements Screen {
 
     Window cardSelectTable;
 
-    DragAndDrop dragAndDrop;
+    DragAndDrop cardSelectDnD;
+    DragAndDrop cardSwitchDnD;
+
+    Thread roundThread;
+    boolean roundRunning;
 
     public GameScreen(Game game, GameClient client) {
         this.game = game;
@@ -151,7 +155,7 @@ public class GameScreen implements Screen {
 
         for (Player player : players.values()) {
             Robot robot = player.getRobot();
-            Image img = new Image(playerTextures[0][0]);
+            Image img = new Image(playerTextures[robot.getTexture()[0]][robot.getTexture()[1]]);
             img.addListener(new TextTooltip(robot.getDamage() + "", RoboRally.skin));
             Table table = new Table();
             //noinspection SuspiciousNameCombination
@@ -164,7 +168,8 @@ public class GameScreen implements Screen {
             table.setDebug(true);
         }
 
-        dragAndDrop = new DragAndDrop();
+        cardSelectDnD = new DragAndDrop();
+        cardSwitchDnD = new DragAndDrop();
 
         controlsTable = new Table();
         stage.addActor(controlsTable);
@@ -210,9 +215,10 @@ public class GameScreen implements Screen {
         button.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                Thread thread = new Thread(() -> gameLogic.ready());
-                thread.start();
-                }
+                roundThread = new Thread(() -> gameLogic.ready());
+                roundThread.start();
+                roundRunning = true;
+            }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 return true;
@@ -242,6 +248,13 @@ public class GameScreen implements Screen {
 
         //Board
         gamePort.apply();
+
+        if (roundRunning && !roundThread.isAlive()) {
+            roundRunning = false;
+            if (stage.getActors().contains(cardSelectTable,true)) {
+                makeCardsTable();
+            }
+        }
 
         drawRobots();
         drawLasers();
@@ -378,10 +391,48 @@ public class GameScreen implements Screen {
             }
             table.add(image).width(width).height(height);
             if (main) {
-                dragAndDrop.addTarget(new CustomTarget(image, players.get(clientUUID), i));
+                cardSelectDnD.addTarget(new CustomTarget(image, players.get(clientUUID), i));
+                int finalI = i;
+                cardSwitchDnD.addTarget(new DragAndDrop.Target(image) {
+                    @Override
+                    public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+                        return true;
+                    }
+
+                    @Override
+                    public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+                        Card[] programRegister = player.getRobot().getProgramRegister();
+                        Card oldCard = programRegister[finalI];
+                        CardAndPlace newCard = (CardAndPlace) payload.getObject();
+
+                        programRegister[finalI] = newCard.card;
+                        programRegister[newCard.pos] = oldCard;
+                        player.getRobot().setProgramRegister(programRegister);
+                    }
+                });
+                cardSwitchDnD.addSource(new DragAndDrop.Source(image) {
+                    @Override
+                    public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
+                        DragAndDrop.Payload payload = new DragAndDrop.Payload();
+                        payload.setObject(new CardAndPlace(card,finalI));
+
+                        payload.setDragActor(new Image(card.draw()));
+                        return payload;
+                    }
+                });
             }
         }
         return table;
+    }
+
+    public class CardAndPlace {
+        public Card card;
+        public int pos;
+
+        public CardAndPlace(Card card, int pos) {
+            this.card = card;
+            this.pos = pos;
+        }
     }
 
     public class CustomTarget extends DragAndDrop.Target {
@@ -457,8 +508,10 @@ public class GameScreen implements Screen {
         buttonTable.top().right();
         buttonTable.add(button);
 
+        Player player = players.get(clientUUID);
+
         int i = 0;
-        for (Card card : players.get(clientUUID).getCards()) {
+        for (Card card : player.getCards()) {
             if (i % 5 == 0) {
                 cardsTable.row();
             }
@@ -466,7 +519,7 @@ public class GameScreen implements Screen {
             Image image = new Image(card.draw());
             cardsTable.add(image).width(82).height(131).pad(2);
 
-            dragAndDrop.addSource(new DragAndDrop.Source(image) {
+            cardSelectDnD.addSource(new DragAndDrop.Source(image) {
                 @Override
                 public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
                     DragAndDrop.Payload payload = new DragAndDrop.Payload();
@@ -478,6 +531,22 @@ public class GameScreen implements Screen {
             });
             i++;
         }
+
+        cardSwitchDnD.addTarget(new DragAndDrop.Target(cardSelectTable) {
+            @Override
+            public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+                return true;
+            }
+
+            @Override
+            public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+                CardAndPlace card = (CardAndPlace) payload.getObject();
+                player.getCards().insert(card.card);
+                Card[] programRegister = player.getRobot().getProgramRegister();
+                programRegister[card.pos] = null;
+                player.getRobot().setProgramRegister(programRegister);
+            }
+        });
     }
 
     private void updatePlayerTable(Table table, Player player) {
