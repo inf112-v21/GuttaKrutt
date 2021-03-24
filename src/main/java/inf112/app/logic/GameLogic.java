@@ -83,10 +83,14 @@ public class GameLogic {
         loopTillOthersAreReady();
         //confirmOthersAreReady(0);
 
-
-        processCards();
-        turn++;
-        dealCards();
+        if (!playerList.get(uuid).getRobot().getPowerDown()) {
+            processCards();
+            turn++;
+            dealCards();
+        }
+        else {
+            playerList.get(uuid).getRobot().setPowerDown(false);
+        }
         try {
             Thread.sleep( 2000);
         } catch (InterruptedException e) {
@@ -96,6 +100,13 @@ public class GameLogic {
         client.updatePlayer(uuid,playerList.get(uuid));
         for (Player player : playerList.values())
             System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
+    }
+
+    public void powerDown() {
+        Robot robot = playerList.get(uuid).getRobot();
+        if (robot.getDamage() > 0) {
+            robot.setPowerDown(true);
+        }
     }
 
     public void loopTillOthersAreReady() {

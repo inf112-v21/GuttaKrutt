@@ -191,6 +191,21 @@ public class GameScreen implements Screen {
 
         controlsTable.add(button);
 
+        button = new TextButton("Power Down",RoboRally.skin);
+        button.addListener(new InputListener(){
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                Thread thread = new Thread(() -> gameLogic.powerDown());
+                thread.start();
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+
+        controlsTable.add(button);
+
         button = new TextButton("Ready",RoboRally.skin);
         button.addListener(new InputListener(){
             @Override

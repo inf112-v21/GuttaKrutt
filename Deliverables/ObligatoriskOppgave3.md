@@ -1,7 +1,16 @@
 #Obligatorisk oppgave 3
 
 ###Brukerhistorier:
-1) turn system
+1) som spiller vil jeg kunne varsle serveren når jeg er ferdig med min tur.
+
+   Akseptansekriterier:
+  - Gitt at spilleren har valgt kortene sine (registers), så skal serveren
+    få beskjed om at turen er ferdig.
+  - Gitt at alle spillerne utenom en er ferdig med sin tur, skal serveren
+    gi beskjed til den manglende spilleren.
+
+   Arbeidsoppgaver:
+   - 
 
 2) Som server host vil jeg kunne se når de andre spillerene som er koblet til serveren min
 gjør trekk, slik at jeg vet at de andre er koblet til.
@@ -25,6 +34,12 @@ Arbeidsoppgaver:
 
 4) Som spiller ønsker jeg kun å vinne hvis jeg treffer flaggene i riktig rekkefølge, slik at spillet
 er vanskelig og medfører heder og ære når jeg vinnner.
+
+5) som kort vil jeg ha egen prioritet slik at rekkefølgen til flere kort
+   som tilhører forskjellige spillere alltid er bestemt.
+
+   Akseptansekriterier:
+  - Gitt at
    
 Akseptansekriterier:
 - Gitt at det er 0 < x < 5 flagg på kartet, så må en spiller besøke flaggene i riktig rekkefølge

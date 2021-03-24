@@ -10,6 +10,7 @@ public class Robot {
 
     boolean alive = true;
     boolean won = false;
+    boolean powerDown = false;
 
     int fireLaser = 0;
 
@@ -32,6 +33,12 @@ public class Robot {
 
         damageTokens = Math.max(Math.min(newDT, 10), 0);
     }
+
+    public void setPowerDown(boolean bool) {
+        powerDown=bool;
+    }
+
+    public boolean getPowerDown() { return powerDown; }
     
     public int getDamage() {
         return damageTokens;
