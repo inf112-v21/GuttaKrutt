@@ -114,6 +114,7 @@ public class GameLogic {
         Robot robot = playerList.get(uuid).getRobot();
         if (robot.getDamage() > 0) {
             robot.setPowerDown(true);
+            robot.discardDamage();
             client.updatePlayer(uuid,playerList.get(uuid));
         }
     }
