@@ -165,7 +165,7 @@ Krav til software:
 Åpne command promt (cmd) og skriv følgende kommandoer:
 - cd *lokasjon til spill-filene*
 - mvn clean install
-- mvn exec:java -Dexec.mainClass="Main"
+- mvn exec:java
 
 #### Hvordan manuelt teste programmet
 Det ligger instruksjoner i ManualTest folderen.
