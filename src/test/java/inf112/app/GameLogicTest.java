@@ -61,10 +61,4 @@ public class GameLogicTest {
             assertEquals(9, game.getPlayers().get(i).getCards().size());
         }
     }*/
-
-    @Test
-    public void ShouldAskPowerDown() { }
-
-    @Test
-    public void ShouldCompleteRegisters() { }
 }
