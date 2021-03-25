@@ -44,6 +44,8 @@ public class Robot {
         return damageTokens;
     }
 
+    public void discardDamage() { damageTokens=0; }
+
     public Card[] getProgramRegister() { return programRegister; }
 
     public void setProgramRegister(Card[] cards) { this.programRegister = cards; }
