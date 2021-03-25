@@ -45,20 +45,4 @@ public class GameLogicTest {
         assertEquals(18, rotleft);
         assertEquals(6, uturn);
     }
-
-    /*@Test
-    public void ShouldDoTurn() {
-        GameLogic game = new GameLogic();
-        game.doTurn();
-        assertEquals(1, game.getTurn());
-    }
-
-    @Test
-    public void ShouldDealCards() {
-        GameLogic game = new GameLogic();
-        game.doTurn();
-        for (int i=0; i<game.getPlayers().size(); i++){
-            assertEquals(9, game.getPlayers().get(i).getCards().size());
-        }
-    }*/
 }

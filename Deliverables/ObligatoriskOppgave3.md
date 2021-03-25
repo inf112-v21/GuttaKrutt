@@ -39,7 +39,7 @@ Arbeidsoppgaver:
 er vanskelig og medfører heder og ære når jeg vinnner.
    
 Akseptansekriterier:
-- Gitt at det er 0 < x < 5 flagg på kartet, så må en spiller besøke flaggene i riktig rekkefølge
+- Gitt at det er 0 < x < 5 flagg på kartet, så må en spiller besøke alle flaggene i riktig rekkefølge
 for å vinne spillet.
   
 Arbeidsoppgaver:
@@ -63,8 +63,8 @@ Arbeidsoppgaver:
 en robot.
 - Implementere kode i movePlayer() som kjører movePlayer() rekursivt på roboten som blir dyttet.
 
-6) som kort vil jeg ha egen prioritet slik at rekkefølgen til flere kort
-   som tilhører forskjellige spillere alltid er bestemt.
+6) som spiller vil jeg ha kort med egen prioritet slik at rekkefølgen til
+   flere kort som tilhører forskjellige spillere alltid er bestemt.
 
 Akseptansekriterier:
 - Gitt at en spiller har valgt kortene sine, skal spillerens kort brukes
@@ -79,7 +79,7 @@ Arbeidsoppgaver:
 - Implementere en metode i GameLogic som sammenligner spillernes første, andre,
  tredje,... registers og setter de i riktig rekkefølge.
 
-7) som spiller ønsker jeg at et hvert spiller-trekk blir presentert på en korrekt måte
+7) Som spiller ønsker jeg at et hvert spiller-trekk blir presentert på en korrekt måte
    i de andre spiller-klientene slik at jeg vet at jeg spiller det samme spillet som 
    de andre spillerene.
 
@@ -95,7 +95,7 @@ Arbeidsoppgaver:
 - Når alle spillene har låst inn kortene sine skal klienten bruke den sist oppdaterte
   informasjonen til å spille ut runden.
 
-8) som spiller vil jeg kunne bruke en power-down token til å hoppe over robottens
+8) Som spiller vil jeg kunne bruke en power-down token til å hoppe over robottens
    neste tur.
 
 Akseptansekriterier:
@@ -110,6 +110,30 @@ Arbeidsoppgaver:
 - Endre på ready() metoden i GameLogic slik at spilleren ikke får delta i
   spillet når powerDown variabelen er lik true.
   
+9) Uferdig brukerhistorie:
+   Som spiller vil jeg kunne bruke conveyor belts til å flytte meg rundt på kartet,
+   slik at spillet blir dypere strategisk og at det blir morsommere å spille med andre.
+   
+Akseptansekriterier:
+- Gitt at en robot står på et gult conveyorbelt tile som peker i retning x, skal roboten
+  bli flyttet ett tile i retning x etter roboten har brukt et kort.
+- Gitt at en robot står på et blått conveyorbelt tile som peker i retning x og at neste tile i retning x er et tilsvarende blått conveyorbelt tile, skal roboten
+  bli flyttet to tiles i retning x etter at roboten har brukt et kort.
+  
+Arbeidsoppgaver:
+- Implementere gule conveyor belts.
+- Implementere blå conveyor belts.
+    
+10) Som spiller vil jeg at register kan låse seg om robotten er skadet nok, slik at skade har mer konsekvenser.
+
+Akseptansekriterier:
+- Per damagetoken ekstra over 5 skal låse et ekstra register.
+- Et låst register skal fortsatt spille kortet, men kan ikke byttes ut og blir ikke forkastet etter bruk.
+
+Arbeidsoppgaver:
+- Implementere restriksjoner på valg av kort mot register som er låste.
+- Implementere restriksjoner på vilke kort som blir forkastet etter bruk (ikke om det er i låst register).
+
 ###Møtereferater:
 
 10.03 (Onsdag, 12:15-14:00)
@@ -127,34 +151,83 @@ Arbeidsoppgaver:
 - Simon lagde nye maps
 - Sassan feilsøkte egen bransje og begynte på kort prioritering
 - Asle kombinerte knappene "Submit" og "Do turn" til en knapp "Do turn"
-  og implementerte en form for synkronisering mellom klientene
+  og implementerte en form for synkronisering mellom klienten
+- Ørjan jobbet med ny grafikk for robotter.
 
 18.03 (Torsdag 12:00-14:00)
 - Alle var tilstede
 - Simon jobbet med robot kollisjon
 - Sassan jobbet med kort prioritering (Ørjan fikk det til) og begynte på testing
 - Ørjan jobbet med å vise hvilket kort som blir spilt
-<<<<<<< HEAD
-- Asle fikset bugs angående synkronisering av rotasjon
-=======
 - Asle jobbet med at flerspiller-logikken ble synkronisert
-
->>>>>>> 8205e294db08f5f0ad148a6fb72fabc346b6deb7
 
 22.03 (Mandag 14:00 - 16:15)
 - Asle, Sassan og Simon var på møtet
 - Simon skrev test kode
 - Sassan forsøkte å teste metodene fra forrige gang og implementerte powerDown
   funksjonalitet (ikke ferdig)
-- Asle implementerte conveyorbelts  
+- Asle koded enkel implementasjon av conveyorbelts
 
 24.03 (Onsdag 12:15-14:00)
 - Alle var tilstede
 - Sassan gjorde ferdig powerDown funksjonaliteten og begynte på testing
 - Simon skrev tester og teknisk dokumentasjon
-###Prosjekt og prosjektstruktur
+- Ørjan implementerte at robotter starter på rett posisjon.
 
-###Retrospektiv
+25.03 (Torsdag 12:00-15:00)
+- Alle var tilstede
+- Vi hadde code with me session der vi jobbet med deloppgave 1 og 2 i obligen
+
+###Prosjekt og prosjektstruktur
+- Roller:
+  Vi har gått litt vekk fra rollene til tider og heller programmert det som trengs.
+  Det har vist seg å være nyttig å ha kunnskap om hvordan programmet fungerer som
+  en helhet. Vi har fortsatt roller, men de er mindre rigide nå.
+  Teamlead og kundekontakt er uforandret.
+  
+- Prosjektmetodikk:
+  Det er ingen nye erfaringer verdt å nevne med henhold til prosjektmetodikk.
+  Vi synes at den blandingen vi har valgt av Scrum og Kanban har fungert bra
+  hittil.
+
+####Retrospektiv
+Til nå har prosjektstrukturen fungert bra. Vi har hatt god kommunikasjon og en
+trivelig atmosfære, som gjør det lett for enkeltindividene å både bidra og få hjelp.
+Vi har også hatt faste møter der vi får orientert oss og planlagt hva som må gjøres fremover.
+
+I denne innleveringsperioden har vi vært flinkere å legge til og bruke notiser på prosjekttavlen.
+
+Forbedringspunkter:
+1) Bli mer bevisst på meldinger i Discord. (Det gjør vi med å skru på varsler for alle meldinger i vår gruppechat)
+2) Bli flinkere til å sette arbeidsoppgaver for sprinten i starten av sprinten.
+3) Skrive javadoc til flere funksjoner/klasser.
+
+Prioriterte oppgaver fremover:
+1) Fikse hardcoded layer som fører til bugs i boardLogic
+2) Fikse bugs rundt conveyorbelts
+3) Implementere wrenches/tannhjul
+4) Implementere grafisk interface for fullført spill
+
+Lavprioriterte oppgaver:
+1) Test/Dev-client
+2) Option card
+3) Map maker
+
+
+###Krav
+Alle MVP kravene er fullført.
+I begynnelsen av denne sprinten bestemte vi oss for å prioritere kortfunksjonalitet og multiplayer,
+dette er nå implementert. Etter MVP kravene ble fullført har vi jobbet med lavprioritets-kravene,
+disse kravene kan ses i project-boardet.
+
+###Bugs
+- Vegger fungerer bare på visse kart (TiledMap.tmx, ikke Checkmate.tmx f.eks.)
+- Conveyorbelts har udefinert oppførsel når 2 roboter kolliderer.
+- Conveyorbelts roterer ikke roboter.
+
+###Arbeidsfordeling
+Arbeidsfordelingen har vært gjevn. Fikset en bug på slutten av sprinten (24.03) som gjorde
+at Asle sine commits ikke ble vist på github.
 
 ###Teknisk informasjon
 ####Krav og kjøreinstruksjoner
@@ -162,7 +235,7 @@ Krav til software:
 - Java 9 og opp
 - Maven 3.6.3 og opp
 
-Åpne command promt (cmd) og skriv følgende kommandoer:
+Åpne command prompt (cmd) og skriv følgende kommandoer:
 - cd *lokasjon til spill-filene*
 - mvn clean install
 - mvn exec:java
@@ -185,3 +258,10 @@ Nå vil du komme til spill lobbyen. Hvor man venter på at alle skal få koble s
 spillet. Her kan du også se roboten du vil spille som. Hosten kan da trykke "play" nede i venstre hjørne for å starte spillet.
 
 Når spillet har startet får du muligheten til å programmere roboten din med kortene du får tildelt.
+Trykk på "edit" nede på skjermen for å se kortene dine. Programmering fungerer som et drag and drop system.
+Når du har programmert roboten din, trykk på "ready". Når alle i spillet har trykket ready, så vil spillet oppdateres
+og neste runde vil starte.
+
+Første spiller som er innom alle flaggene i riktig rekkefølge vinner!
+
+For å lukke spillet, lukk vinduet ved å trykke på krysset oppe til høyre. (Server og klient blir automatisk lukket om Gdx-applikasjonen lukkes.)

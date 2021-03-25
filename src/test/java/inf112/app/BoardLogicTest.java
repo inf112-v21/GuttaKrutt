@@ -94,6 +94,7 @@ public class BoardLogicTest {
         assertEquals(1,map[4][1][2]);
     }
 
+    //Testen funker ikke helt som den skal enda, så er derfor kommentert ut for nå
     //@Test
     public void RobotsBlockLaserBeams() {
         Map<UUID,Player> players = new HashMap<>();
