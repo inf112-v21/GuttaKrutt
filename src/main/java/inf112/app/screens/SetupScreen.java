@@ -97,7 +97,7 @@ public class SetupScreen implements Screen {
                 try {
                     server = new GameServer();
                     server.setMap(selected);
-                    client = new GameClient("localhost",true);
+                    client = new GameClient();
                     client.getClient().sendTCP(name.getText());
                 } catch (IOException e) {
                     e.printStackTrace();
