@@ -227,7 +227,9 @@ disse kravene kan ses i project-boardet.
 
 ###Arbeidsfordeling
 Arbeidsfordelingen har vært gjevn. Fikset en bug på slutten av sprinten (24.03) som gjorde
-at Asle sine commits ikke ble vist på github.
+at Asle sine commits ikke ble vist på github. Alle code with me sesjonene blir hostet av Simon,
+derfor vil nesten alle commitene i ObligatoriskOppgave3.md komme fra Simon, selv om
+alle har deltatt.
 
 ###Teknisk informasjon
 ####Krav og kjøreinstruksjoner
