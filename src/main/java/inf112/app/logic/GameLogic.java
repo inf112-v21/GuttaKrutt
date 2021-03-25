@@ -33,16 +33,18 @@ public class GameLogic {
         deck = new Deck();
         buildDeck();
         deck.shuffle();
-        playerList = client.getPlayerList();
-        uuid = client.clientUUID;
-        dealCards();
+        if (client != null) {
+            playerList = client.getPlayerList();
+            uuid = client.clientUUID;
+            dealCards();
+        }
     }
 
     /* builds a deck of cards according to the game rules
     * (18 move1, 12 move2, 6 move3, 6 backup (reverse), 18 rotate
     * cards both directions, 6 U-turn) */
     public void buildDeck() {
-        for (int i=490; i<=650; i+=10) {
+        for (int i=490; i<=660; i+=10) {
             Card c = new Card(Card.CardType.MOVE1, i);
             deck.insert(c);
         }
@@ -54,7 +56,7 @@ public class GameLogic {
             Card c = new Card(Card.CardType.MOVE3, i);
             deck.insert(c);
         }
-        for (int i=430; i<=470; i+=10) {
+        for (int i=430; i<=480; i+=10) {
             Card c = new Card(Card.CardType.BACKUP, i);
             deck.insert(c);
         }
