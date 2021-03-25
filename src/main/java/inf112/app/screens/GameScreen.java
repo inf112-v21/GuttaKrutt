@@ -393,33 +393,35 @@ public class GameScreen implements Screen {
             if (main) {
                 cardSelectDnD.addTarget(new CustomTarget(image, players.get(clientUUID), i));
                 int finalI = i;
-                cardSwitchDnD.addTarget(new DragAndDrop.Target(image) {
-                    @Override
-                    public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
-                        return true;
-                    }
+                if (finalI < 9 - player.getRobot().getDamage()) {
+                    cardSwitchDnD.addTarget(new DragAndDrop.Target(image) {
+                        @Override
+                        public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+                            return true;
+                        }
 
-                    @Override
-                    public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
-                        Card[] programRegister = player.getRobot().getProgramRegister();
-                        Card oldCard = programRegister[finalI];
-                        CardAndPlace newCard = (CardAndPlace) payload.getObject();
+                        @Override
+                        public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+                            Card[] programRegister = player.getRobot().getProgramRegister();
+                            Card oldCard = programRegister[finalI];
+                            CardAndPlace newCard = (CardAndPlace) payload.getObject();
 
-                        programRegister[finalI] = newCard.card;
-                        programRegister[newCard.pos] = oldCard;
-                        player.getRobot().setProgramRegister(programRegister);
-                    }
-                });
-                cardSwitchDnD.addSource(new DragAndDrop.Source(image) {
-                    @Override
-                    public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
-                        DragAndDrop.Payload payload = new DragAndDrop.Payload();
-                        payload.setObject(new CardAndPlace(card,finalI));
+                            programRegister[finalI] = newCard.card;
+                            programRegister[newCard.pos] = oldCard;
+                            player.getRobot().setProgramRegister(programRegister);
+                        }
+                    });
+                    cardSwitchDnD.addSource(new DragAndDrop.Source(image) {
+                        @Override
+                        public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
+                            DragAndDrop.Payload payload = new DragAndDrop.Payload();
+                            payload.setObject(new CardAndPlace(card, finalI));
 
-                        payload.setDragActor(new Image(card.draw()));
-                        return payload;
-                    }
-                });
+                            payload.setDragActor(new Image(card.draw()));
+                            return payload;
+                        }
+                    });
+                }
             }
         }
         return table;
@@ -545,6 +547,7 @@ public class GameScreen implements Screen {
                 Card[] programRegister = player.getRobot().getProgramRegister();
                 programRegister[card.pos] = null;
                 player.getRobot().setProgramRegister(programRegister);
+                makeCardsTable();
             }
         });
     }
