@@ -10,7 +10,7 @@ import inf112.app.screens.GameScreen;
 
 import java.util.*;
 
-/* controls the main loop of the game and executes the game rules */
+/** controls the main loop of the game and executes the game rules */
 public class GameLogic {
 
     GameScreen game;
@@ -24,7 +24,7 @@ public class GameLogic {
 
     public GameLogic() {this(null,null);}
 
-    /* class constructor which sets the initial turn number, builds
+    /** class constructor which sets the initial turn number, builds
     * a deck and initiates the players */
     public GameLogic(GameScreen game, GameClient client) {
         this.game = game;
@@ -38,7 +38,7 @@ public class GameLogic {
         dealCards();
     }
 
-    /* builds a deck of cards according to the game rules
+    /** builds a deck of cards according to the game rules
     * (18 move1, 12 move2, 6 move3, 6 backup (reverse), 18 rotate
     * cards both directions, 6 U-turn) */
     public void buildDeck() {
@@ -76,6 +76,13 @@ public class GameLogic {
         return deck;
     }
 
+    /**
+     * the main loop of the game where the player announces that
+     * they are ready (after choosing their cards) and wait for
+     * other players to press ready as well. Then, the cards are
+     * played in the correct order. Players who did not choose
+     * to power down receive new cards and a new round starts.
+     */
     public void ready() {
         playerList.get(uuid).setReady(true);
         client.updatePlayer(uuid,playerList.get(uuid));
@@ -108,6 +115,12 @@ public class GameLogic {
             System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
     }
 
+    /**
+     * runs after the player chooses to power down. Their next
+     * round is then skipped and the robot's damage tokens are
+     * discarded. Only works if the robot has one or more damage
+     * tokens.
+     */
     public void powerDown() {
         Robot robot = playerList.get(uuid).getRobot();
         if (robot.getDamage() > 0) {
@@ -116,6 +129,9 @@ public class GameLogic {
         }
     }
 
+    /**
+     * loops until all players have announced that they are ready.
+     */
     public void loopTillOthersAreReady() {
         boolean allPlayerReady = false;
         while(!allPlayerReady) {
@@ -161,7 +177,7 @@ public class GameLogic {
 
     public Map<UUID,Player> getPlayers() { return playerList; }
 
-    /* deals cards to each player according to the number
+    /** deals cards to each player according to the number
     * of their damage tokens */
     public void dealCards() {
         for (Player p : playerList.values()) {
