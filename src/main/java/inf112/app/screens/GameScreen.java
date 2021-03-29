@@ -296,7 +296,7 @@ public class GameScreen implements Screen {
 
         for(int i = 0; i<laserLayer.getWidth(); i++) {
             for (int j = 0; j < laserLayer.getHeight(); j++) {
-                if(boardLogic.getMap()[4][i][j]!=0)
+                if(boardLogic.getMap().get("laser")[i][j]!=0)
                     drawLaser(i,j);
             }
         }
@@ -304,7 +304,7 @@ public class GameScreen implements Screen {
 
     public void drawLaser(int x,int y) {
         TiledMapTileLayer.Cell laser = new TiledMapTileLayer.Cell();
-        int typeOfLaser = boardLogic.getMap()[4][x][y];
+        int typeOfLaser = boardLogic.getMap().get("laser")[x][y];
         switch (typeOfLaser) {
             case 1:
                 laser.setTile(tiledMap.getTileSets().getTile(39));
