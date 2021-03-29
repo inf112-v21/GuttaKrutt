@@ -117,7 +117,14 @@ public class BoardLogicTest {
         }
         boardLogic.laserSpawner();
 
+        assertEquals(1,map.get("laser")[3][4]);
         assertEquals(0,map.get("laser")[1][4]);
+        assertEquals(2,map.get("laser")[4][1]);
+        assertEquals(0,map.get("laser")[4][3]);
+        assertEquals(2,map.get("laser")[0][3]);
+        assertEquals(0,map.get("laser")[0][1]);
+        assertEquals(1,map.get("laser")[1][0]);
+        assertEquals(0,map.get("laser")[3][0]);
     }
 
     @Test
