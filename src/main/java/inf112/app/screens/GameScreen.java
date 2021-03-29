@@ -61,10 +61,11 @@ public class GameScreen implements Screen {
     int uiWidth;
     int uiHeight;
 
+    Table rootTable;
+
     Table robotsTable;
     Table controlsTable;
     Table PRTable;
-    Stack gameTable;
 
     Window cardSelectTable;
 
@@ -82,6 +83,10 @@ public class GameScreen implements Screen {
                 return boardLogic.keyUp(keyCode);
             }
         };
+
+        rootTable = new Table();
+        stage.addActor(rootTable);
+        rootTable.setFillParent(true);
 
         this.client = client;
 
@@ -118,11 +123,9 @@ public class GameScreen implements Screen {
 
         gamePort = new FillViewport((Gdx.graphics.getWidth()- uiWidth)/200F,
                 (Gdx.graphics.getHeight()- uiHeight)/200F,camera);
-        gameTable = new Stack();
-        gameTable.setBounds(0,uiHeight,Gdx.graphics.getWidth()- uiWidth,Gdx.graphics.getHeight()- uiHeight);
-        stage.addActor(gameTable);
-        gameTable.add(new Label("",RoboRally.skin));
-        gameTable.addListener(new DragListener() {
+        ViewportWidget vpw = new ViewportWidget(gamePort);
+        rootTable.add(vpw).prefWidth(10000).prefHeight(10000);//.width(Gdx.graphics.getWidth()-uiWidth).height(Gdx.graphics.getHeight()-uiHeight);
+        vpw.addListener(new DragListener() {
             @Override
             public void drag(InputEvent event, float x, float y, int pointer) {
                 camera.translate(-getDeltaX() / 150F * camera.zoom, -getDeltaY() / 150F * camera.zoom);
@@ -136,10 +139,6 @@ public class GameScreen implements Screen {
             }
         });
 
-        gameTable.setDebug(true);
-
-        gamePort.setScreenBounds(0, uiHeight,Gdx.graphics.getWidth()- uiWidth,Gdx.graphics.getHeight()- uiHeight);
-
         renderer = new OrthogonalTiledMapRenderer(tiledMap, 1F/300);
         renderer.setView(camera);
 
@@ -147,9 +146,7 @@ public class GameScreen implements Screen {
         playerTextures = TextureRegion.split(playerTexture,300,300);
 
         robotsTable = new Table();
-        stage.addActor(robotsTable);
-        robotsTable.setSize(uiWidth,Gdx.graphics.getHeight()-uiWidth);
-        robotsTable.setPosition(Gdx.graphics.getWidth()-uiWidth, uiHeight);
+        rootTable.add(robotsTable).width(uiWidth).top();
 
         robotsTable.setDebug(true);
 
@@ -172,9 +169,8 @@ public class GameScreen implements Screen {
         cardSwitchDnD = new DragAndDrop();
 
         controlsTable = new Table();
-        stage.addActor(controlsTable);
-        controlsTable.setSize(Gdx.graphics.getWidth(),uiHeight);
-        controlsTable.pad(20);
+        rootTable.row();
+        rootTable.add(controlsTable).height(uiHeight);
 
         controlsTable.setDebug(true);
 
@@ -411,23 +407,25 @@ public class GameScreen implements Screen {
                             player.getRobot().setProgramRegister(programRegister);
                         }
                     });
-                    cardSwitchDnD.addSource(new DragAndDrop.Source(image) {
-                        @Override
-                        public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
-                            DragAndDrop.Payload payload = new DragAndDrop.Payload();
-                            payload.setObject(new CardAndPlace(card, finalI));
+                    if (card != null) {
+                        cardSwitchDnD.addSource(new DragAndDrop.Source(image) {
+                            @Override
+                            public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
+                                DragAndDrop.Payload payload = new DragAndDrop.Payload();
+                                payload.setObject(new CardAndPlace(card, finalI));
 
-                            payload.setDragActor(new Image(card.draw()));
-                            return payload;
-                        }
-                    });
+                                payload.setDragActor(new Image(card.draw()));
+                                return payload;
+                            }
+                        });
+                    }
                 }
             }
         }
         return table;
     }
 
-    public class CardAndPlace {
+    public static class CardAndPlace {
         public Card card;
         public int pos;
 
