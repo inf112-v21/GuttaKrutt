@@ -23,7 +23,6 @@ import inf112.app.*;
 import inf112.app.logic.*;
 import inf112.app.networking.GameClient;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -65,10 +64,15 @@ public class GameScreen implements Screen {
     Table robotsTable;
     Table controlsTable;
     Table PRTable;
+    Stack gameTable;
 
-    Table cardSelectTable;
+    Window cardSelectTable;
 
-    DragAndDrop dragAndDrop;
+    DragAndDrop cardSelectDnD;
+    DragAndDrop cardSwitchDnD;
+
+    Thread roundThread;
+    boolean roundRunning;
 
     public GameScreen(Game game, GameClient client) {
         this.game = game;
@@ -103,17 +107,36 @@ public class GameScreen implements Screen {
         players = gameLogic.getPlayers();
         clientUUID = client.clientUUID;
 
-        boardLogic = new BoardLogic(new MatrixMapGenerator().fromTiledMap(tiledMap).getMap(), client.getPlayerList());
+        boardLogic = new BoardLogic(tiledMap, client.getPlayerList());
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 5, 5);
         camera.position.x = 2.5F;
 
-        gamePort = new FillViewport((Gdx.graphics.getWidth()- uiWidth)/200F,
-                (Gdx.graphics.getHeight()- uiHeight)/200F,camera);
-
         uiWidth = 100;
         uiHeight = 200;
+
+        gamePort = new FillViewport((Gdx.graphics.getWidth()- uiWidth)/200F,
+                (Gdx.graphics.getHeight()- uiHeight)/200F,camera);
+        gameTable = new Stack();
+        gameTable.setBounds(0,uiHeight,Gdx.graphics.getWidth()- uiWidth,Gdx.graphics.getHeight()- uiHeight);
+        stage.addActor(gameTable);
+        gameTable.add(new Label("",RoboRally.skin));
+        gameTable.addListener(new DragListener() {
+            @Override
+            public void drag(InputEvent event, float x, float y, int pointer) {
+                camera.translate(-getDeltaX() / 150F * camera.zoom, -getDeltaY() / 150F * camera.zoom);
+            }
+        });
+        stage.addListener(new DragListener() {
+            @Override
+            public boolean scrolled(InputEvent event, float x, float y, int amount) {
+                camera.zoom += amount/5F;
+                return true;
+            }
+        });
+
+        gameTable.setDebug(true);
 
         gamePort.setScreenBounds(0, uiHeight,Gdx.graphics.getWidth()- uiWidth,Gdx.graphics.getHeight()- uiHeight);
 
@@ -132,36 +155,26 @@ public class GameScreen implements Screen {
 
         for (Player player : players.values()) {
             Robot robot = player.getRobot();
-            Image img = new Image(playerTextures[0][0]);
+            Image img = new Image(playerTextures[robot.getTexture()[0]][robot.getTexture()[1]]);
             img.addListener(new TextTooltip(robot.getDamage() + "", RoboRally.skin));
-            robotsTable.add(img).height(uiWidth);
+            Table table = new Table();
+            //noinspection SuspiciousNameCombination
+            table.add(img).height(uiWidth);
+            table.row();
+            table.add(drawRegister(player));
+            robotsTable.add(table);
             robotsTable.row();
-            robotsTable.add(new Table());
 
+            table.setDebug(true);
         }
-        stage.addListener(new DragListener() {
-            @Override
-            public void drag(InputEvent event, float x, float y, int pointer) {
-                camera.translate(-getDeltaX() / 150F, -getDeltaY() / 150F);
-            }
 
-            @Override
-            public boolean scrolled(InputEvent event, float x, float y, int amount) {
-                camera.zoom += amount/5F;
-                return true;
-            }
-        });
-
-        dragAndDrop = new DragAndDrop();
-
-        cardSelectTable = new Table();
-        cardSelectTable.setSize(260,Gdx.graphics.getHeight()-uiHeight-20);
-        cardSelectTable.setPosition(Gdx.graphics.getWidth()-uiWidth-270,uiHeight+10);
-        stage.addActor(cardSelectTable);
+        cardSelectDnD = new DragAndDrop();
+        cardSwitchDnD = new DragAndDrop();
 
         controlsTable = new Table();
         stage.addActor(controlsTable);
         controlsTable.setSize(Gdx.graphics.getWidth(),uiHeight);
+        controlsTable.pad(20);
 
         controlsTable.setDebug(true);
 
@@ -173,7 +186,6 @@ public class GameScreen implements Screen {
         button.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                //game.setScreen(new CardSelectScreen(game, players.get(clientUUID), thisScreen));
                 makeCardsTable();
             }
             @Override
@@ -184,11 +196,11 @@ public class GameScreen implements Screen {
 
         controlsTable.add(button);
 
-        button = new TextButton("Do Turn",RoboRally.skin);
+        button = new TextButton("Power Down",RoboRally.skin);
         button.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                Thread thread = new Thread(() -> gameLogic.doTurn());
+                Thread thread = new Thread(() -> gameLogic.powerDown());
                 thread.start();
             }
             @Override
@@ -199,11 +211,13 @@ public class GameScreen implements Screen {
 
         controlsTable.add(button);
 
-        button = new TextButton("Submit",RoboRally.skin);
+        button = new TextButton("Ready",RoboRally.skin);
         button.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                gameLogic.submit();
+                roundThread = new Thread(() -> gameLogic.ready());
+                roundThread.start();
+                roundRunning = true;
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -212,6 +226,10 @@ public class GameScreen implements Screen {
         });
 
         controlsTable.add(button);
+
+        cardSelectTable = new Window("Cards", RoboRally.skin);
+        cardSelectTable.setSize(450,300);
+        cardSelectTable.setPosition(Gdx.graphics.getWidth()/2F-225,uiHeight+1);
     }
 
     @Override
@@ -231,6 +249,13 @@ public class GameScreen implements Screen {
         //Board
         gamePort.apply();
 
+        if (roundRunning && !roundThread.isAlive()) {
+            roundRunning = false;
+            if (stage.getActors().contains(cardSelectTable,true)) {
+                makeCardsTable();
+            }
+        }
+
         drawRobots();
         drawLasers();
 
@@ -241,12 +266,12 @@ public class GameScreen implements Screen {
         stage.getViewport().apply();
 
         PRTable.reset();
-        PRTable.add(drawRegister(players.get(clientUUID),true));
+        PRTable.add(drawRegister(players.get(clientUUID),true,82,129));
 
         int i = 0;
         for (Player player : players.values()) {
-            ((TextTooltip) robotsTable.getChildren().get(i*2).getListeners().get(0)).getActor().setText(player.getRobot().getDamage() + "\n" + player.getName());
-            robotsTable.getChildren().set(i*2+1, drawRegister(player));
+            Table table = (Table) robotsTable.getChildren().get(i);
+            updatePlayerTable(table,player);
             i++;
         }
 
@@ -254,11 +279,13 @@ public class GameScreen implements Screen {
         stage.draw();
     }
 
+
+
     public void drawRobots() {
         clearLayer(playerLayer);
         for (Player player : players.values()) {
             Robot robot = player.getRobot();
-            TiledMapTileLayer.Cell currentPlayerCell = new TiledMapTileLayer.Cell();;
+            TiledMapTileLayer.Cell currentPlayerCell = new TiledMapTileLayer.Cell();
             int[] index = robot.getTexture();
             currentPlayerCell.setTile(new StaticTiledMapTile(playerTextures[index[0]][index[1]]));
 
@@ -339,19 +366,22 @@ public class GameScreen implements Screen {
     }
 
     public Table drawRegister(Player player) {
-        return drawRegister(player,false);
+        return drawRegister(player,false,uiWidth/5, (int) (uiWidth/5*1.6));
     }
 
-    public Table drawRegister(Player player, boolean main) {
+    public Table drawRegister(Player player, boolean main,int width, int height) {
         Table table = new Table();
         for (int i=0; i<5; i++) {
             Card card = player.getRobot().getProgramRegister()[i];
             Image image;
-            if (card != null) {
-                image = new Image(card.draw());
-            } else {
+            if (card == null) {
                 image = new Image(new Texture(Gdx.files.internal("Card_Base.png")));
                 image.setColor(Color.GRAY);
+            }
+            else if (!main && gameLogic.getCurrentCard() == null) {
+                image = new Image(new Texture(Gdx.files.internal("Card_Base.png")));
+            } else {
+                image = new Image(card.draw());
             }
             if (i >= 9 - player.getRobot().getDamage()) {
                 image.setColor(Color.GRAY);
@@ -359,12 +389,52 @@ public class GameScreen implements Screen {
             if (card == gameLogic.getCurrentCard() && card != null) {
                 image.setColor(Color.YELLOW);
             }
-            table.add(image);
+            table.add(image).width(width).height(height);
             if (main) {
-                dragAndDrop.addTarget(new CustomTarget(image, players.get(clientUUID), i));
+                cardSelectDnD.addTarget(new CustomTarget(image, players.get(clientUUID), i));
+                int finalI = i;
+                if (finalI < 9 - player.getRobot().getDamage()) {
+                    cardSwitchDnD.addTarget(new DragAndDrop.Target(image) {
+                        @Override
+                        public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+                            return true;
+                        }
+
+                        @Override
+                        public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+                            Card[] programRegister = player.getRobot().getProgramRegister();
+                            Card oldCard = programRegister[finalI];
+                            CardAndPlace newCard = (CardAndPlace) payload.getObject();
+
+                            programRegister[finalI] = newCard.card;
+                            programRegister[newCard.pos] = oldCard;
+                            player.getRobot().setProgramRegister(programRegister);
+                        }
+                    });
+                    cardSwitchDnD.addSource(new DragAndDrop.Source(image) {
+                        @Override
+                        public DragAndDrop.Payload dragStart(InputEvent inputEvent, float v, float v1, int i) {
+                            DragAndDrop.Payload payload = new DragAndDrop.Payload();
+                            payload.setObject(new CardAndPlace(card, finalI));
+
+                            payload.setDragActor(new Image(card.draw()));
+                            return payload;
+                        }
+                    });
+                }
             }
         }
         return table;
+    }
+
+    public class CardAndPlace {
+        public Card card;
+        public int pos;
+
+        public CardAndPlace(Card card, int pos) {
+            this.card = card;
+            this.pos = pos;
+        }
     }
 
     public class CustomTarget extends DragAndDrop.Target {
@@ -394,13 +464,13 @@ public class GameScreen implements Screen {
             if (pos < 9 - player.getRobot().getDamage()) {
                 Card card = ((Card) payload.getObject());
                 ((Image) getActor()).setDrawable(new Image(card.draw()).getDrawable());
-                int i = player.getCards().indexOf(card);
                 player.getCards().remove(card);
 
                 if (player.getRobot().getProgramRegister()[pos] != null) {
                     player.getCards().add(player.getRobot().getProgramRegister()[pos]);
                 }
 
+                cardSelectTable.remove();
                 makeCardsTable();
 
                 Card[] cards = player.getRobot().getProgramRegister();
@@ -412,39 +482,46 @@ public class GameScreen implements Screen {
     }
 
     public void makeCardsTable() {
+        stage.addActor(cardSelectTable);
         cardSelectTable.reset();
 
+        Stack stack = new Stack();
         Table cardsTable = new Table();
         cardsTable.left();
-        ScrollPane sc = new ScrollPane(cardsTable,RoboRally.skin);
+        stack.add(cardsTable);
+        ScrollPane sc = new ScrollPane(stack,RoboRally.skin);
         sc.setScrollbarsVisible(true);
 
         cardSelectTable.add(sc);
-        cardSelectTable.row();
 
-        TextButton button = new TextButton("Done",RoboRally.skin);
+        TextButton button = new TextButton("Close",RoboRally.skin);
         button.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                cardSelectTable.reset();
+                cardSelectTable.remove();
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
         });
-        cardSelectTable.add(button);
+        Table buttonTable = new Table();
+        stack.add(buttonTable);
+        buttonTable.top().right();
+        buttonTable.add(button);
+
+        Player player = players.get(clientUUID);
 
         int i = 0;
-        for (Card card : players.get(clientUUID).getCards()) {
-            if (i % 3 == 0) {
+        for (Card card : player.getCards()) {
+            if (i % 5 == 0) {
                 cardsTable.row();
             }
 
             Image image = new Image(card.draw());
             cardsTable.add(image).width(82).height(131).pad(2);
 
-            dragAndDrop.addSource(new DragAndDrop.Source(image) {
+            cardSelectDnD.addSource(new DragAndDrop.Source(image) {
                 @Override
                 public DragAndDrop.Payload dragStart(InputEvent event, float x, float y, int pointer) {
                     DragAndDrop.Payload payload = new DragAndDrop.Payload();
@@ -456,5 +533,30 @@ public class GameScreen implements Screen {
             });
             i++;
         }
+
+        cardSwitchDnD.addTarget(new DragAndDrop.Target(cardSelectTable) {
+            @Override
+            public boolean drag(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+                return true;
+            }
+
+            @Override
+            public void drop(DragAndDrop.Source source, DragAndDrop.Payload payload, float v, float v1, int i) {
+                CardAndPlace card = (CardAndPlace) payload.getObject();
+                player.getCards().insert(card.card);
+                Card[] programRegister = player.getRobot().getProgramRegister();
+                programRegister[card.pos] = null;
+                player.getRobot().setProgramRegister(programRegister);
+                makeCardsTable();
+            }
+        });
+    }
+
+    private void updatePlayerTable(Table table, Player player) {
+        TextTooltip tooltip = (TextTooltip) table.getChildren().get(0).getListeners().get(0);
+        tooltip.getActor().setText(player.getRobot().getDamage() + "\n" + player.getName());
+        table.getChildren().get(1).remove();
+        table.row();
+        table.add(drawRegister(player));
     }
 }
