@@ -1,6 +1,5 @@
 package inf112.app;
 
-import com.badlogic.gdx.math.Vector2;
 import inf112.app.logic.BoardLogic;
 import org.junit.Before;
 import org.junit.Test;
@@ -95,6 +94,7 @@ public class BoardLogicTest {
         assertEquals(1,map[4][1][2]);
     }
 
+    //Testen funker ikke helt som den skal enda, så er derfor kommentert ut for nå
     //@Test
     public void RobotsBlockLaserBeams() {
         Map<UUID,Player> players = new HashMap<>();
