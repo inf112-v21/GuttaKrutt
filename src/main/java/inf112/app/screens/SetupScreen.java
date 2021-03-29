@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import inf112.app.networking.GameClient;
 import inf112.app.networking.GameServer;
-import inf112.app.RoboRally;
+import inf112.app.*;
 
 import java.io.IOException;
 
@@ -60,7 +60,7 @@ public class SetupScreen implements Screen {
 
         list = new List<>(RoboRally.skin);
         list.setItems(maps);
-        table.add(list);
+        table.add(list).pad(5);
 
         selected = list.getSelected();
 
@@ -75,7 +75,7 @@ public class SetupScreen implements Screen {
         renderer.setView(camera);
 
         mapPort = new StretchViewport(5, 5, camera);
-        mapPort.setScreenBounds(Gdx.graphics.getWidth()-500, 300, 300, 300);
+        table.add(new ViewportWidget(mapPort)).height(300).prefWidth(300);
 
         name = new TextField("", RoboRally.skin);
         name.setWidth(Gdx.graphics.getWidth()/2F);
@@ -144,8 +144,6 @@ public class SetupScreen implements Screen {
     public void resize(int i, int i1) {
         stage.getViewport().update(i,i1,true);
         stage.getViewport().getCamera().update();
-
-        mapPort.setScreenBounds(Math.min(Gdx.graphics.getWidth()/4*3,Gdx.graphics.getWidth()-300), Gdx.graphics.getHeight()/2-150, 300, 300);
 
         name.setWidth(Gdx.graphics.getWidth()/2F);
         name.setPosition(Gdx.graphics.getWidth()/2F-name.getWidth()/2-40,40);

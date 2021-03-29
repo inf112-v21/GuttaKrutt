@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 public class BoardLogicTest {
 
-    int[][][] map;
+    Map<String,int[][]> map;
     Map<UUID,Player> players;
     BoardLogic boardLogic;
 
@@ -25,7 +25,10 @@ public class BoardLogicTest {
 
     public void SetUpEmptyMap(Map<UUID,Player> players) {
         this.players = players;
-        this.map = new int[6][5][5];
+        this.map = new HashMap<>();
+        String[] layers = {"board","hole","flag","laser","wall","wrench"};
+        for (String s : layers)
+            map.put(s,new int[5][5]);
         GenerateEmptyMap(map);
         this.boardLogic = new BoardLogic(map, players);
     }
@@ -34,30 +37,28 @@ public class BoardLogicTest {
         //Max four flags
         if(x > 4)
             x = 4;
-        this.players = players;
-        this.map = new int[6][5][5];
-        GenerateEmptyMap(map);
+        SetUpEmptyMap(players);
         for(int i = 0; i < x; i++){
             if(i==0)
-                map[2][1][1] = 55;
+                map.get("flag")[1][1] = 55;
             if(i==1)
-                map[2][0][1] = 63;
+                map.get("flag")[0][1] = 63;
             if(i==2)
-                map[2][0][3] = 71;
+                map.get("flag")[0][3] = 71;
             if(i==3)
-                map[2][1][3] = 79;
+                map.get("flag")[1][3] = 79;
         }
         this.boardLogic = new BoardLogic(map, players);
     }
 
-    public void GenerateEmptyMap(int[][][] map) {
-        for(int i=0; i<6; i++){
+    public void GenerateEmptyMap(Map<String,int[][]> map) {
+        for (Map.Entry<String, int[][]> layer : map.entrySet()) {
             for(int j=0; j<5; j++){
                 for(int k=0; k<5; k++){
-                    if(i==0)
-                        map[i][j][k]=1;
+                    if(layer.getKey().equals("board"))
+                        layer.getValue()[j][k]=1;
                     else
-                        map[i][j][k]=0;
+                        layer.getValue()[j][k]=0;
                 }
             }
         }
@@ -65,70 +66,72 @@ public class BoardLogicTest {
 
     @Test
     public void LaserWallGeneratesLaser(){
-        map[5][4][4] = 46;
+        map.get("wall")[4][4] = 46;
 
         boardLogic.laserSpawner();
 
-        assertEquals(1,map[4][4][4]);
-        assertEquals(1,map[4][3][4]);
-        assertEquals(1,map[4][2][4]);
-        assertEquals(1,map[4][1][4]);
-        assertEquals(1,map[4][0][4]);
+        assertEquals(1,map.get("laser")[4][4]);
+        assertEquals(1,map.get("laser")[3][4]);
+        assertEquals(1,map.get("laser")[2][4]);
+        assertEquals(1,map.get("laser")[1][4]);
+        assertEquals(1,map.get("laser")[0][4]);
     }
 
     @Test
     public void LaserBeamsCross() {
-        map[5][4][2] = 46;
-        map[5][2][0] = 37;
+        map.get("wall")[4][2] = 46;
+        map.get("wall")[2][0] = 37;
 
         boardLogic.laserSpawner();
 
-        assertEquals(2,map[4][2][0]);
-        assertEquals(2,map[4][2][1]);
-        assertEquals(2,map[4][2][3]);
+        assertEquals(2,map.get("laser")[2][0]);
+        assertEquals(2,map.get("laser")[2][1]);
+        assertEquals(2,map.get("laser")[2][3]);
 
-        assertEquals(3,map[4][2][2]);
+        assertEquals(3,map.get("laser")[2][2]);
 
-        assertEquals(1,map[4][4][2]);
-        assertEquals(1,map[4][3][2]);
-        assertEquals(1,map[4][1][2]);
+        assertEquals(1,map.get("laser")[4][2]);
+        assertEquals(1,map.get("laser")[3][2]);
+        assertEquals(1,map.get("laser")[1][2]);
     }
 
-    //Testen funker ikke helt som den skal enda, så er derfor kommentert ut for nå
-    //@Test
+    @Test
     public void RobotsBlockLaserBeams() {
         Map<UUID,Player> players = new HashMap<>();
         for(int i=0; i<4; i++)
             players.put(UUID.randomUUID(),new Player());
         SetUpEmptyMap(players);
-        map[5][4][4] = 46;
-        map[5][4][0] = 37;
-        map[5][0][0] = 38;
-        map[5][0][4] = 45;
+        map.get("wall")[4][4] = 46;
+        map.get("wall")[4][0] = 37;
+        map.get("wall")[0][0] = 38;
+        map.get("wall")[0][4] = 45;
         int i = 0;
         for (Player player : players.values()) {
             switch (i) {
-                case 0: player.getRobot().setPos(2,4);
-                case 1: player.getRobot().setPos(4,2);
-                case 2: player.getRobot().setPos(2,0);
-                case 3: player.getRobot().setPos(0,2);
+                case 0: player.getRobot().setPos(2,4); break;
+                case 1: player.getRobot().setPos(4,2); break;
+                case 2: player.getRobot().setPos(2,0); break;
+                case 3: player.getRobot().setPos(0,2); break;
             }
             i++;
         }
         boardLogic.laserSpawner();
 
-        assertEquals(0, map[3][2][4]);
-        assertEquals(0,map[4][1][4]);
-        /*assertEquals(0,map[4][4][3]);
-        assertEquals(0,map[4][3][0]);
-        assertEquals(0,map[4][0][1]);*/
+        assertEquals(1,map.get("laser")[3][4]);
+        assertEquals(0,map.get("laser")[1][4]);
+        assertEquals(2,map.get("laser")[4][1]);
+        assertEquals(0,map.get("laser")[4][3]);
+        assertEquals(2,map.get("laser")[0][3]);
+        assertEquals(0,map.get("laser")[0][1]);
+        assertEquals(1,map.get("laser")[1][0]);
+        assertEquals(0,map.get("laser")[3][0]);
     }
 
     @Test
     public void PlayerTakesDamageWhenMovingIntoLaser() {
         for(Player player : players.values()) {
             //Setting up laserwall and spawns laser
-            map[5][4][2] = 46;
+            map.get("wall")[4][2] = 46;
             boardLogic.laserSpawner();
 
             //Placing player one tile below laser and checking that there is zero damage
@@ -145,7 +148,7 @@ public class BoardLogicTest {
     public void playerDiesIfMovingIntoLaserTenTimesTest(){
         for(Player player : players.values()) {
             //Setting up laserwall and spawns laser
-            map[5][4][2] = 46;
+            map.get("wall")[4][2] = 46;
             boardLogic.laserSpawner();
 
             //Placing player one tile below laser and checking that there is zero damage
@@ -191,12 +194,12 @@ public class BoardLogicTest {
         for(Player player : players.values()){
             //Player first moves on top of flag 2
             boardLogic.movePlayer(player.getRobot(), 0,1);
-            assertEquals(63, map[2][0][1]);
+            assertEquals(63, map.get("flag")[0][1]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 1
             boardLogic.movePlayer(player.getRobot(), 1,0);
-            assertEquals(55, map[2][1][1]);
+            assertEquals(55, map.get("flag")[1][1]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then back to flag 2
@@ -213,18 +216,18 @@ public class BoardLogicTest {
         for(Player player : players.values()){
             //Player first moves on top of flag 3
             boardLogic.movePlayer(player.getRobot(), 0,3);
-            assertEquals(71, map[2][0][3]);
+            assertEquals(71, map.get("flag")[0][3]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 2
             boardLogic.movePlayer(player.getRobot(), 0,-2);
-            assertEquals(63, map[2][0][1]);
+            assertEquals(63, map.get("flag")[0][1]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 1
             boardLogic.movePlayer(player.getRobot(), 1,0);
             assertEquals(false, player.getRobot().getWon());
-            assertEquals(55, map[2][1][1]);
+            assertEquals(55, map.get("flag")[1][1]);
 
             //Then back to flag 2
             boardLogic.movePlayer(player.getRobot(), -1,0);
@@ -244,23 +247,23 @@ public class BoardLogicTest {
         for(Player player : players.values()){
             //Player first moves on top of flag 4
             boardLogic.movePlayer(player.getRobot(), 1,3);
-            assertEquals(79, map[2][1][3]);
+            assertEquals(79, map.get("flag")[1][3]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 3
             boardLogic.movePlayer(player.getRobot(), -1,0);
-            assertEquals(71, map[2][0][3]);
+            assertEquals(71, map.get("flag")[0][3]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 2
             boardLogic.movePlayer(player.getRobot(), 0,-2);
-            assertEquals(63, map[2][0][1]);
+            assertEquals(63, map.get("flag")[0][1]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 1
             boardLogic.movePlayer(player.getRobot(), 1,0);
             assertEquals(false, player.getRobot().getWon());
-            assertEquals(55, map[2][1][1]);
+            assertEquals(55, map.get("flag")[1][1]);
 
             //Then back to flag 2
             boardLogic.movePlayer(player.getRobot(), -1,0);
@@ -340,7 +343,7 @@ public class BoardLogicTest {
             players.put(UUID.randomUUID(),new Player());
         SetUpEmptyMap(players);
 
-        map[5][2][2] = 16;
+        map.get("wall")[2][2] = 16;
 
         int i = 0;
         //Placing player1 at pos = (1,2) and player2 at pos = (2,2)

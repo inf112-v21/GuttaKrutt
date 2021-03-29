@@ -14,10 +14,9 @@ import java.util.UUID;
 
 public class BoardLogic extends InputAdapter {
     Map<UUID,Player> players;
-    int[][][] map;
-    Map<String,int[][]> hashMap;
+    Map<String,int[][]> map;
 
-    public BoardLogic(int[][][] map, Map<UUID, Player> players) {
+    public BoardLogic(Map<String,int[][]> map, Map<UUID, Player> players) {
         this.players = players;
         this.map = map;
         for(Player player : players.values()){
@@ -28,8 +27,7 @@ public class BoardLogic extends InputAdapter {
     public BoardLogic(TiledMap tiledMap, Map<UUID, Player> players) {
         this.players = players;
         MapParser mapParser = new MapParser().fromTiledMap(tiledMap);
-        this.map = mapParser.getMatrixMap();
-        this.hashMap = mapParser.getHashMap();
+        this.map = mapParser.getHashMap();
         int i = 0; Vector2[] startingSpots = getStartingSpots();
         for(Player player : players.values()){
             setFlagPositions(player.getRobot());
@@ -38,7 +36,7 @@ public class BoardLogic extends InputAdapter {
         }
     }
 
-    public int[][][] getMap() { return map; }
+    public Map<String,int[][]> getMap() { return map; }
 
     /**
      * Moves the input robot by old x-position + input x, and old y-position + input y.
@@ -79,21 +77,21 @@ public class BoardLogic extends InputAdapter {
         int x = robot.getX();
         int y = robot.getY();
 
-        boolean outSideBorder = (x >= map[0].length || x < 0 || y >= map[0][0].length || y < 0);
+        boolean outSideBorder = (x >= map.get("board").length || x < 0 || y >= map.get("board")[0].length || y < 0);
 
         if(outSideBorder) {
             robot.setAlive(false);
             System.out.println("inf112-skeleton.app.Player has died outside the border");
         } else {
-            int hole = map[1][x][y];
-            int flag = map[2][x][y];
+            int hole = map.get("hole")[x][y];
+            int flag = map.get("flag")[x][y];
 
             if (hole != 0) {
                 robot.setAlive(false);
                 System.out.println("inf112.skeleton.app.Player has died.");
             }
-            if (flag != 0 && checkFlags(map[2][x][y], robot)) {
-                robot.getFlagVisits().put(map[2][x][y], true);
+            if (flag != 0 && checkFlags(map.get("flag")[x][y], robot)) {
+                robot.getFlagVisits().put(map.get("flag")[x][y], true);
                 System.out.println("You got the flag!");
                 if(robot.checkWin()){
                     robot.setWon(true);
@@ -112,9 +110,9 @@ public class BoardLogic extends InputAdapter {
     }
 
     public boolean[] getWall(int x, int y) {
-        boolean outSideBorder = (x >= map[0].length || x < 0 || y >= map[0][0].length || y < 0);
+        boolean outSideBorder = (x >= map.get("board").length || x < 0 || y >= map.get("board")[0].length || y < 0);
         if (!outSideBorder) {
-            int id = map[5][x][y];
+            int id = map.get("wall")[x][y];
             boolean[] a;
             switch (id) {
                 case 8:
@@ -169,13 +167,13 @@ public class BoardLogic extends InputAdapter {
         int dir;
         for(int i=0;i<5;i++){
             for(int j=0;j<5;j++){
-                map[4][i][j]=0;
+                map.get("laser")[i][j]=0;
             }
         }
 
         for(int i = 0; i<5; i++) {
             for (int j = 0; j < 5; j++) {
-                int id = map[5][i][j];
+                int id = map.get("wall")[i][j];
                 switch (id) {
                     case 37:
                         dir = 0;
@@ -202,7 +200,7 @@ public class BoardLogic extends InputAdapter {
 
     //Denne funksjonen er en laser som rekursivt iterer over brettet
     public void laser(int x, int y, int dir) {
-        boolean outSideBorder = (x >= map[0].length || x < 0 || y >= map[0][0].length || y < 0);
+        boolean outSideBorder = (x >= map.get("board").length || x < 0 || y >= map.get("board")[0].length || y < 0);
         Robot robot = checkForRobot(x,y);
         if (robot != null) {
             robot.addDamage(1);
@@ -237,22 +235,22 @@ public class BoardLogic extends InputAdapter {
     public void checkOverLapLaser(int x, int y, int dir) {
         //Hvis laseren er horisontal skal ruten ha verdi 1, hvis en er vertikal skal ruten ha 2.
         //Hvis 2 lasere krysser skal ruten ha verdi 3
-        if(map[4][x][y]==1+(dir % 2))
-            map[4][x][y] = 3;
-        else if(map[4][x][y]==0)
-            map[4][x][y] = 2-(dir % 2);
+        if(map.get("laser")[x][y]==1+(dir % 2))
+            map.get("laser")[x][y] = 3;
+        else if(map.get("laser")[x][y]==0)
+            map.get("laser")[x][y] = 2-(dir % 2);
     }
 
 
     public void activateBlueConveyorBelt() {
-        activateConveyorBelts(4);
+        activateConveyorBelts("Blue conveyor belts");
     }
 
     public void activateYellowConveyorBelt() {
-        activateConveyorBelts(3);
+        activateConveyorBelts("Yellow conveyor belts");
     }
 
-    private void activateConveyorBelts(int conveyorLayer) {
+    private void activateConveyorBelts(String conveyorLayer) {
         class PlayerMove {
             Robot specificrobot;
             int x;
@@ -265,9 +263,11 @@ public class BoardLogic extends InputAdapter {
             }
         }
         ArrayList<PlayerMove> moves = new ArrayList<>();
-        for (int i=0; i<map[0].length; i++) {
-            for (int j=0; j<map[0][0].length; j++) {
-                int type = map[conveyorLayer][i][j];
+        for (int i=0; i<map.get("board").length; i++) {
+            for (int j=0; j<map.get("board")[0].length; j++) {
+                int[][] layer = map.get(conveyorLayer);
+                int type = 0;
+                if (layer != null) { type = layer[i][j]; }
                 Robot movingRobot = checkForRobot(i, j);
                 /*if(movingRobot!=null)
                     System.out.println("Robot is not null, position: " + i + j + ", And the type of layer is " + type);
@@ -394,10 +394,10 @@ public class BoardLogic extends InputAdapter {
 
     public void setFlagPositions(Robot robot){
         Map<Integer, Boolean> flagPositions = new HashMap<>();
-        for (int i = 0; i < map[2].length; i++){
-            for(int j = 0; j < map[2][i].length; j++){
-                if(map[2][i][j] != 0){
-                    flagPositions.put(map[2][i][j], false);
+        for (int i = 0; i < map.get("flag").length; i++){
+            for(int j = 0; j < map.get("flag")[i].length; j++){
+                if(map.get("flag")[i][j] != 0){
+                    flagPositions.put(map.get("flag")[i][j], false);
                 }
             }
         }
@@ -437,7 +437,7 @@ public class BoardLogic extends InputAdapter {
                 default: id = 132; break;
             }
 
-            int[][] layer = hashMap.get("starting spots");
+            int[][] layer = map.get("starting spots");
             if (layer == null) {
                 startingSpots[i] = new Vector2(0,0);
             } else {
