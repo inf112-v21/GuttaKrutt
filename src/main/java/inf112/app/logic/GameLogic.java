@@ -120,6 +120,8 @@ public class GameLogic {
         if(checkIfGameConcluded()){
             System.out.println("A player has won");
             client.updatePlayer(uuid, playerList.get(uuid));
+            if(!playerList.get(uuid).getRobot().getWon())
+                System.out.println("You lost, loser!");
         }
     }
 
