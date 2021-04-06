@@ -91,6 +91,8 @@ public class GameLogic {
 
         loopTillOthersAreReady();
 
+
+
         game.boardLogic.activateBlueConveyorBelt();
         processCards();
         game.boardLogic.activateBlueConveyorBelt();
@@ -114,6 +116,11 @@ public class GameLogic {
         client.updatePlayer(uuid,playerList.get(uuid));
         for (Player player : playerList.values())
             System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
+
+        if(checkIfGameConcluded()){
+            System.out.println("A player has won");
+            client.updatePlayer(uuid, playerList.get(uuid));
+        }
     }
 
     /**
@@ -129,6 +136,22 @@ public class GameLogic {
             robot.discardDamage();
             client.updatePlayer(uuid,playerList.get(uuid));
         }
+    }
+
+    /**
+     * Checks if any player has won the game, if yes, then every other player is killed.
+     */
+    public boolean checkIfGameConcluded(){
+        for(Player player : playerList.values()){
+            if(player.getRobot().checkWin()){
+                for(Player p : playerList.values()){
+                    if(p != player)
+                        p.getRobot().setAlive(false);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
