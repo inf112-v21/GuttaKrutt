@@ -1,5 +1,6 @@
 package inf112.app;
 
+import com.badlogic.gdx.Game;
 import inf112.app.logic.GameLogic;
 import inf112.app.networking.GameClient;
 import org.junit.Test;
@@ -13,7 +14,7 @@ import static org.junit.Assert.*;
 public class GameLogicTest {
 
     @Test
-    public void ShouldBuildDeck() {
+    public void shouldBuildDeck() {
         GameLogic game = new GameLogic();
         Deck deck = game.getDeck();
         int move1=0, move2=0, move3=0, backup=0, rotright=0, rotleft=0, uturn=0;

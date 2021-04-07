@@ -73,7 +73,8 @@ public class GameClient {
                 if(object instanceof Network.TestPacket){
                     System.out.println("Client received test packet");
                     Network.TestPacket packet = (Network.TestPacket) object;
-                    gotPackage = true;
+                    if(packet != null)
+                        gotPackage = true;
                 }
             }
         });
@@ -83,6 +84,11 @@ public class GameClient {
         updatePlayer(clientUUID,playerList.get(clientUUID));
     }
 
+    /**
+     * Creates an UpdatePlayer packet and sends it to the server
+     * @param uuid
+     * @param player
+     */
     public void updatePlayer(UUID uuid, Player player){
         if(!client.isConnected()){
             System.out.println("You are not connected to a server!");

@@ -110,6 +110,8 @@ public class BoardLogic extends InputAdapter {
 
         int flag = map.get("flag")[x][y];
         int repair = map.get("repair")[x][y];
+        int creenCog = map.get("Green cog")[x][y];
+        int redCog = map.get("Red cog")[x][y];
 
         if (flag != 0 && checkFlags(map.get("flag")[x][y], robot)) {
             robot.getFlagVisits().put(map.get("flag")[x][y], true);
@@ -124,6 +126,12 @@ public class BoardLogic extends InputAdapter {
         if (repair == 7 || repair == 15) {
             robot.addDamage(-1);
             robot.setCheckpoint(new Vector2(x,y));
+        }
+        if (creenCog != 0){
+            greenCogRotate(robot);
+        }
+        if (redCog != 0){
+            redCogRotate(robot);
         }
     }
 
@@ -470,6 +478,14 @@ public class BoardLogic extends InputAdapter {
             }
         }
         return startingSpots;
+    }
+
+    public void greenCogRotate(Robot robot){
+        robot.rotate(-1);
+    }
+
+    public void redCogRotate(Robot robot){
+        robot.rotate(1);
     }
 
 }

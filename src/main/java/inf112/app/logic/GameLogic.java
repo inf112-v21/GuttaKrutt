@@ -91,6 +91,8 @@ public class GameLogic {
         loopTillOthersAreReady();
 
         boardLogic.activateBlueConveyorBelt();
+
+        boardLogic.activateBlueConveyorBelt();
         processCards();
         boardLogic.activateBlueConveyorBelt();
         boardLogic.activateYellowConveyorBelt();
@@ -123,6 +125,12 @@ public class GameLogic {
             if (!player.getRobot().getAlive()) {
                 player.getRobot().respawn();
             }
+          
+        if(checkIfGameConcluded()){
+            System.out.println("A player has won");
+            client.updatePlayer(uuid, playerList.get(uuid));
+            if(!playerList.get(uuid).getRobot().getWon())
+                System.out.println("You lost, loser!");
         }
     }
 
@@ -139,6 +147,22 @@ public class GameLogic {
             robot.discardDamage();
             client.updatePlayer(uuid,playerList.get(uuid));
         }
+    }
+
+    /**
+     * Checks if any player has won the game, if yes, then every other player is killed.
+     */
+    public boolean checkIfGameConcluded(){
+        for(Player player : playerList.values()){
+            if(player.getRobot().checkWin()){
+                for(Player p : playerList.values()){
+                    if(p != player)
+                        p.getRobot().setAlive(false);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
