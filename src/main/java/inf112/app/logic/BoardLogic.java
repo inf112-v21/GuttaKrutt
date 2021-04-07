@@ -73,6 +73,11 @@ public class BoardLogic extends InputAdapter {
             robot.setAlive(false);
     }
 
+    /**
+     * Checks the tile the robot is currently on for environmental objects,
+     * such as holes, flags, wrenches etc. and applies the effect of the
+     * environmental object on the robot.
+     */
     public void checkTile(Robot robot) {
         int x = robot.getX();
         int y = robot.getY();
@@ -85,6 +90,8 @@ public class BoardLogic extends InputAdapter {
         } else {
             int hole = map.get("hole")[x][y];
             int flag = map.get("flag")[x][y];
+            int creenCog = map.get("Green cog")[x][y];
+            int redCog = map.get("Red cog")[x][y];
 
             if (hole != 0) {
                 robot.setAlive(false);
@@ -97,6 +104,12 @@ public class BoardLogic extends InputAdapter {
                     robot.setWon(true);
                     System.out.println("You won!");
                 }
+            }
+            if (creenCog != 0){
+                greenCogRotate(robot);
+            }
+            if (redCog != 0){
+                redCogRotate(robot);
             }
         }
     }
@@ -450,6 +463,14 @@ public class BoardLogic extends InputAdapter {
             }
         }
         return startingSpots;
+    }
+
+    public void greenCogRotate(Robot robot){
+        robot.rotate(-1);
+    }
+
+    public void redCogRotate(Robot robot){
+        robot.rotate(1);
     }
 
 }

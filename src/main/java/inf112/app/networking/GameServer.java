@@ -61,12 +61,14 @@ public class GameServer {
                         connection.sendTCP(map);
                     }
                 }
+
                 if(object instanceof Network.UpdatePlayer){
                     System.out.println("Received player update");
                     Network.UpdatePlayer player = (Network.UpdatePlayer) object;
                     playerList.put(player.uuid, player.player);
                     server.sendToAllExceptTCP(connection.getID(), player);
                 }
+
                 if(object instanceof Network.TestPacket){
                     System.out.println("Server received test packet");
                     Network.TestPacket packet = (Network.TestPacket) object;
