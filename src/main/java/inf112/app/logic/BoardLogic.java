@@ -109,6 +109,7 @@ public class BoardLogic extends InputAdapter {
             }
             if (redCog != null && redCog != 0){
                 redCogRotate(robot);
+            }
         }
     }
 
