@@ -90,8 +90,14 @@ public class BoardLogic extends InputAdapter {
         } else {
             int hole = map.get("hole")[x][y];
             int flag = map.get("flag")[x][y];
-            int creenCog = map.get("Green cog")[x][y];
-            int redCog = map.get("Red cog")[x][y];
+            Integer redCog = null;
+            Integer greenCog = null;
+            if(map.get("Green cog") != null){
+                greenCog = map.get("Green cog")[x][y];
+            }
+            if (map.get("Red cog") != null){
+                redCog = map.get("Red cog")[x][y];
+            }
 
             if (hole != 0) {
                 robot.setAlive(false);
@@ -105,10 +111,10 @@ public class BoardLogic extends InputAdapter {
                     System.out.println("You won!");
                 }
             }
-            if (creenCog != 0){
+            if (greenCog != null && greenCog != 0){
                 greenCogRotate(robot);
             }
-            if (redCog != 0){
+            if (redCog != null && redCog != 0){
                 redCogRotate(robot);
             }
         }

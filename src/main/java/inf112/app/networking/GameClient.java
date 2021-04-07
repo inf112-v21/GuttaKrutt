@@ -44,7 +44,7 @@ public class GameClient {
 
         client.addListener(new Listener() {
             public void received(Connection connection, Object object) {
-                System.out.println("connected to server");
+                //System.out.println("connected to server");
                 if (object instanceof Network.RunGame) {
                     run = true;
                 }
