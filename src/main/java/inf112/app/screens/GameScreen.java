@@ -329,9 +329,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int i, int i1) {
-        gamePort.update(i- uiWidth,i1- uiHeight);
-        gamePort.setScreenY(uiHeight);
-
         stage.getViewport().update(i,i1,true);
         stage.getViewport().getCamera().update();
 

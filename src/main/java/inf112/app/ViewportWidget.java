@@ -1,5 +1,6 @@
 package inf112.app;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -7,16 +8,19 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * Useful for adding to tables, etc. to provide a specific layout.
  */
 public class ViewportWidget extends Widget {
-    private Viewport vp;
+    private final Viewport vp;
 
     public ViewportWidget(Viewport vp) { this.vp = vp; }
 
     public Viewport getViewport() { return vp; }
 
-    public void setViewport(Viewport vp) { this.vp = vp; }
-
     public void layout() {
-        vp.setScreenBounds((int) getX(),(int) getY(),(int) getWidth(),(int) getHeight());
+        vp.setScreenSize((int) getWidth(),(int) getHeight());
         vp.setWorldSize(getWidth()/200,getHeight()/200);
+    }
+
+    public void draw(Batch batch, float parentAlpha) {
+        validate();
+        vp.setScreenPosition((int) getX(),(int) getY());
     }
 }

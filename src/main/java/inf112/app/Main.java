@@ -8,6 +8,7 @@ public class Main {
         Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
         cfg.setTitle("RoboRally");
         cfg.setWindowedMode(1400, 800);
+        cfg.setWindowSizeLimits(715,500,9999,9999);
 
         new Lwjgl3Application(new RoboRally(), cfg);
 
