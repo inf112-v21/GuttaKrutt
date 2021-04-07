@@ -26,7 +26,7 @@ public class BoardLogicTest {
     public void SetUpEmptyMap(Map<UUID,Player> players) {
         this.players = players;
         this.map = new HashMap<>();
-        String[] layers = {"board","hole","flag","laser","wall","wrench"};
+        String[] layers = {"board","hole","flag","laser","wall","wrench","Green cog","Red cog"};
         for (String s : layers)
             map.put(s,new int[5][5]);
         GenerateEmptyMap(map);
@@ -390,6 +390,26 @@ public class BoardLogicTest {
                 assertEquals(expected2Y, player.getRobot().getY());
             }
             i++;
+        }
+    }
+
+    @Test
+    public void greenCogRotatesRobot90DegreesRightTest(){
+        map.get("Green cog")[0][1] = 54;
+        for (Player player : players.values()){
+            assertEquals(0, player.getRobot().getRotation());
+            boardLogic.movePlayer(player.getRobot(), 0, 1);
+            assertEquals(3, player.getRobot().getRotation());
+        }
+    }
+
+    @Test
+    public void redCogRotatesRobot90DegreesLeftTest(){
+        map.get("Red cog")[0][1] = 53;
+        for (Player player : players.values()){
+            assertEquals(0, player.getRobot().getRotation());
+            boardLogic.movePlayer(player.getRobot(), 0, 1);
+            assertEquals(1, player.getRobot().getRotation());
         }
     }
 }
