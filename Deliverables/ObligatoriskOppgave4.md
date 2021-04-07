@@ -1,8 +1,30 @@
-# Obligatorisk oppgave 3
+# Obligatorisk oppgave 4
 
 ### Brukerhistorier:
+1) Som spiller vil jeg kunne bruke conveyor belts til å flytte meg rundt på kartet,
+   slik at spillet blir dypere strategisk og at det blir morsommere å spille med andre.
 
-Som en spiller som har vunnet vil jeg at de andre spillerene skal få melding om at jeg vant,
+Akseptansekriterier:
+- Gitt at en robot står på et gult conveyorbelt tile som peker i retning x, skal roboten
+  bli flyttet ett tile i retning x etter roboten har brukt et kort.
+- Gitt at en robot står på et blått conveyorbelt tile som peker i retning x og at neste tile i retning x er et tilsvarende blått conveyorbelt tile, skal roboten
+  bli flyttet to tiles i retning x etter at roboten har brukt et kort.
+
+Arbeidsoppgaver:
+- Implementere gule conveyor belts.
+- Implementere blå conveyor belts.
+
+2) Som spiller vil jeg kunne ha tre liv, slik at robotten kan gjenopplives to ganger.
+
+Akseptansekriterer:
+- Om en robot dør og spilleren har ett eller flere liv igjen skal robotten gjenopplives neste runde.
+- Robotten skal gjenopplives på det forrige checkpointet sitt (flagg,skiftenøkkel, etc.)
+
+Arbeidsoppgaver:
+- Implementere gjenoppliving.
+- Implementere checkpoints.
+
+3) Som en spiller som har vunnet vil jeg at de andre spillerene skal få melding om at jeg vant,
 slik at vi kan begynne på et nytt spill eller avslutte helt.
 
 Akseptansekriterier:
@@ -14,7 +36,7 @@ spillet er over.
 Arbeidsoppgaver:
 - Implementere at hver spiller sjekker om noen har vunnet på starten av en tur.
 
-Som spiller vil jeg at roboten min skal rotere i henhold til spillreglene når jeg går
+4) Som spiller vil jeg at roboten min skal rotere i henhold til spillreglene når jeg går
 på et tannhjul, slik at jeg kan bruke tannhjulene på brettet til å posisjonere roboten min
 uten å bruke et programkort.
 
@@ -29,9 +51,17 @@ Arbeidsoppgaver:
 - Implementere kode som sjekker om man står på et tannhjul, og som roterer
 roboten i riktig retning i henhold til fargen på tannhjulet.
 
+
 ### Møtereferater:
 
 29.03 (Mandag, 14:00-14:40)
 - Sassan, Simon og Ørjan var tilstedes.
 - Diskuterte lett hva vi ville jobbe med i påsken.
 - Bestemte oss for at neste møtet skulle være tirsdag 6. april (p.g.a påske).
+
+06.04 (Tirsdag, 12:00 - 12:30)
+- Alle var tilstede
+- Diskuterte hva som må gjøres i sprint 4
+- Oppsummerte hvordan vi lå an etter påsken
+- Sassan startet på testing av conveyor belts
+- Ørjan startet på gjenoppliving av robotter.
