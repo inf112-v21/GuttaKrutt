@@ -14,7 +14,20 @@ spillet er over.
 Arbeidsoppgaver:
 - Implementere at hver spiller sjekker om noen har vunnet på starten av en tur.
 
-Som spiller vil jeg at roboten min skal rotere 
+Som spiller vil jeg at roboten min skal rotere i henhold til spillreglene når jeg går
+på et tannhjul, slik at jeg kan bruke tannhjulene på brettet til å posisjonere roboten min
+uten å bruke et programkort.
+
+Akseptansekriterier:
+- Hvis roboten står på et grønt tannhjul etter å ha brukt et programkort, skal roboten
+rotere 90 grader til høyre.
+  
+- Hvis roboten står på et rødt tannhjul etter å ha brukt et programkort,
+skal roboten rotere 90 grader til venstre.
+  
+Arbeidsoppgaver:
+- Implementere kode som sjekker om man står på et tannhjul, og som roterer
+roboten i riktig retning i henhold til fargen på tannhjulet.
 
 ### Møtereferater:
 
