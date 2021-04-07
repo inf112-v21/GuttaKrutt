@@ -12,8 +12,7 @@ import java.util.*;
 
 /** controls the main loop of the game and executes the game rules */
 public class GameLogic {
-
-    GameScreen game;
+    BoardLogic boardLogic;
     int turn;
     Deck deck;
     Map<UUID, Player> playerList;
@@ -26,8 +25,8 @@ public class GameLogic {
 
     /** class constructor which sets the initial turn number, builds
     * a deck and initiates the players */
-    public GameLogic(GameScreen game, GameClient client) {
-        this.game = game;
+    public GameLogic(BoardLogic boardLogic, GameClient client) {
+        this.boardLogic = boardLogic;
         this.client = client;
         turn=0;
         deck = new Deck();
@@ -91,12 +90,12 @@ public class GameLogic {
 
         loopTillOthersAreReady();
 
+        boardLogic.activateBlueConveyorBelt();
 
-
-        game.boardLogic.activateBlueConveyorBelt();
+        boardLogic.activateBlueConveyorBelt();
         processCards();
-        game.boardLogic.activateBlueConveyorBelt();
-        game.boardLogic.activateYellowConveyorBelt();
+        boardLogic.activateBlueConveyorBelt();
+        boardLogic.activateYellowConveyorBelt();
         client.updatePlayer(uuid,playerList.get(uuid));
         turn++;
 
@@ -107,6 +106,11 @@ public class GameLogic {
             playerList.get(uuid).getRobot().setPowerDown(false);
             client.updatePlayer(uuid,playerList.get(uuid));
         }
+
+        for (Player player : playerList.values()) {
+            boardLogic.checkForFlagAndRepair(player.getRobot());
+        }
+
         try {
             Thread.sleep( 2000);
         } catch (InterruptedException e) {
@@ -117,6 +121,11 @@ public class GameLogic {
         for (Player player : playerList.values())
             System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
 
+        for (Player player : playerList.values()) {
+            if (!player.getRobot().getAlive()) {
+                player.getRobot().respawn();
+            }
+          
         if(checkIfGameConcluded()){
             System.out.println("A player has won");
             client.updatePlayer(uuid, playerList.get(uuid));
@@ -171,6 +180,7 @@ public class GameLogic {
             for (Player player : playerList.values()) {
                 if (!player.getReady()) {
                     allPlayerReady = false;
+                    break;
                 }
             }
         }
@@ -198,7 +208,7 @@ public class GameLogic {
      * When used in a sort, sorts a list of players by the priority of a card in their program register, starting with the biggest.
      * Which program registers to compare is inputted in the constructor.
      */
-    private class CardComparator implements Comparator<Player> {
+    private static class CardComparator implements Comparator<Player> {
         int i;
 
         public CardComparator(int i) { this.i = i; }
@@ -223,11 +233,12 @@ public class GameLogic {
     /**
      * Executes the cards in the program register
      */
-    private void processCards() {
+    public void processCards() {
         for (int i=0;i<5;i++) {
             Array<Player> queue = new Array<>();
             for (Player player : playerList.values()) {
                 queue.add(player);
+                deck.addAll(player.getCards());
                 player.setCards(new Deck());
             }
             queue.sort(new CardComparator(i));
@@ -236,6 +247,7 @@ public class GameLogic {
                 if (card != null) {
                     useCard(player.getRobot(), card);
                     if (i < 9 - player.getRobot().getDamage()) {
+                        deck.insert(card);
                         player.getRobot().getProgramRegister()[i] = null;
                     }
                 }
@@ -252,10 +264,10 @@ public class GameLogic {
     private void useCard(Robot robot, Card card) {
         currentCard = card;
         switch(card.getType()) {
-            case MOVE1: game.boardLogic.move(robot,1); break;
-            case MOVE2: game.boardLogic.move(robot,2); break;
-            case MOVE3: game.boardLogic.move(robot,3); break;
-            case BACKUP: game.boardLogic.moveBack(robot); break;
+            case MOVE1: boardLogic.move(robot,1); break;
+            case MOVE2: boardLogic.move(robot,2); break;
+            case MOVE3: boardLogic.move(robot,3); break;
+            case BACKUP: boardLogic.moveBack(robot); break;
             case ROTLEFT: robot.rotate(1); break;
             case ROTRIGHT: robot.rotate(-1); break;
             case UTURN: robot.rotate(2); break;

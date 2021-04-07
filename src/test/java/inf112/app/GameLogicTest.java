@@ -2,7 +2,12 @@ package inf112.app;
 
 import com.badlogic.gdx.Game;
 import inf112.app.logic.GameLogic;
+import inf112.app.networking.GameClient;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -45,5 +50,28 @@ public class GameLogicTest {
         assertEquals(18, rotright);
         assertEquals(18, rotleft);
         assertEquals(6, uturn);
+    }
+
+
+    @Test
+    public void cardRunOutTest() {
+        GameClient client = new GameClient(true);
+
+        Map<UUID, Player> playerList = new HashMap<>();
+        UUID uuid = UUID.randomUUID();
+        playerList.put(uuid, new Player());
+        playerList.put(UUID.randomUUID(), new Player());
+        client.playerList = playerList;
+
+        client.clientUUID = uuid;
+
+        GameLogic gameLogic = new GameLogic(null,client);
+        assertEquals(66,gameLogic.getDeck().size());
+        gameLogic.processCards();
+        gameLogic.dealCards();
+        assertEquals(66,gameLogic.getDeck().size());
+        gameLogic.processCards();
+        gameLogic.dealCards();
+        assertEquals(66,gameLogic.getDeck().size());
     }
 }

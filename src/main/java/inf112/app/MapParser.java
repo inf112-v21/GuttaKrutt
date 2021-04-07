@@ -75,8 +75,8 @@ public class MapParser {
         for (int i=1;i<lines.length;i++) { //the first line in lines is an empty string, so we start at i=1.
             String[] tiles = lines[i].split(",");
             for (int j=0;j<tiles.length;j++) {
-                layer[j][4-(i-1)] = Integer.parseInt(tiles[j]); //The map has y=0 at the bottom, so the y value of the
-                    // layer needs to be inversed from the i-value.
+                layer[j][lines.length-i-1] = Integer.parseInt(tiles[j]); //The map has y=0 at the bottom, so the y value of the
+                    // layer needs to be inverted from the i-value.
             }
         }
 

@@ -20,4 +20,15 @@ public class MapParserTest {
         assertEquals(5, map.get("board")[0][0]);
         assertEquals(55, map.get("flag")[4][4]);
     }
+
+    @Test
+    public void sizeTest() {
+        Map<String,int[][]> map = new MapParser().fromFile("assets/TiledTest.tmx").getHashMap();
+        assertEquals("width",map.get("board").length,5);
+        assertEquals("height",map.get("board")[0].length,5);
+
+        map = new MapParser().fromFile("assets/Checkmate.tmx").getHashMap();
+        assertEquals("width",map.get("board").length,12);
+        assertEquals("height",map.get("board")[0].length,16);
+    }
 }
