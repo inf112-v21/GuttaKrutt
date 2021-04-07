@@ -43,7 +43,7 @@ public class GameServer {
         //Server listening for connections (clients)
         server.addListener(new Listener() {
             public void received (Connection connection, Object object) {
-                System.out.println("Client connected");
+                //System.out.println("Client connected");
 
                 if(object instanceof String) {
                     if (run) { connection.close();

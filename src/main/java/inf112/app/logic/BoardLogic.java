@@ -89,11 +89,26 @@ public class BoardLogic extends InputAdapter {
             System.out.println("inf112-skeleton.app.Player has died outside the border");
         } else {
             int hole = map.get("hole")[x][y];
+            Integer redCog = null;
+            Integer greenCog = null;
+          
+            if(map.get("Green cog") != null){
+                greenCog = map.get("Green cog")[x][y];
+            }
+            if (map.get("Red cog") != null){
+                redCog = map.get("Red cog")[x][y];
+            }
 
             if (hole != 0) {
                 robot.setAlive(false);
                 System.out.println("inf112.skeleton.app.Player has died.");
             }
+
+            if (greenCog != null && greenCog != 0){
+                greenCogRotate(robot);
+            }
+            if (redCog != null && redCog != 0){
+                redCogRotate(robot);
         }
     }
 
@@ -110,8 +125,6 @@ public class BoardLogic extends InputAdapter {
 
         int flag = map.get("flag")[x][y];
         int repair = map.get("repair")[x][y];
-        int greenCog = map.get("Green cog")[x][y];
-        int redCog = map.get("Red cog")[x][y];
 
         if (flag != 0 && checkFlags(map.get("flag")[x][y], robot)) {
             robot.getFlagVisits().put(map.get("flag")[x][y], true);
@@ -126,12 +139,6 @@ public class BoardLogic extends InputAdapter {
         if (repair == 7 || repair == 15) {
             robot.addDamage(-1);
             robot.setCheckpoint(new Vector2(x,y));
-        }
-        if (greenCog != 0){
-            greenCogRotate(robot);
-        }
-        if (redCog != 0){
-            redCogRotate(robot);
         }
     }
 
