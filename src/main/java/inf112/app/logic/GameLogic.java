@@ -27,6 +27,7 @@ public class GameLogic {
     * a deck and initiates the players */
     public GameLogic(BoardLogic boardLogic, GameClient client) {
         this.boardLogic = boardLogic;
+        this.client = client;
         turn=0;
         deck = new Deck();
         buildDeck();
