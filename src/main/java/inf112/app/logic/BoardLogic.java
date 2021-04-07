@@ -110,7 +110,7 @@ public class BoardLogic extends InputAdapter {
 
         int flag = map.get("flag")[x][y];
         int repair = map.get("repair")[x][y];
-        int creenCog = map.get("Green cog")[x][y];
+        int greenCog = map.get("Green cog")[x][y];
         int redCog = map.get("Red cog")[x][y];
 
         if (flag != 0 && checkFlags(map.get("flag")[x][y], robot)) {
@@ -127,7 +127,7 @@ public class BoardLogic extends InputAdapter {
             robot.addDamage(-1);
             robot.setCheckpoint(new Vector2(x,y));
         }
-        if (creenCog != 0){
+        if (greenCog != 0){
             greenCogRotate(robot);
         }
         if (redCog != 0){

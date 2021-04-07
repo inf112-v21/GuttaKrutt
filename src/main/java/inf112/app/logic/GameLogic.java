@@ -125,6 +125,7 @@ public class GameLogic {
             if (!player.getRobot().getAlive()) {
                 player.getRobot().respawn();
             }
+        }
           
         if(checkIfGameConcluded()){
             System.out.println("A player has won");
@@ -152,7 +153,7 @@ public class GameLogic {
     /**
      * Checks if any player has won the game, if yes, then every other player is killed.
      */
-    public boolean checkIfGameConcluded(){
+    public boolean checkIfGameConcluded() {
         for(Player player : playerList.values()){
             if(player.getRobot().checkWin()){
                 for(Player p : playerList.values()){
