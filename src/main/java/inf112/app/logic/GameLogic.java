@@ -114,6 +114,12 @@ public class GameLogic {
         client.updatePlayer(uuid,playerList.get(uuid));
         for (Player player : playerList.values())
             System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
+
+        for (Player player : playerList.values()) {
+            if (!player.getRobot().getAlive()) {
+                player.getRobot().respawn();
+            }
+        }
     }
 
     /**

@@ -31,7 +31,8 @@ public class BoardLogic extends InputAdapter {
         int i = 0; Vector2[] startingSpots = getStartingSpots();
         for(Player player : players.values()){
             setFlagPositions(player.getRobot());
-            player.getRobot().setPos(startingSpots[i]);
+            player.getRobot().setCheckpoint(startingSpots[i]);
+            player.getRobot().respawn(true);
             i++;
         }
     }
