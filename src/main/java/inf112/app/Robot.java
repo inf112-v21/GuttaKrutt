@@ -17,7 +17,9 @@ public class Robot {
     Card[] programRegister = new Card[5];
 
     int damageTokens = 0;
+    int lifeTokens = 3;
     Vector2 pos = new Vector2(0,0);
+    Vector2 checkpoint = new Vector2(0,0);
     int rotation = 0;
 
     int[] textureRegionIndex = new int[]{0,0};
@@ -99,4 +101,18 @@ public class Robot {
     public int[] getTexture() {
         return textureRegionIndex;
     }
+
+    public void respawn(boolean first) {
+        if (lifeTokens > 0) {
+            alive = true;
+            pos = checkpoint;
+            if (first) { damageTokens = 0; }
+            else { damageTokens = 2; }
+            lifeTokens--;
+        }
+    }
+
+    public void respawn() { respawn(false); }
+
+    public void setCheckpoint(Vector2 pos) { checkpoint = pos; }
 }
