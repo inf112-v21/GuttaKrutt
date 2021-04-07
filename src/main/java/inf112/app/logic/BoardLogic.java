@@ -67,40 +67,55 @@ public class BoardLogic extends InputAdapter {
         if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4] && checkForRobot(newX, newY) == null) {
             robot.setPos(new Vector2(newX, newY));
 
-            checkTile(robot);
+            checkForHoleAndBorder(robot);
         }
         laserSpawner();
         if(robot.getDamage()==10)
             robot.setAlive(false);
     }
 
-    public void checkTile(Robot robot) {
+    public void checkForHoleAndBorder(Robot robot) {
         int x = robot.getX();
         int y = robot.getY();
 
-        boolean outSideBorder = (x >= map.get("board").length || x < 0 || y >= map.get("board")[0].length || y < 0);
-
-        if(outSideBorder) {
+        if(!inBorder(x,y)) {
             robot.setAlive(false);
             System.out.println("inf112-skeleton.app.Player has died outside the border");
         } else {
             int hole = map.get("hole")[x][y];
-            int flag = map.get("flag")[x][y];
 
             if (hole != 0) {
                 robot.setAlive(false);
                 System.out.println("inf112.skeleton.app.Player has died.");
             }
-            if (flag != 0 && checkFlags(map.get("flag")[x][y], robot)) {
-                robot.getFlagVisits().put(map.get("flag")[x][y], true);
-                System.out.println("You got the flag!");
-                if(robot.checkWin()){
-                    robot.setWon(true);
-                    System.out.println("You won!");
-                }
-            }
         }
     }
+
+    public void checkForFlagAndRepair(Robot robot) {
+        int x = robot.getX();
+        int y = robot.getY();
+
+        if (!inBorder(x,y)) { return; }
+
+        int flag = map.get("flag")[x][y];
+        int repair = map.get("repair")[x][y];
+
+        if (flag != 0 && checkFlags(map.get("flag")[x][y], robot)) {
+            robot.getFlagVisits().put(map.get("flag")[x][y], true);
+            System.out.println("You got the flag!");
+            if (robot.checkWin()) {
+                robot.setWon(true);
+                System.out.println("You won!");
+            }
+            robot.setCheckpoint(new Vector2(x,y));
+        }
+
+        if (repair == 7 || repair == 15) {
+            robot.addDamage(-1);
+            robot.setCheckpoint(new Vector2(x,y));
+        }
+    }
+
     public Robot checkForRobot(int x, int y) {
         for (Player player : players.values()) {
             if (x == player.getRobot().getX() && y == player.getRobot().getY()) {
@@ -111,8 +126,7 @@ public class BoardLogic extends InputAdapter {
     }
 
     public boolean[] getWall(int x, int y) {
-        boolean outSideBorder = (x >= map.get("board").length || x < 0 || y >= map.get("board")[0].length || y < 0);
-        if (!outSideBorder) {
+        if (inBorder(x,y)) {
             int id = map.get("wall")[x][y];
             boolean[] a;
             switch (id) {
@@ -162,6 +176,10 @@ public class BoardLogic extends InputAdapter {
             }
             return a;
         } return new boolean[]{false,false,false,false};
+    }
+
+    public boolean inBorder(int x,int y) {
+        return (x < map.get("board").length && x >= 0 && y < map.get("board")[0].length && y >= 0);
     }
 
     public void laserSpawner() {
@@ -406,20 +424,10 @@ public class BoardLogic extends InputAdapter {
     }
 
     public boolean checkFlags(int x, Robot robot){
-        if(x == 55){
-            return true;
-        }
-        else if(x == 63 && robot.getFlagVisits().get(55)){
-            return true;
-        }
-        else if(x == 71 && robot.getFlagVisits().get(63)){
-            return true;
-        }
-        else if(x == 79 && robot.getFlagVisits().get(71)){
-            return true;
-        } else {
-            return false;
-        }
+        if(x == 55) return true;
+        else if(x == 63 && robot.getFlagVisits().get(55)) return true;
+        else if(x == 71 && robot.getFlagVisits().get(63)) return true;
+        else return x == 79 && robot.getFlagVisits().get(71);
     }
 
     public Vector2[] getStartingSpots() {

@@ -12,8 +12,7 @@ import java.util.*;
 
 /** controls the main loop of the game and executes the game rules */
 public class GameLogic {
-
-    GameScreen game;
+    BoardLogic boardLogic;
     int turn;
     Deck deck;
     Map<UUID, Player> playerList;
@@ -26,9 +25,8 @@ public class GameLogic {
 
     /** class constructor which sets the initial turn number, builds
     * a deck and initiates the players */
-    public GameLogic(GameScreen game, GameClient client) {
-        this.game = game;
-        this.client = client;
+    public GameLogic(BoardLogic boardLogic, GameClient client) {
+        this.boardLogic = boardLogic;
         turn=0;
         deck = new Deck();
         buildDeck();
@@ -91,10 +89,10 @@ public class GameLogic {
 
         loopTillOthersAreReady();
 
-        game.boardLogic.activateBlueConveyorBelt();
+        boardLogic.activateBlueConveyorBelt();
         processCards();
-        game.boardLogic.activateBlueConveyorBelt();
-        game.boardLogic.activateYellowConveyorBelt();
+        boardLogic.activateBlueConveyorBelt();
+        boardLogic.activateYellowConveyorBelt();
         client.updatePlayer(uuid,playerList.get(uuid));
         turn++;
 
@@ -105,6 +103,11 @@ public class GameLogic {
             playerList.get(uuid).getRobot().setPowerDown(false);
             client.updatePlayer(uuid,playerList.get(uuid));
         }
+
+        for (Player player : playerList.values()) {
+            boardLogic.checkForFlagAndRepair(player.getRobot());
+        }
+
         try {
             Thread.sleep( 2000);
         } catch (InterruptedException e) {
@@ -152,6 +155,7 @@ public class GameLogic {
             for (Player player : playerList.values()) {
                 if (!player.getReady()) {
                     allPlayerReady = false;
+                    break;
                 }
             }
         }
@@ -179,7 +183,7 @@ public class GameLogic {
      * When used in a sort, sorts a list of players by the priority of a card in their program register, starting with the biggest.
      * Which program registers to compare is inputted in the constructor.
      */
-    private class CardComparator implements Comparator<Player> {
+    private static class CardComparator implements Comparator<Player> {
         int i;
 
         public CardComparator(int i) { this.i = i; }
@@ -233,10 +237,10 @@ public class GameLogic {
     private void useCard(Robot robot, Card card) {
         currentCard = card;
         switch(card.getType()) {
-            case MOVE1: game.boardLogic.move(robot,1); break;
-            case MOVE2: game.boardLogic.move(robot,2); break;
-            case MOVE3: game.boardLogic.move(robot,3); break;
-            case BACKUP: game.boardLogic.moveBack(robot); break;
+            case MOVE1: boardLogic.move(robot,1); break;
+            case MOVE2: boardLogic.move(robot,2); break;
+            case MOVE3: boardLogic.move(robot,3); break;
+            case BACKUP: boardLogic.moveBack(robot); break;
             case ROTLEFT: robot.rotate(1); break;
             case ROTRIGHT: robot.rotate(-1); break;
             case UTURN: robot.rotate(2); break;
