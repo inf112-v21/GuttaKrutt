@@ -22,13 +22,19 @@ public class GameClient {
     public boolean gotPackage = false;
     public boolean clientTesting;
     private String host;
-    Map<UUID,Player> playerList = new HashMap<>();
+    public Map<UUID,Player> playerList = new HashMap<>();
     public boolean run = false;
     public String mapName;
 
     //Run this if you are hosting the server
     public GameClient() throws IOException {
         this("127.0.0.1", false);
+    }
+
+    public GameClient(boolean clientTesting) {
+        if (clientTesting) {
+            this.client = new Client();
+        }
     }
 
     //Run this if you are not hosting the server
