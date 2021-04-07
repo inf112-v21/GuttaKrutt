@@ -74,6 +74,12 @@ public class BoardLogic extends InputAdapter {
             robot.setAlive(false);
     }
 
+    /**
+     * This method checks for holes and if the robot has exited the map.
+     * This method is called while the robot is moving. (And not at the end of the round. If the robot is over a hole,
+     * it can't move away before the round is over.)
+     * @param robot Robot that we should check tile for
+     */
     public void checkForHoleAndBorder(Robot robot) {
         int x = robot.getX();
         int y = robot.getY();
@@ -91,6 +97,11 @@ public class BoardLogic extends InputAdapter {
         }
     }
 
+    /**
+     * This method checks for flags and repair sites. Sets checkpoints.
+     * This method is part of the last section of the round, and is therefore played /after/ all cards have been played.
+     * @param robot Robot that we should check tile for
+     */
     public void checkForFlagAndRepair(Robot robot) {
         int x = robot.getX();
         int y = robot.getY();
