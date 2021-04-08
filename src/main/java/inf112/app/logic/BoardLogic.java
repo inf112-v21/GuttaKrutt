@@ -413,10 +413,15 @@ public class BoardLogic extends InputAdapter {
                 int type = greens[i][j] + reds[i][j];
 
                 Robot robot = checkForRobot(i,j);
-
-                switch(type) {
-                    case 53: robot.rotate(1); break;
-                    case 54: robot.rotate(-1); break;
+                if(robot != null) {
+                    switch (type) {
+                        case 53:
+                            robot.rotate(1);
+                            break;
+                        case 54:
+                            robot.rotate(-1);
+                            break;
+                    }
                 }
             }
         }
