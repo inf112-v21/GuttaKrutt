@@ -81,23 +81,29 @@ public class GameLogic {
         client.updatePlayer(uuid,playerList.get(uuid));
 
         loopTillOthersAreReady();
-        //confirmOthersAreReady(0);
+
+        sleepBuffer(1000);
         game.boardLogic.activateBlueConveyorBelt();
+        sleepBuffer(1000);
         processCards();
+        sleepBuffer(1000);
         game.boardLogic.activateBlueConveyorBelt();
+        sleepBuffer(1000);
         game.boardLogic.activateYellowConveyorBelt();
         client.updatePlayer(uuid,playerList.get(uuid));
         turn++;
         dealCards();
+        sleepBuffer(2000);
+        playerList.get(uuid).setReady(false);
+        client.updatePlayer(uuid,playerList.get(uuid));
+    }
+
+    private void sleepBuffer(int time) {
         try {
-            Thread.sleep( 000);
+            Thread.sleep( time);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        playerList.get(uuid).setReady(false);
-        client.updatePlayer(uuid,playerList.get(uuid));
-        for (Player player : playerList.values())
-            System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
     }
 
     public void loopTillOthersAreReady() {
