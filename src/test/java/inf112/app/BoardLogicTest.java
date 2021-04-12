@@ -1,5 +1,6 @@
 package inf112.app;
 
+import com.badlogic.gdx.math.Vector2;
 import inf112.app.logic.BoardLogic;
 import org.junit.Before;
 import org.junit.Test;
@@ -140,7 +141,7 @@ public class BoardLogicTest {
             assertEquals(0, player.getRobot().getDamage());
 
             //Moving into laser and checking if robot took damage
-            boardLogic.movePlayer(player.getRobot(), 0, 1);
+            boardLogic.movePlayer(player.getRobot(), 0, 1,true);
             boardLogic.laserSpawner();
             assertEquals(1, player.getRobot().getDamage());
         }
@@ -163,12 +164,12 @@ public class BoardLogicTest {
             for(int i = 0; i < 20; i++) {
                 if(i % 2 == 0){
                     playerDamage++;
-                    boardLogic.movePlayer(player.getRobot(), 0, 1);
+                    boardLogic.movePlayer(player.getRobot(), 0, 1,true);
                     boardLogic.laserSpawner();
                     assertEquals(playerDamage, player.getRobot().getDamage());
                 }
                 else
-                    boardLogic.movePlayer(player.getRobot(), 0, -1);
+                    boardLogic.movePlayer(player.getRobot(), 0, -1,true);
             }
             //Checking if player has max damage tokens, in which case the player should be dead
             assertEquals(10, player.getRobot().getDamage());
@@ -184,7 +185,7 @@ public class BoardLogicTest {
             assertEquals(false, player.getRobot().getWon());
 
             //Moves player to flag 1
-            boardLogic.movePlayer(player.getRobot(), 1,1);
+            boardLogic.movePlayer(player.getRobot(), 1,1,true);
             boardLogic.checkForCheckpoints(player.getRobot());
 
             //Player should have won
@@ -197,19 +198,19 @@ public class BoardLogicTest {
         setUpMapWithXFlags(players, 2);
         for(Player player : players.values()){
             //Player first moves on top of flag 2
-            boardLogic.movePlayer(player.getRobot(), 0,1);
+            boardLogic.movePlayer(player.getRobot(), 0,1,true);
             boardLogic.checkForCheckpoints(player.getRobot());
             assertEquals(63, map.get("flag")[0][1]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 1
-            boardLogic.movePlayer(player.getRobot(), 1,0);
+            boardLogic.movePlayer(player.getRobot(), 1,0,true);
             boardLogic.checkForCheckpoints(player.getRobot());
             assertEquals(55, map.get("flag")[1][1]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then back to flag 2
-            boardLogic.movePlayer(player.getRobot(), -1,0);
+            boardLogic.movePlayer(player.getRobot(), -1,0,true);
             boardLogic.checkForCheckpoints(player.getRobot());
 
             //Now the player should have won
@@ -222,30 +223,30 @@ public class BoardLogicTest {
         setUpMapWithXFlags(players, 3);
         for(Player player : players.values()){
             //Player first moves on top of flag 3
-            boardLogic.movePlayer(player.getRobot(), 0,3);
+            boardLogic.movePlayer(player.getRobot(), 0,3,true);
             boardLogic.checkForCheckpoints(player.getRobot());
             assertEquals(71, map.get("flag")[0][3]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 2
-            boardLogic.movePlayer(player.getRobot(), 0,-2);
+            boardLogic.movePlayer(player.getRobot(), 0,-2,true);
             boardLogic.checkForCheckpoints(player.getRobot());
             assertEquals(63, map.get("flag")[0][1]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 1
-            boardLogic.movePlayer(player.getRobot(), 1,0);
+            boardLogic.movePlayer(player.getRobot(), 1,0,true);
             boardLogic.checkForCheckpoints(player.getRobot());
             assertEquals(false, player.getRobot().getWon());
             assertEquals(55, map.get("flag")[1][1]);
 
             //Then back to flag 2
-            boardLogic.movePlayer(player.getRobot(), -1,0);
+            boardLogic.movePlayer(player.getRobot(), -1,0,true);
             boardLogic.checkForCheckpoints(player.getRobot());
             assertEquals(false, player.getRobot().getWon());
 
             //Then back to flag 3
-            boardLogic.movePlayer(player.getRobot(), 0, 2);
+            boardLogic.movePlayer(player.getRobot(), 0, 2,true);
             boardLogic.checkForCheckpoints(player.getRobot());
 
             //Now the player should have won
@@ -258,40 +259,40 @@ public class BoardLogicTest {
         setUpMapWithXFlags(players, 4);
         for(Player player : players.values()){
             //Player first moves on top of flag 4
-            boardLogic.movePlayer(player.getRobot(), 1,3);
+            boardLogic.movePlayer(player.getRobot(), 1,3,true);
             boardLogic.checkForCheckpoints(player.getRobot());
             assertEquals(79, map.get("flag")[1][3]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 3
-            boardLogic.movePlayer(player.getRobot(), -1,0);
+            boardLogic.movePlayer(player.getRobot(), -1,0,true);
             boardLogic.checkForCheckpoints(player.getRobot());
             assertEquals(71, map.get("flag")[0][3]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 2
-            boardLogic.movePlayer(player.getRobot(), 0,-2);
+            boardLogic.movePlayer(player.getRobot(), 0,-2,true);
             boardLogic.checkForCheckpoints(player.getRobot());
             assertEquals(63, map.get("flag")[0][1]);
             assertEquals(false, player.getRobot().getWon());
 
             //Then flag 1
-            boardLogic.movePlayer(player.getRobot(), 1,0);
+            boardLogic.movePlayer(player.getRobot(), 1,0,true);
             boardLogic.checkForCheckpoints(player.getRobot());
             assertEquals(false, player.getRobot().getWon());
             assertEquals(55, map.get("flag")[1][1]);
 
             //Then back to flag 2
-            boardLogic.movePlayer(player.getRobot(), -1,0);
+            boardLogic.movePlayer(player.getRobot(), -1,0,true);
             boardLogic.checkForCheckpoints(player.getRobot());
             assertEquals(false, player.getRobot().getWon());
 
             //Then back to flag 3
-            boardLogic.movePlayer(player.getRobot(), 0, 2);
+            boardLogic.movePlayer(player.getRobot(), 0, 2,true);
             boardLogic.checkForCheckpoints(player.getRobot());
 
             //Then back to flag 4
-            boardLogic.movePlayer(player.getRobot(), 1, 0);
+            boardLogic.movePlayer(player.getRobot(), 1, 0,true);
             boardLogic.checkForCheckpoints(player.getRobot());
 
             //Now the player should have won
@@ -323,7 +324,7 @@ public class BoardLogicTest {
         //from pos (2,2) to (3,2)
         for(Player player : players.values()){
             if(i==0){
-                boardLogic.movePlayer(player.getRobot(), 1,0);
+                boardLogic.movePlayer(player.getRobot(), 1,0,true);
             }
             i++;
         }
@@ -380,7 +381,7 @@ public class BoardLogicTest {
         //from pushing player2, positions of both player should be the same as starting positions
         for(Player player : players.values()){
             if(i==0){
-                boardLogic.movePlayer(player.getRobot(), 1,0);
+                boardLogic.movePlayer(player.getRobot(), 1,0,true);
             }
             i++;
         }
@@ -417,7 +418,7 @@ public class BoardLogicTest {
         map.get("Green cog")[0][1] = 54;
         for (Player player : players.values()){
             assertEquals(0, player.getRobot().getRotation());
-            boardLogic.movePlayer(player.getRobot(), 0, 1);
+            boardLogic.movePlayer(player.getRobot(), 0, 1,true);
             boardLogic.activateGears();
             assertEquals(3, player.getRobot().getRotation());
         }
@@ -428,7 +429,7 @@ public class BoardLogicTest {
         map.get("Red cog")[0][1] = 53;
         for (Player player : players.values()){
             assertEquals(0, player.getRobot().getRotation());
-            boardLogic.movePlayer(player.getRobot(), 0, 1);
+            boardLogic.movePlayer(player.getRobot(), 0, 1,true);
             boardLogic.activateGears();
             assertEquals(1, player.getRobot().getRotation());
         }

@@ -1,5 +1,6 @@
 package inf112.app.logic;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
@@ -42,7 +43,7 @@ public class BoardLogic extends InputAdapter {
     /**
      * Moves the input robot by old x-position + input x, and old y-position + input y.
      */
-    public void movePlayer(Robot robot, int x, int y) {
+    public void movePlayer(Robot robot, int x, int y, boolean playerCollision) {
         Vector2 oldPos = robot.getPos();
         int oldX = (int) oldPos.x;
         int oldY = (int) oldPos.y;
@@ -61,14 +62,15 @@ public class BoardLogic extends InputAdapter {
         }
 
         Robot enemy = checkForRobot(newX, newY);
-        if(enemy != null){
-            movePlayer(enemy, (newX-oldX), (newY-oldY));
+        if(enemy != null && playerCollision){
+            movePlayer(enemy, (newX-oldX), (newY-oldY), true);
         }
-        if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4] && checkForRobot(newX, newY) == null) {
+        if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4] && (enemy == null) || !playerCollision) {
             robot.setPos(new Vector2(newX, newY));
 
             checkForDangers(robot);
         }
+        laserSpawner();
         if(robot.getDamage()==10)
             robot.setAlive(false);
     }
@@ -292,80 +294,88 @@ public class BoardLogic extends InputAdapter {
     }
 
     private void activateConveyorBelts(String conveyorLayer) {
-        class PlayerMove {
-            Robot specificrobot;
-            int x;
-            int y;
-
-            PlayerMove(Robot robot, int x, int y) {
-                this.specificrobot = robot;
-                this.x = x;
-                this.y = y;
-            }
-        }
-        ArrayList<PlayerMove> moves = new ArrayList<>();
-        for (int i=0; i<map.get("board").length; i++) {
-            for (int j=0; j<map.get("board")[0].length; j++) {
-                int[][] layer = map.get(conveyorLayer);
-                int type = 0;
-                if (layer != null) { type = layer[i][j]; }
-                Robot movingRobot = checkForRobot(i, j);
-                /*if(movingRobot!=null)
-                    System.out.println("Robot is not null, position: " + i + j + ", And the type of layer is " + type);
-                 */
+        //looper over map som fører til ikke-deterministisk oppførsel
+        for(Player player : players.values()) {
+            Robot movingRobot = player.getRobot();
+            if (map.get(conveyorLayer)[movingRobot.getX()][movingRobot.getY()]!=0) {
+                int type = map.get(conveyorLayer)[movingRobot.getX()][movingRobot.getY()];
                 switch (type) {
-                    case 42:
-                    case 43:
+                    case 42: //west -> north
+                    case 43: //east -> north
                     case 49:
-                    case 26:
-                    case 27:
+                    case 26: //west -> north
+                    case 27: //east -> north
                     case 13:
-                        if (movingRobot!=null) {
-                            PlayerMove move = new PlayerMove(movingRobot,0, 1);
-                            moves.add(move);
-                            }
+                        conveyorMoveCheck(movingRobot, 0, 1);
                         break;
-                    case 34:
-                    case 44:
+                    case 34: //south -> west
+                    case 44: //north -> west
                     case 51:
-                    case 18:
-                    case 28:
+                    case 18: //south -> west
+                    case 28: //north -> west
                     case 22:
-                        if (movingRobot!=null) {
-                            PlayerMove move = new PlayerMove(movingRobot,-1, 0);
-                            moves.add(move);
-                        }
+                        conveyorMoveCheck(movingRobot, -1, 0);
                         break;
-                    case 33:
-                    case 36:
+                    case 33: //east -> south
+                    case 36: //west -> south
                     case 50:
-                    case 17:
-                    case 20:
+                    case 17: //east -> south
+                    case 20: //west -> south
                     case 21:
-                        if (movingRobot!=null) {
-                            PlayerMove move = new PlayerMove(movingRobot,0, -1);
-                            moves.add(move);
-                        }
+                        conveyorMoveCheck(movingRobot, 0, -1);
                         break;
-                    case 35:
-                    case 41:
+                    case 35: //south -> east
+                    case 41: //north -> east
                     case 52:
-                    case 19:
-                    case 25:
+                    case 19: //south -> east
+                    case 25: //north -> east
                     case 14:
-                        if (movingRobot!=null) {
-                            PlayerMove move = new PlayerMove(movingRobot,1, 0);
-                            moves.add(move);
-                        }
+                        conveyorMoveCheck(movingRobot, 1, 0);
                         break;
                 }
             }
         }
-        for (PlayerMove move : moves) {
-            Robot potentialRobot = checkForRobot(move.specificrobot.getX() + move.x, move.specificrobot.getY() + move.y);
-            if (potentialRobot == null) {
-                movePlayer(move.specificrobot, move.x, move.y);
-            }
+    }
+
+    private void conveyorMoveCheck(Robot movingRobot, int addedX, int addedY) {
+        Robot roadBlockRobot = checkForRobot(movingRobot.getX()+addedX,movingRobot.getY()+addedY);
+        boolean halt = false;
+        if (roadBlockRobot!=null)
+            halt = ((map.get("Yellow conveyor belts")[roadBlockRobot.getX()][roadBlockRobot.getY()])==0
+                    && (map.get("Blue conveyor belts")[roadBlockRobot.getX()][roadBlockRobot.getY()])==0);
+        if(!halt) {
+            movePlayer(movingRobot, addedX, addedY, false);
+            conveyorRotation(movingRobot);
+        }
+    }
+
+    private void conveyorRotation(Robot rotatingRobot) {
+        int currentConveyor = map.get("Yellow conveyor belts")[rotatingRobot.getX()][rotatingRobot.getY()];
+        if (currentConveyor==0)
+            currentConveyor = map.get("Blue conveyor belts")[rotatingRobot.getX()][rotatingRobot.getY()];
+        switch (currentConveyor) {
+            //rotate left
+            case 42: //west -> north
+            case 26: //west -> north
+            case 34: //south -> west
+            case 18: //south -> west
+            case 33: //east -> south
+            case 17: //east -> south
+            case 41: //north -> east
+            case 25: //north -> east
+                rotatingRobot.rotate(1);
+                break;
+            //rotate right
+            case 43: //east -> north
+            case 27: //east -> north
+            case 44: //north -> west
+            case 28: //north -> west
+            case 36: //west -> south
+            case 20: //west -> south
+            case 35: //south -> east
+            case 19: //south -> east
+                rotatingRobot.rotate(-1);
+                break;
         }
     }
     /*
@@ -439,7 +449,7 @@ public class BoardLogic extends InputAdapter {
             default: y += 10; break;
         }
 
-        movePlayer(robot, x, y);
+        movePlayer(robot, x, y,true);
         if (distance>0) {
             move(robot, distance);
         }
@@ -456,7 +466,7 @@ public class BoardLogic extends InputAdapter {
             default: y += 10; break;
         }
 
-        movePlayer(robot, x, y);
+        movePlayer(robot, x, y,true);
     }
 
     public void setFlagPositions(Robot robot){
@@ -508,4 +518,6 @@ public class BoardLogic extends InputAdapter {
         }
         return startingSpots;
     }
+
+
 }

@@ -100,7 +100,7 @@ public class GameLogic {
         client.updatePlayer(uuid,playerList.get(uuid));
         for (Player player : playerList.values())
             System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
-          
+
         if(checkIfGameConcluded()){
             System.out.println("A player has won");
             client.updatePlayer(uuid, playerList.get(uuid));
@@ -180,9 +180,6 @@ public class GameLogic {
         return false;
     }
 
-    /**
-     * loops until all players have announced that they are ready.
-     */
     public void loopTillOthersAreReady() {
         boolean allPlayerReady = false;
         while(!allPlayerReady) {
@@ -225,7 +222,7 @@ public class GameLogic {
      * When used in a sort, sorts a list of players by the priority of a card in their program register, starting with the biggest.
      * Which program registers to compare is inputted in the constructor.
      */
-    private static class CardComparator implements Comparator<Player> {
+    private class CardComparator implements Comparator<Player> {
         int i;
 
         public CardComparator(int i) { this.i = i; }
