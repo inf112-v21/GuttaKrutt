@@ -127,6 +127,10 @@ public class BoardLogic extends InputAdapter {
         }
     }
 
+    /**
+     * Checks if the robot stands on a repair tile and removes one damage token if so.
+     * @param robot Robot being repaired
+     */
     public void checkForRepairs(Robot robot) {
         int x = robot.getX();
         int y = robot.getY();
@@ -140,6 +144,12 @@ public class BoardLogic extends InputAdapter {
         }
     }
 
+    /**
+     * Checks if there is a robot on the tile at position x,y
+     * @param x horisontal position
+     * @param y vertical position
+     * @return If there is a robot on the tile, returns robot, else null
+     */
     public Robot checkForRobot(int x, int y) {
         for (Player player : players.values()) {
             if (x == player.getRobot().getX() && y == player.getRobot().getY()) {
@@ -149,6 +159,12 @@ public class BoardLogic extends InputAdapter {
         return null;
     }
 
+    /**
+     * Checks if there are walls on any of the sides of the tile at position x,y.
+     * @param x horisontal position
+     * @param y vertical position
+     * @return Returns boolean list of length = 4, where true implies wall and false implies no wall
+     */
     public boolean[] getWall(int x, int y) {
         if (inBorder(x,y)) {
             int id = map.get("wall")[x][y];
@@ -202,10 +218,17 @@ public class BoardLogic extends InputAdapter {
         } return new boolean[]{false,false,false,false};
     }
 
+    /**
+     * Checks if position x,y is inside the map borders.
+     * @return True if inside the border, else false
+     */
     public boolean inBorder(int x,int y) {
         return (x < map.get("board").length && x >= 0 && y < map.get("board")[0].length && y >= 0);
     }
 
+    /**
+     * Spawns lasers from wall laser spawner map object.
+     */
     public void laserSpawner() {
         int dir;
         for(int i=0;i<5;i++){
@@ -241,7 +264,12 @@ public class BoardLogic extends InputAdapter {
         }
     }
 
-    //Denne funksjonen er en laser som rekursivt iterer over brettet
+    /**
+     * Recursively iterates a laser across the board.
+     * @param x initial x pos
+     * @param y initial y pos
+     * @param dir travel direction
+     */
     public void laser(int x, int y, int dir) {
         boolean outSideBorder = (x >= map.get("board").length || x < 0 || y >= map.get("board")[0].length || y < 0);
         Robot robot = checkForRobot(x,y);
@@ -275,9 +303,15 @@ public class BoardLogic extends InputAdapter {
         }
     }
 
+    /**
+     * Hvis laseren er horisontal skal ruten ha verdi 1, hvis en er vertikal skal ruten ha 2.
+     * Hvis 2 lasere krysser skal ruten ha verdi 3.
+     * @param x
+     * @param y
+     * @param dir
+     */
     public void checkOverLapLaser(int x, int y, int dir) {
-        //Hvis laseren er horisontal skal ruten ha verdi 1, hvis en er vertikal skal ruten ha 2.
-        //Hvis 2 lasere krysser skal ruten ha verdi 3
+
         if(map.get("laser")[x][y]==1+(dir % 2))
             map.get("laser")[x][y] = 3;
         else if(map.get("laser")[x][y]==0)
@@ -412,6 +446,10 @@ public class BoardLogic extends InputAdapter {
         22: East -> West
     */
 
+    /**
+     * Iterates map for cogs and rotates robots on cogs.
+     * Left rotation for red cog. Right rotation for green cog.
+     */
     public void activateGears() {
         int[][] greens = map.get("Green cog");
         int[][] reds = map.get("Red cog");
@@ -437,6 +475,11 @@ public class BoardLogic extends InputAdapter {
         }
     }
 
+    /**
+     * Moves robot from initial position to new position
+     * @param robot Robot being moved
+     * @param distance Number of tiles the robot moves
+     */
     public void move(Robot robot, int distance) {
         distance--;
         int x = 0;
@@ -455,6 +498,9 @@ public class BoardLogic extends InputAdapter {
         }
     }
 
+    /**
+     * Moves the robot one step back.
+     */
     public void moveBack(Robot robot) {
         int x = 0;
         int y = 0;
@@ -469,6 +515,10 @@ public class BoardLogic extends InputAdapter {
         movePlayer(robot, x, y,true);
     }
 
+    /**
+     * Initiates a robots list of flags visited
+     * @param robot
+     */
     public void setFlagPositions(Robot robot){
         Map<Integer, Boolean> flagPositions = new HashMap<>();
         for (int i = 0; i < map.get("flag").length; i++){
@@ -481,6 +531,12 @@ public class BoardLogic extends InputAdapter {
         robot.setFlagVisits(flagPositions);
     }
 
+    /**
+     * Checks if the robot can acquire the flag it stands on
+     * @param x
+     * @param robot
+     * @return
+     */
     public boolean checkFlags(int x, Robot robot){
         if(x == 55) return true;
         else if(x == 63 && robot.getFlagVisits().get(55)) return true;
@@ -488,6 +544,11 @@ public class BoardLogic extends InputAdapter {
         else return x == 79 && robot.getFlagVisits().get(71);
     }
 
+    /**
+     * Places every robot on their designated starting spot.
+     * If there are no starting spots on the map, then every robot is places in position (0,0)
+     * @return
+     */
     public Vector2[] getStartingSpots() {
         Vector2[] startingSpots = new Vector2[8];
 
