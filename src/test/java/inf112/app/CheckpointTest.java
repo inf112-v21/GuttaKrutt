@@ -2,7 +2,6 @@ package inf112.app;
 
 import com.badlogic.gdx.math.Vector2;
 import inf112.app.logic.BoardLogic;
-import inf112.app.logic.GameLogic;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -51,7 +50,7 @@ public class CheckpointTest {
         Robot robot = playerList.get(pUUID).getRobot();
 
         robot.setPos(7,14);
-        boardLogic.checkForFlagAndRepair(robot);
+        boardLogic.checkForCheckpoints(robot);
         robot.setPos(0,0);
 
         robot.setAlive(false);

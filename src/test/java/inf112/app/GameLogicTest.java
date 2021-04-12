@@ -1,6 +1,7 @@
 package inf112.app;
 
 import com.badlogic.gdx.Game;
+import inf112.app.logic.BoardLogic;
 import inf112.app.logic.GameLogic;
 import inf112.app.networking.GameClient;
 import org.junit.Test;
@@ -65,13 +66,18 @@ public class GameLogicTest {
 
         client.clientUUID = uuid;
 
-        GameLogic gameLogic = new GameLogic(null,client);
+        Map<String,int[][]> map = new HashMap<>();
+        String[] layers = {"board","hole","flag","laser","wall","repair","Green cog","Red cog"};
+
+        for (String s : layers)
+            map.put(s,new int[5][5]);
+
+        GameLogic gameLogic = new GameLogic(new BoardLogic(map,playerList),client);
+
         assertEquals(66,gameLogic.getDeck().size());
-        gameLogic.processCards();
-        gameLogic.dealCards();
+        gameLogic.doTurn();
         assertEquals(66,gameLogic.getDeck().size());
-        gameLogic.processCards();
-        gameLogic.dealCards();
+        gameLogic.doTurn();
         assertEquals(66,gameLogic.getDeck().size());
     }
 }

@@ -67,9 +67,8 @@ public class BoardLogic extends InputAdapter {
         if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4] && checkForRobot(newX, newY) == null) {
             robot.setPos(new Vector2(newX, newY));
 
-            checkForHoleAndBorder(robot);
+            checkForDangers(robot);
         }
-        laserSpawner();
         if(robot.getDamage()==10)
             robot.setAlive(false);
     }
@@ -80,7 +79,7 @@ public class BoardLogic extends InputAdapter {
      * it can't move away before the round is over.)
      * @param robot Robot that we should check tile for
      */
-    public void checkForHoleAndBorder(Robot robot) {
+    public void checkForDangers(Robot robot) {
         int x = robot.getX();
         int y = robot.getY();
 
@@ -89,36 +88,20 @@ public class BoardLogic extends InputAdapter {
             System.out.println("inf112-skeleton.app.Player has died outside the border");
         } else {
             int hole = map.get("hole")[x][y];
-            Integer redCog = null;
-            Integer greenCog = null;
-          
-            if(map.get("Green cog") != null){
-                greenCog = map.get("Green cog")[x][y];
-            }
-            if (map.get("Red cog") != null){
-                redCog = map.get("Red cog")[x][y];
-            }
 
             if (hole != 0) {
                 robot.setAlive(false);
                 System.out.println("inf112.skeleton.app.Player has died.");
-            }
-
-            if (greenCog != null && greenCog != 0){
-                greenCogRotate(robot);
-            }
-            if (redCog != null && redCog != 0) {
-                redCogRotate(robot);
             }
         }
     }
 
     /**
      * This method checks for flags and repair sites. Sets checkpoints.
-     * This method is part of the last section of the round, and is therefore played /after/ all cards have been played.
+     * This method is part of the last section of the register round, and is therefore played /after/ all cards have been played.
      * @param robot Robot that we should check tile for
      */
-    public void checkForFlagAndRepair(Robot robot) {
+    public void checkForCheckpoints(Robot robot) {
         int x = robot.getX();
         int y = robot.getY();
 
@@ -138,8 +121,20 @@ public class BoardLogic extends InputAdapter {
         }
 
         if (repair == 7 || repair == 15) {
-            robot.addDamage(-1);
             robot.setCheckpoint(new Vector2(x,y));
+        }
+    }
+
+    public void checkForRepairs(Robot robot) {
+        int x = robot.getX();
+        int y = robot.getY();
+
+        if (!inBorder(x,y)) { return; }
+
+        int repair = map.get("repair")[x][y];
+
+        if (repair == 7 || repair == 15) {
+            robot.addDamage(-1);
         }
     }
 
@@ -405,7 +400,33 @@ public class BoardLogic extends InputAdapter {
         14: West -> East
         21: North -> South
         22: East -> West
-*/
+    */
+
+    public void activateGears() {
+        int[][] greens = map.get("Green cog");
+        int[][] reds = map.get("Red cog");
+
+        if (greens == null || reds == null) return;
+
+        for (int i=0; i<map.get("board").length; i++) {
+            for (int j = 0; j < map.get("board")[0].length; j++) {
+                int type = greens[i][j] + reds[i][j];
+
+                Robot robot = checkForRobot(i,j);
+                if(robot != null) {
+                    switch (type) {
+                        case 53:
+                            robot.rotate(1);
+                            break;
+                        case 54:
+                            robot.rotate(-1);
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
     public void move(Robot robot, int distance) {
         distance--;
         int x = 0;
@@ -487,13 +508,4 @@ public class BoardLogic extends InputAdapter {
         }
         return startingSpots;
     }
-
-    public void greenCogRotate(Robot robot){
-        robot.rotate(-1);
-    }
-
-    public void redCogRotate(Robot robot){
-        robot.rotate(1);
-    }
-
 }
