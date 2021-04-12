@@ -96,6 +96,7 @@ public class GameLogic {
         game.boardLogic.activateBlueConveyorBelt();
         game.boardLogic.activateYellowConveyorBelt();
         client.updatePlayer(uuid,playerList.get(uuid));
+        deck.restock();
         turn++;
 
         if (!playerList.get(uuid).getRobot().getPowerDown()) {
