@@ -65,3 +65,15 @@ roboten i riktig retning i henhold til fargen på tannhjulet.
 - Oppsummerte hvordan vi lå an etter påsken
 - Sassan startet på testing av conveyor belts
 - Ørjan startet på gjenoppliving av robotter.
+
+07.04 (Onsdag, 12:15 - 14:00)
+- a
+- b
+
+12.04 (Mandag 14:00 - 16:00)
+- a
+- b
+
+14.04 (Onsdag 12:15 - 14:00)
+- a
+- b
