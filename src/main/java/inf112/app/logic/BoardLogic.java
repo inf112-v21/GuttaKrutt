@@ -70,7 +70,7 @@ public class BoardLogic extends InputAdapter {
 
             checkForDangers(robot);
         }
-        laserSpawner();
+        //laserSpawner();
         if(robot.getDamage()==10)
             robot.setAlive(false);
     }
@@ -226,6 +226,9 @@ public class BoardLogic extends InputAdapter {
         return (x < map.get("board").length && x >= 0 && y < map.get("board")[0].length && y >= 0);
     }
 
+    /**
+     * Cleans the board of all lasers.
+     */
     public void laserCleaner(){
         for(int i=0;i<map.get("laser").length;i++){
             for(int j=0;j<map.get("laser")[0].length;j++){
@@ -266,6 +269,29 @@ public class BoardLogic extends InputAdapter {
     }
 
     /**
+     * Checks for walls between position (x,y) and position (a,b) in direction dir from (x,y).
+     * dir : 0 = north, 1 = west, 2 = south, 3 = east
+     * @param x current x pos
+     * @param y current y pos
+     * @param dir direction
+     * @return True if no wall, else false
+     */
+    public boolean checkForWall(int x, int y, int dir){
+        switch (dir){
+            case 0:
+                return !getWall(x,y)[dir] && !getWall(x,y+1)[(dir + 2) % 4];
+            case 1:
+                return !getWall(x,y)[dir] && !getWall(x-1,y)[(dir + 2) % 4];
+            case 2:
+                return !getWall(x,y)[dir] && !getWall(x,y-1)[(dir + 2) % 4];
+            case 3:
+                return !getWall(x,y)[dir] && !getWall(x+1,y)[(dir + 2) % 4];
+            default:
+                return false;
+        }
+    }
+
+    /**
      * Recursively iterates a laser across the board.
      * @param x initial x pos
      * @param y initial y pos
@@ -282,22 +308,22 @@ public class BoardLogic extends InputAdapter {
             switch (dir) {
                 case 0:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir] && !getWall(x,y+1)[(dir + 2) % 4])
+                    if(checkForWall(x,y,dir))
                         laser(x,y+1,dir);
                     break;
                 case 1:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir] && !getWall(x-1,y)[(dir + 2) % 4])
+                    if(checkForWall(x,y,dir))
                         laser(x-1,y,dir);
                     break;
                 case 2:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir] && !getWall(x,y-1)[(dir + 2) % 4])
+                    if(checkForWall(x,y,dir))
                         laser(x,y-1,dir);
                     break;
                 case 3:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir] && !getWall(x+1,y)[(dir + 2) % 4])
+                    if(checkForWall(x,y,dir))
                         laser(x+1,y,dir);
                     break;
             }
@@ -310,18 +336,22 @@ public class BoardLogic extends InputAdapter {
     public void robotsShootsLasers(){
         for(Player player : players.values()) {
             Robot robot = player.getRobot();
-            int rotation = robot.getRotation();
-            switch(rotation){
-                case 0:
-                    laser(robot.getX(), robot.getY() + 1, rotation);
-                    break;
-                case 1:
-                    laser(robot.getX() - 1, robot.getY(), rotation);
-                    break;
-                case 2:
-                    laser(robot.getX(), robot.getY() - 1, rotation);
-                default:
-                    laser(robot.getX() + 1, robot.getY(), rotation);
+            if(checkForWall(robot.getX(), robot.getY(), robot.getRotation())) {
+                int rotation = robot.getRotation();
+                switch (rotation) {
+                    case 0:
+                        laser(robot.getX(), robot.getY() + 1, rotation);
+                        break;
+                    case 1:
+                        laser(robot.getX() - 1, robot.getY(), rotation);
+                        break;
+                    case 2:
+                        laser(robot.getX(), robot.getY() - 1, rotation);
+                        break;
+                    default:
+                        laser(robot.getX() + 1, robot.getY(), rotation);
+                        break;
+                }
             }
         }
     }
