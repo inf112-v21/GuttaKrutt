@@ -91,11 +91,7 @@ public class GameLogic {
 
         doTurn();
 
-        try {
-            Thread.sleep( 2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        tryCatchSleep(2000);
         playerList.get(uuid).setReady(false);
         client.updatePlayer(uuid,playerList.get(uuid));
         for (Player player : playerList.values())
@@ -137,9 +133,12 @@ public class GameLogic {
     }
 
     public void boardElementsMove() {
+        tryCatchSleep(500);
         boardLogic.activateBlueConveyorBelt();
+        tryCatchSleep(500);
         boardLogic.activateBlueConveyorBelt();
         boardLogic.activateYellowConveyorBelt();
+        tryCatchSleep(500);
         boardLogic.activateGears();
     }
 
@@ -284,8 +283,12 @@ public class GameLogic {
             case ROTRIGHT: robot.rotate(-1); break;
             case UTURN: robot.rotate(2); break;
         }
+        tryCatchSleep(500);
+    }
+
+    private void tryCatchSleep(int milliseconds) {
         try {
-            Thread.sleep(500);
+            Thread.sleep( milliseconds);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
