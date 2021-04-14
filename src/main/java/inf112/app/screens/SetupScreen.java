@@ -2,6 +2,7 @@ package inf112.app.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL30;
@@ -44,6 +45,8 @@ public class SetupScreen implements Screen {
 
         FileHandle directory = Gdx.files.internal("assets");
 
+        Preferences prefs = Gdx.app.getPreferences("RoboRally");
+
         maps = new Array<>();
 
         for (FileHandle file : directory.list()) {
@@ -85,13 +88,20 @@ public class SetupScreen implements Screen {
         nameTable.add(nameField).padLeft(50).padBottom(15).left();
         nameTable.row();
 
-        name = new TextField("", RoboRally.skin);
+        String defaultName = prefs.getString("lastUsedName");
+        if (defaultName == "") defaultName = "name";
+
+        name = new TextField(defaultName, RoboRally.skin);
         nameTable.add(name).prefWidth(99999).padLeft(50).padBottom(15).padRight(20).left();
 
         playButton = new TextButton("Play!", RoboRally.skin);
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                prefs.putString("lastUsedName", name.getText());
+
+                prefs.flush();
+
                 GameServer server = null;
                 GameClient client = null;
                 try {

@@ -6,7 +6,6 @@ import inf112.app.Deck;
 import inf112.app.Player;
 import inf112.app.Robot;
 import inf112.app.networking.GameClient;
-import inf112.app.screens.GameScreen;
 
 import java.util.*;
 
@@ -90,47 +89,63 @@ public class GameLogic {
 
         loopTillOthersAreReady();
 
-        boardLogic.activateBlueConveyorBelt();
+        deck.restock();
+        doTurn();
 
-        boardLogic.activateBlueConveyorBelt();
-        processCards();
-        boardLogic.activateBlueConveyorBelt();
-        boardLogic.activateYellowConveyorBelt();
-        client.updatePlayer(uuid,playerList.get(uuid));
-        turn++;
-
-        if (!playerList.get(uuid).getRobot().getPowerDown()) {
-            dealCards();
-        }
-        else {
-            playerList.get(uuid).getRobot().setPowerDown(false);
-            client.updatePlayer(uuid,playerList.get(uuid));
-        }
-
-        for (Player player : playerList.values()) {
-            boardLogic.checkForFlagAndRepair(player.getRobot());
-        }
-
-        try {
-            Thread.sleep( 2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        tryCatchSleep(2000);
         playerList.get(uuid).setReady(false);
         client.updatePlayer(uuid,playerList.get(uuid));
         for (Player player : playerList.values())
             System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
 
-        for (Player player : playerList.values()) {
-            if (!player.getRobot().getAlive()) {
-                player.getRobot().respawn();
-            }
-          
         if(checkIfGameConcluded()){
             System.out.println("A player has won");
             client.updatePlayer(uuid, playerList.get(uuid));
             if(!playerList.get(uuid).getRobot().getWon())
                 System.out.println("You lost, loser!");
+        }
+    }
+
+    public void doTurn() {
+        //A. Reveal Program Cards
+        //B. Robots Move
+        //C. Board Elements Move
+        //D. Lasers Fire
+        //E. Touch Checkpoints
+
+        for (int i=0;i<5;i++) {
+            processCards(); // B. Robots move
+            boardElementsMove(); //C
+            boardLogic.laserSpawner(); //D
+            touchCheckpoints(); //E
+        }
+
+        dealCards();
+
+        for (Player player : playerList.values()) {
+            if (!player.getRobot().getAlive()) {
+                player.getRobot().respawn();
+            }
+            player.getRobot().setPowerDown(false);
+            boardLogic.checkForRepairs(player.getRobot());
+        }
+
+        turn++;
+    }
+
+    public void boardElementsMove() {
+        tryCatchSleep(500);
+        boardLogic.activateBlueConveyorBelt();
+        tryCatchSleep(500);
+        boardLogic.activateBlueConveyorBelt();
+        boardLogic.activateYellowConveyorBelt();
+        tryCatchSleep(500);
+        boardLogic.activateGears();
+    }
+
+    public void touchCheckpoints() {
+        for (Player player : playerList.values()) {
+            boardLogic.checkForCheckpoints(player.getRobot());
         }
     }
 
@@ -152,7 +167,7 @@ public class GameLogic {
     /**
      * Checks if any player has won the game, if yes, then every other player is killed.
      */
-    public boolean checkIfGameConcluded(){
+    public boolean checkIfGameConcluded() {
         for(Player player : playerList.values()){
             if(player.getRobot().checkWin()){
                 for(Player p : playerList.values()){
@@ -165,9 +180,6 @@ public class GameLogic {
         return false;
     }
 
-    /**
-     * loops until all players have announced that they are ready.
-     */
     public void loopTillOthersAreReady() {
         boolean allPlayerReady = false;
         while(!allPlayerReady) {
@@ -196,8 +208,12 @@ public class GameLogic {
     * of their damage tokens */
     public void dealCards() {
         for (Player p : playerList.values()) {
-            for (int i=0; i < (9-p.getRobot().getDamage()); i++) {
-                p.getCards().add(deck.take());
+            if (!p.getRobot().getPowerDown()) {
+                Deck newCards = new Deck();
+                for (int i = 0; i < (9 - p.getRobot().getDamage()); i++) {
+                    newCards.add(deck.take());
+                }
+                p.setCards(newCards);
             }
         }
     }
@@ -208,7 +224,7 @@ public class GameLogic {
      * When used in a sort, sorts a list of players by the priority of a card in their program register, starting with the biggest.
      * Which program registers to compare is inputted in the constructor.
      */
-    private static class CardComparator implements Comparator<Player> {
+    private class CardComparator implements Comparator<Player> {
         int i;
 
         public CardComparator(int i) { this.i = i; }
@@ -233,12 +249,11 @@ public class GameLogic {
     /**
      * Executes the cards in the program register
      */
-    public void processCards() {
+    private void processCards() {
         for (int i=0;i<5;i++) {
             Array<Player> queue = new Array<>();
             for (Player player : playerList.values()) {
                 queue.add(player);
-                deck.addAll(player.getCards());
                 player.setCards(new Deck());
             }
             queue.sort(new CardComparator(i));
@@ -247,7 +262,6 @@ public class GameLogic {
                 if (card != null) {
                     useCard(player.getRobot(), card);
                     if (i < 9 - player.getRobot().getDamage()) {
-                        deck.insert(card);
                         player.getRobot().getProgramRegister()[i] = null;
                     }
                 }
@@ -272,8 +286,12 @@ public class GameLogic {
             case ROTRIGHT: robot.rotate(-1); break;
             case UTURN: robot.rotate(2); break;
         }
+        tryCatchSleep(500);
+    }
+
+    private void tryCatchSleep(int milliseconds) {
         try {
-            Thread.sleep(500);
+            Thread.sleep( milliseconds);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
