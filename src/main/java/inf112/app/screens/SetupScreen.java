@@ -37,7 +37,6 @@ public class SetupScreen implements Screen {
     StretchViewport mapPort;
 
     TextField name;
-    Label nameField;
     TextButton playButton;
 
     public SetupScreen(Game game) {
@@ -77,18 +76,19 @@ public class SetupScreen implements Screen {
         mapPort = new StretchViewport(5, 5, camera);
         table.add(new ViewportWidget(mapPort)).height(300).prefWidth(300);
 
-        name = new TextField("", RoboRally.skin);
-        name.setWidth(Gdx.graphics.getWidth()/2F);
-        name.setPosition(Gdx.graphics.getWidth()/2F-name.getWidth()/2-40,40);
-        stage.addActor(name);
+        Table nameTable = new Table();
+        nameTable.setFillParent(true);
+        stage.addActor(nameTable);
+        nameTable.bottom();
 
-        nameField = new Label("Name:", RoboRally.skin);
-        nameField.setPosition(Gdx.graphics.getWidth()/2F-name.getWidth()/2F-40,name.getHeight()+50);
-        stage.addActor(nameField);
+        Label nameField = new Label("Name:", RoboRally.skin);
+        nameTable.add(nameField).padLeft(50).padBottom(15).left();
+        nameTable.row();
+
+        name = new TextField("", RoboRally.skin);
+        nameTable.add(name).prefWidth(99999).padLeft(50).padBottom(15).padRight(20).left();
 
         playButton = new TextButton("Play!", RoboRally.skin);
-        playButton.setWidth(100);
-        playButton.setPosition(Gdx.graphics.getWidth()-40-playButton.getWidth(),40);
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -109,7 +109,7 @@ public class SetupScreen implements Screen {
                 return true;
             }
         });
-        stage.addActor(playButton);
+        nameTable.add(playButton).right().padRight(15).padBottom(15).width(100);
     }
 
     @Override
@@ -144,13 +144,6 @@ public class SetupScreen implements Screen {
     public void resize(int i, int i1) {
         stage.getViewport().update(i,i1,true);
         stage.getViewport().getCamera().update();
-
-        name.setWidth(Gdx.graphics.getWidth()/2F);
-        name.setPosition(Gdx.graphics.getWidth()/2F-name.getWidth()/2-40,40);
-
-        nameField.setPosition(Gdx.graphics.getWidth()/2F-name.getWidth()/2-40,name.getHeight()+50);
-
-        playButton.setPosition(Gdx.graphics.getWidth()-40-playButton.getWidth(),40);
     }
 
     @Override

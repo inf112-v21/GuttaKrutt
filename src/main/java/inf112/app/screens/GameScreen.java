@@ -107,12 +107,12 @@ public class GameScreen implements Screen {
         wallLayer = getTileLayer("wall");
         laserLayer = getTileLayer("laser");
 
-        gameLogic = new GameLogic(this, client);
-
-        players = gameLogic.getPlayers();
+        players = client.getPlayerList();
         clientUUID = client.clientUUID;
 
         boardLogic = new BoardLogic(tiledMap, client.getPlayerList());
+
+        gameLogic = new GameLogic(boardLogic, client);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 5, 5);
@@ -329,9 +329,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int i, int i1) {
-        gamePort.update(i- uiWidth,i1- uiHeight);
-        gamePort.setScreenY(uiHeight);
-
         stage.getViewport().update(i,i1,true);
         stage.getViewport().getCamera().update();
 

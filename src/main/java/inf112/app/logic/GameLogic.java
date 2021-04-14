@@ -6,14 +6,12 @@ import inf112.app.Deck;
 import inf112.app.Player;
 import inf112.app.Robot;
 import inf112.app.networking.GameClient;
-import inf112.app.screens.GameScreen;
 
 import java.util.*;
 
 /** controls the main loop of the game and executes the game rules */
 public class GameLogic {
-
-    GameScreen game;
+    BoardLogic boardLogic;
     int turn;
     Deck deck;
     Map<UUID, Player> playerList;
@@ -26,8 +24,8 @@ public class GameLogic {
 
     /** class constructor which sets the initial turn number, builds
     * a deck and initiates the players */
-    public GameLogic(GameScreen game, GameClient client) {
-        this.game = game;
+    public GameLogic(BoardLogic boardLogic, GameClient client) {
+        this.boardLogic = boardLogic;
         this.client = client;
         turn=0;
         deck = new Deck();
@@ -91,21 +89,8 @@ public class GameLogic {
 
         loopTillOthersAreReady();
 
-        game.boardLogic.activateBlueConveyorBelt();
-        processCards();
-        game.boardLogic.activateBlueConveyorBelt();
-        game.boardLogic.activateYellowConveyorBelt();
-        client.updatePlayer(uuid,playerList.get(uuid));
-        deck.restock();
-        turn++;
+        doTurn();
 
-        if (!playerList.get(uuid).getRobot().getPowerDown()) {
-            dealCards();
-        }
-        else {
-            playerList.get(uuid).getRobot().setPowerDown(false);
-            client.updatePlayer(uuid,playerList.get(uuid));
-        }
         try {
             Thread.sleep( 2000);
         } catch (InterruptedException e) {
@@ -115,6 +100,54 @@ public class GameLogic {
         client.updatePlayer(uuid,playerList.get(uuid));
         for (Player player : playerList.values())
             System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
+
+        if(checkIfGameConcluded()){
+            System.out.println("A player has won");
+            client.updatePlayer(uuid, playerList.get(uuid));
+            if(!playerList.get(uuid).getRobot().getWon())
+                System.out.println("You lost, loser!");
+        }
+    }
+
+    public void doTurn() {
+        //A. Reveal Program Cards
+        //B. Robots Move
+        //C. Board Elements Move
+        //D. Lasers Fire
+        //E. Touch Checkpoints
+
+        for (int i=0;i<5;i++) {
+            processCards(i); // B. Robots move
+            boardElementsMove(); //C
+            boardLogic.laserSpawner(); //D
+            touchCheckpoints(); //E
+            deck.restock();
+        }
+
+        dealCards();
+
+        for (Player player : playerList.values()) {
+            if (!player.getRobot().getAlive()) {
+                player.getRobot().respawn();
+            }
+            player.getRobot().setPowerDown(false);
+            boardLogic.checkForRepairs(player.getRobot());
+        }
+
+        turn++;
+    }
+
+    public void boardElementsMove() {
+        boardLogic.activateBlueConveyorBelt();
+        boardLogic.activateBlueConveyorBelt();
+        boardLogic.activateYellowConveyorBelt();
+        boardLogic.activateGears();
+    }
+
+    public void touchCheckpoints() {
+        for (Player player : playerList.values()) {
+            boardLogic.checkForCheckpoints(player.getRobot());
+        }
     }
 
     /**
@@ -133,8 +166,21 @@ public class GameLogic {
     }
 
     /**
-     * loops until all players have announced that they are ready.
+     * Checks if any player has won the game, if yes, then every other player is killed.
      */
+    public boolean checkIfGameConcluded() {
+        for(Player player : playerList.values()){
+            if(player.getRobot().checkWin()){
+                for(Player p : playerList.values()){
+                    if(p != player)
+                        p.getRobot().setAlive(false);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void loopTillOthersAreReady() {
         boolean allPlayerReady = false;
         while(!allPlayerReady) {
@@ -147,6 +193,7 @@ public class GameLogic {
             for (Player player : playerList.values()) {
                 if (!player.getReady()) {
                     allPlayerReady = false;
+                    break;
                 }
             }
         }
@@ -162,8 +209,10 @@ public class GameLogic {
     * of their damage tokens */
     public void dealCards() {
         for (Player p : playerList.values()) {
-            for (int i=0; i < (9-p.getRobot().getDamage()); i++) {
-                p.getCards().add(deck.take());
+            if (!p.getRobot().getPowerDown()) {
+                for (int i = 0; i < (9 - p.getRobot().getDamage()); i++) {
+                    p.getCards().add(deck.take());
+                }
             }
         }
     }
@@ -228,10 +277,10 @@ public class GameLogic {
     private void useCard(Robot robot, Card card) {
         currentCard = card;
         switch(card.getType()) {
-            case MOVE1: game.boardLogic.move(robot,1); break;
-            case MOVE2: game.boardLogic.move(robot,2); break;
-            case MOVE3: game.boardLogic.move(robot,3); break;
-            case BACKUP: game.boardLogic.moveBack(robot); break;
+            case MOVE1: boardLogic.move(robot,1); break;
+            case MOVE2: boardLogic.move(robot,2); break;
+            case MOVE3: boardLogic.move(robot,3); break;
+            case BACKUP: boardLogic.moveBack(robot); break;
             case ROTLEFT: robot.rotate(1); break;
             case ROTRIGHT: robot.rotate(-1); break;
             case UTURN: robot.rotate(2); break;

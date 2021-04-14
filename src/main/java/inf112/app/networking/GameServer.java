@@ -43,7 +43,7 @@ public class GameServer {
         //Server listening for connections (clients)
         server.addListener(new Listener() {
             public void received (Connection connection, Object object) {
-                System.out.println("Client connected");
+                //System.out.println("Client connected");
 
                 if(object instanceof String) {
                     if (run) { connection.close();
@@ -61,12 +61,14 @@ public class GameServer {
                         connection.sendTCP(map);
                     }
                 }
+
                 if(object instanceof Network.UpdatePlayer){
                     System.out.println("Received player update");
                     Network.UpdatePlayer player = (Network.UpdatePlayer) object;
                     playerList.put(player.uuid, player.player);
                     server.sendToAllExceptTCP(connection.getID(), player);
                 }
+
                 if(object instanceof Network.TestPacket){
                     System.out.println("Server received test packet");
                     Network.TestPacket packet = (Network.TestPacket) object;
