@@ -34,6 +34,15 @@ public class Robot {
         int newDT = damageTokens + dam;
 
         damageTokens = Math.max(Math.min(newDT, 10), 0);
+
+        /* take away a life token if robot has taken 10 DT
+        * if no life tokens left, then robot is destroyed*/
+        if (damageTokens == 10) {
+            lifeTokens--;
+            if (lifeTokens == 0) {
+                setAlive(false);
+            }
+        }
     }
 
     public void setPowerDown(boolean bool) {
@@ -44,6 +53,10 @@ public class Robot {
     
     public int getDamage() {
         return damageTokens;
+    }
+
+    public int getLifeTokens() {
+        return lifeTokens;
     }
 
     public void discardDamage() { damageTokens=0; }
