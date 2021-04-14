@@ -76,7 +76,8 @@ roboten i riktig retning i henhold til fargen på tannhjulet.
 - 
 
 14.04 (Onsdag 12:15 - 14:00)
-- a
+- Alle var tilstede
 - Sassan erstattet en gammel fix med restock() og la til
   robot destruction etter 10 DamageTokens
-- 
+- Ørjan endret standardverdi for IP og navn til sist brukt, i stedet for "localhost" og "name".
+- Ørjan jobbet på ny skjerm etter noen vinner, der man kan starte nytt spill.
