@@ -102,17 +102,16 @@ public class SetupScreen implements Screen {
 
                 prefs.flush();
 
-                GameServer server = null;
                 GameClient client = null;
                 try {
-                    server = new GameServer();
+                    GameServer server = new GameServer();
                     server.setMap(selected);
                     client = new GameClient();
                     client.getClient().sendTCP(name.getText());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                game.setScreen(new LobbyScreen(game, client, server));
+                game.setScreen(new LobbyScreen(game, client));
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {

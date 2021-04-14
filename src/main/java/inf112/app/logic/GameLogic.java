@@ -103,6 +103,7 @@ public class GameLogic {
             client.updatePlayer(uuid, playerList.get(uuid));
             if(!playerList.get(uuid).getRobot().getWon())
                 System.out.println("You lost, loser!");
+            else client.declareVictory();
         }
     }
 
@@ -207,6 +208,7 @@ public class GameLogic {
     /** deals cards to each player according to the number
     * of their damage tokens */
     public void dealCards() {
+        deck.shuffle();
         for (Player p : playerList.values()) {
             if (!p.getRobot().getPowerDown()) {
                 Deck newCards = new Deck();

@@ -213,6 +213,7 @@ public class GameScreen implements Screen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 roundThread = new Thread(() -> gameLogic.ready());
                 roundThread.start();
+                System.out.println(roundThread.getName());
                 roundRunning = true;
             }
             @Override
@@ -273,6 +274,11 @@ public class GameScreen implements Screen {
 
         stage.act();
         stage.draw();
+
+        //End game if necessary
+        if (!client.run) {
+            game.setScreen(new EndScreen(game,players.get(client.winner)));
+        }
     }
 
 

@@ -109,10 +109,11 @@ public class BoardLogic extends InputAdapter {
 
         if (!inBorder(x,y)) { return; }
 
-        int flag = map.get("flag")[x][y];
-        int repair = map.get("repair")[x][y];
+        int[][] flag = map.get("flag");
+        int[][] repair = map.get("repair");
 
-        if (flag != 0 && checkFlags(map.get("flag")[x][y], robot)) {
+
+        if (flag != null && (flag[x][y] != 0 && checkFlags(flag[x][y], robot))) {
             robot.getFlagVisits().put(map.get("flag")[x][y], true);
             System.out.println("You got the flag!");
             if (robot.checkWin()) {
@@ -122,7 +123,7 @@ public class BoardLogic extends InputAdapter {
             robot.setCheckpoint(new Vector2(x,y));
         }
 
-        if (repair == 7 || repair == 15) {
+        if (repair != null && (repair[x][y] == 7 || repair[x][y] == 15)) {
             robot.setCheckpoint(new Vector2(x,y));
         }
     }
@@ -137,9 +138,11 @@ public class BoardLogic extends InputAdapter {
 
         if (!inBorder(x,y)) { return; }
 
-        int repair = map.get("repair")[x][y];
+        int[][] repair = map.get("repair");
 
-        if (repair == 7 || repair == 15) {
+        if (repair == null) return;
+
+        if (repair[x][y] == 7 || repair[x][y] == 15) {
             robot.addDamage(-1);
         }
     }
@@ -331,6 +334,7 @@ public class BoardLogic extends InputAdapter {
         //looper over map som fører til ikke-deterministisk oppførsel
         for(Player player : players.values()) {
             Robot movingRobot = player.getRobot();
+            if (map.get(conveyorLayer) == null) return;
             if (map.get(conveyorLayer)[movingRobot.getX()][movingRobot.getY()]!=0) {
                 int type = map.get(conveyorLayer)[movingRobot.getX()][movingRobot.getY()];
                 switch (type) {

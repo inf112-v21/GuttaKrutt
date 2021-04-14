@@ -1,10 +1,7 @@
 package inf112.app.networking;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -24,6 +21,7 @@ public class GameServer {
     Map<Integer,UUID> connectionList;
     String mapName;
     public boolean run = false;
+    ArrayList<UUID> ready = new ArrayList<>();
 
     public GameServer() throws IOException {
         this(false);
@@ -67,6 +65,30 @@ public class GameServer {
                     Network.UpdatePlayer player = (Network.UpdatePlayer) object;
                     playerList.put(player.uuid, player.player);
                     server.sendToAllExceptTCP(connection.getID(), player);
+                }
+
+                if(object instanceof Network.NewWinner){
+                    server.sendToAllTCP(object);
+
+                    playerList = new HashMap<>();
+                    connectionList = new HashMap<>();
+                    mapName = null;
+                    run = false;
+                }
+
+                if(object instanceof Network.Ready) {
+                    ready.add(((Network.Ready) object).uuid);
+                    server.sendToAllTCP(object);
+
+                    boolean send = true;
+
+                    for (UUID uuid : playerList.keySet()) {
+                        if (!ready.contains(uuid)) send = false;
+                        System.out.println(((Network.Ready) object).uuid);
+                        System.out.println(uuid + " " + ready.contains(uuid));
+                    }
+
+                    if (send) server.sendToAllTCP(new Network.RunGame());
                 }
 
                 if(object instanceof Network.TestPacket){

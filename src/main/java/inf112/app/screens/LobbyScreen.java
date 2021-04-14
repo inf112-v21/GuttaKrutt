@@ -19,6 +19,9 @@ import inf112.app.networking.GameServer;
 import inf112.app.networking.Network;
 import org.lwjgl.system.CallbackI;
 
+import java.util.Map;
+import java.util.UUID;
+
 public class LobbyScreen implements Screen {
     Game game;
     GameClient client;
@@ -72,19 +75,14 @@ public class LobbyScreen implements Screen {
 
         label = new Label("",RoboRally.skin);
         table.add(label);
-    }
 
-    public LobbyScreen(Game game, GameClient client, GameServer server) {
-        this(game,client);
-
-        TextButton playButton = new TextButton("Play!", RoboRally.skin);
+        TextButton playButton = new TextButton("Ready", RoboRally.skin);
         playButton.setWidth(Gdx.graphics.getWidth()/10);
         playButton.setPosition(Gdx.graphics.getWidth()/10-playButton.getWidth()/10,Gdx.graphics.getHeight()/10-playButton.getHeight()/10);
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                server.getServer().sendToAllTCP(new Network.RunGame());
-                server.run = true;
+                client.readyForGame();
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -108,12 +106,16 @@ public class LobbyScreen implements Screen {
         stage.draw();
 
         names.reset();
-        for (Player player : client.getPlayerList().values()) {
+        for (Map.Entry<UUID,Player> entry : client.getPlayerList().entrySet()) {
+            Player player = entry.getValue();
             names.add(new Label(player.getName(),RoboRally.skin));
             int[] tr = player.getRobot().getTexture();
             if (tr != null) {
                 Image image = new Image(robot[tr[0]][tr[1]]);
                 names.add(image).width(50).height(50);
+                if (client.ready.contains(entry.getKey())) {
+                    names.add(new Image(new Texture(Gdx.files.internal("default/raw/check-on.png"))));
+                }
             }
             names.row();
         }
