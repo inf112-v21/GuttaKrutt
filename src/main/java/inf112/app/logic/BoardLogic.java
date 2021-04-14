@@ -109,7 +109,10 @@ public class BoardLogic extends InputAdapter {
 
         if (!inBorder(x,y)) { return; }
 
+        if (layerIsNull("flag")) return;
         int flag = map.get("flag")[x][y];
+
+        if (layerIsNull("repair")) return;
         int repair = map.get("repair")[x][y];
 
         if (flag != 0 && checkFlags(map.get("flag")[x][y], robot)) {
@@ -137,6 +140,7 @@ public class BoardLogic extends InputAdapter {
 
         if (!inBorder(x,y)) { return; }
 
+        if (layerIsNull("repair")) return;
         int repair = map.get("repair")[x][y];
 
         if (repair == 7 || repair == 15) {
@@ -328,7 +332,9 @@ public class BoardLogic extends InputAdapter {
     }
 
     private void activateConveyorBelts(String conveyorLayer) {
-        //looper over map som fører til ikke-deterministisk oppførsel
+
+        if (layerIsNull(conveyorLayer)) return;
+
         for(Player player : players.values()) {
             Robot movingRobot = player.getRobot();
             if (map.get(conveyorLayer)[movingRobot.getX()][movingRobot.getY()]!=0) {
@@ -451,10 +457,9 @@ public class BoardLogic extends InputAdapter {
      * Left rotation for red cog. Right rotation for green cog.
      */
     public void activateGears() {
+        if (layerIsNull("Green cog") || layerIsNull("Red cog")) return;
         int[][] greens = map.get("Green cog");
         int[][] reds = map.get("Red cog");
-
-        if (greens == null || reds == null) return;
 
         for (int i=0; i<map.get("board").length; i++) {
             for (int j = 0; j < map.get("board")[0].length; j++) {
@@ -565,10 +570,10 @@ public class BoardLogic extends InputAdapter {
                 default: id = 132; break;
             }
 
-            int[][] layer = map.get("starting spots");
-            if (layer == null) {
+            if (layerIsNull("starting spots")) {
                 startingSpots[i] = new Vector2(0,0);
             } else {
+                int[][] layer = map.get("starting spots");
                 for (int x = 0; x < layer.length; x++) {
                     for (int y = 0; y < layer[0].length; y++) {
                         if (layer[x][y] == id) { startingSpots[i] = new Vector2(x,y); }
@@ -580,5 +585,11 @@ public class BoardLogic extends InputAdapter {
         return startingSpots;
     }
 
+    private boolean layerIsNull(String layerName) {
+        int[][] layer = map.get(layerName);
+        if(layer==null)
+            return true;
+        return false;
+    }
 
 }
