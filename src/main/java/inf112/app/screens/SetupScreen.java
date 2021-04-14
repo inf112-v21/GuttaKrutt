@@ -98,6 +98,10 @@ public class SetupScreen implements Screen {
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                prefs.putString("lastUsedName", name.getText());
+
+                prefs.flush();
+
                 GameServer server = null;
                 GameClient client = null;
                 try {
