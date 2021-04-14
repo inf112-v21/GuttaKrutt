@@ -70,9 +70,6 @@ public class GameServer {
                 if(object instanceof Network.NewWinner){
                     server.sendToAllTCP(object);
 
-                    playerList = new HashMap<>();
-                    connectionList = new HashMap<>();
-                    mapName = null;
                     run = false;
                 }
 
@@ -84,11 +81,19 @@ public class GameServer {
 
                     for (UUID uuid : playerList.keySet()) {
                         if (!ready.contains(uuid)) send = false;
-                        System.out.println(((Network.Ready) object).uuid);
-                        System.out.println(uuid + " " + ready.contains(uuid));
                     }
 
                     if (send) server.sendToAllTCP(new Network.RunGame());
+                }
+
+                if(object instanceof Network.NewGame) {
+                    playerList = new HashMap<>();
+                    connectionList = new HashMap<>();
+                    //mapName = null;
+                    run = false;
+                    ready = new ArrayList<>();
+
+                    server.sendToAllTCP(object);
                 }
 
                 if(object instanceof Network.TestPacket){

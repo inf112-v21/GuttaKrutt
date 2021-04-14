@@ -92,6 +92,8 @@ public class GameScreen implements Screen {
 
         String map = client.mapName;
 
+        System.out.println(map);
+
         TmxMapLoader mapLoader = new TmxMapLoader();
         tiledMap = mapLoader.load(map);
 
@@ -277,7 +279,7 @@ public class GameScreen implements Screen {
 
         //End game if necessary
         if (!client.run) {
-            game.setScreen(new EndScreen(game,players.get(client.winner)));
+            game.setScreen(new EndScreen(game,players.get(client.winner),client));
         }
     }
 

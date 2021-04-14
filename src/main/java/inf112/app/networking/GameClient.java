@@ -73,16 +73,13 @@ public class GameClient {
                 if(object instanceof Network.NewWinner){
                     winner = ((Network.NewWinner) object).uuid;
 
-                    clientUUID = null;
-                    playerList = new HashMap<>();
                     run = false;
-                    mapName = null;
                 }
                 if(object instanceof Network.NewGame){
                     clientUUID = null;
                     playerList = new HashMap<>();
                     run = false;
-                    mapName = null;
+                    //mapName = null;
                     winner = null;
                     ready = new ArrayList<>();
 
