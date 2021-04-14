@@ -178,6 +178,46 @@ public class BoardLogicTest {
     }
 
     @Test
+    public void robotsAreAbleToShootLaserTest(){
+        //Checking there are no lasers from position (0,1) to (0,4), which is where the laser would be if the robot at
+        //pos (0,0) facing north would shoot a laser
+        for(int i = 1; i < map.get("board")[0].length; i++)
+            assertEquals(0, map.get("laser")[0][i]);
+
+        //Initiates laser from robot at pos (0,0) facing north
+        boardLogic.robotsShootsLasers();
+
+        //Checking there are vertical lasers from (0,1) to (0,4)
+        for(int i = 1; i < map.get("board")[0].length; i++)
+            //Value 2 equals vertical laser
+            assertEquals(2, map.get("laser")[0][i]);
+    }
+
+    @Test
+    public void robotLaserDoesNotHitTheRobotShootingTest(){
+        //Initiates laser from robot at pos (0,0) facing north
+        boardLogic.robotsShootsLasers();
+
+        //Checking there is no laser at the robots position, the
+        assertEquals(0, map.get("laser")[0][0]);
+    }
+
+    @Test
+    public void robotLaserDamagesOtherRobotsTest(){
+
+    }
+
+    @Test
+    public void robotLaserDoesNotGoThroughWallTest(){
+
+    }
+
+    @Test
+    public void robotLaserDoesNotGoThroughRobotsTest(){
+
+    }
+
+    @Test
     public void playerWinsIfReachingFlagTest(){
         setUpMapWithXFlags(players, 1);
         for(Player player : players.values()){
