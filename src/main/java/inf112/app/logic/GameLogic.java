@@ -248,21 +248,19 @@ public class GameLogic {
     /**
      * Executes the cards in the program register
      */
-    private void processCards() {
-        for (int i=0;i<5;i++) {
-            Array<Player> queue = new Array<>();
-            for (Player player : playerList.values()) {
-                queue.add(player);
-                player.setCards(new Deck());
-            }
-            queue.sort(new CardComparator(i));
-            for (Player player : queue) {
-                Card card = player.getRobot().getProgramRegister()[i];
-                if (card != null) {
-                    useCard(player.getRobot(), card);
-                    if (i < 9 - player.getRobot().getDamage()) {
-                        player.getRobot().getProgramRegister()[i] = null;
-                    }
+    private void processCards(int i) {
+        Array<Player> queue = new Array<>();
+        for (Player player : playerList.values()) {
+        queue.add(player);
+            player.setCards(new Deck());
+        }
+        queue.sort(new CardComparator(i));
+        for (Player player : queue) {
+            Card card = player.getRobot().getProgramRegister()[i];
+            if (card != null) {
+                useCard(player.getRobot(), card);
+                if (i < 9 - player.getRobot().getDamage()) {
+                    player.getRobot().getProgramRegister()[i] = null;
                 }
             }
         }
