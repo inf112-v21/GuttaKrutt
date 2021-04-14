@@ -89,6 +89,7 @@ public class GameLogic {
 
         loopTillOthersAreReady();
 
+        deck.restock();
         doTurn();
 
         try {
@@ -117,7 +118,7 @@ public class GameLogic {
         //E. Touch Checkpoints
 
         for (int i=0;i<5;i++) {
-            processCards(i); // B. Robots move
+            processCards(); // B. Robots move
             boardElementsMove(); //C
             boardLogic.laserSpawner(); //D
             touchCheckpoints(); //E
@@ -209,9 +210,11 @@ public class GameLogic {
     public void dealCards() {
         for (Player p : playerList.values()) {
             if (!p.getRobot().getPowerDown()) {
+                Deck newCards = new Deck();
                 for (int i = 0; i < (9 - p.getRobot().getDamage()); i++) {
-                    p.getCards().add(deck.take());
+                    newCards.add(deck.take());
                 }
+                p.setCards(newCards);
             }
         }
     }
@@ -247,21 +250,21 @@ public class GameLogic {
     /**
      * Executes the cards in the program register
      */
-    public void processCards(int i) {
-        Array<Player> queue = new Array<>();
-        for (Player player : playerList.values()) {
-        queue.add(player);
-            deck.addAll(player.getCards());
-            player.setCards(new Deck());
-        }
-        queue.sort(new CardComparator(i));
-        for (Player player : queue) {
-            Card card = player.getRobot().getProgramRegister()[i];
-            if (card != null) {
-                useCard(player.getRobot(), card);
-                if (i < 9 - player.getRobot().getDamage()) {
-                    deck.insert(card);
-                    player.getRobot().getProgramRegister()[i] = null;
+    private void processCards() {
+        for (int i=0;i<5;i++) {
+            Array<Player> queue = new Array<>();
+            for (Player player : playerList.values()) {
+                queue.add(player);
+                player.setCards(new Deck());
+            }
+            queue.sort(new CardComparator(i));
+            for (Player player : queue) {
+                Card card = player.getRobot().getProgramRegister()[i];
+                if (card != null) {
+                    useCard(player.getRobot(), card);
+                    if (i < 9 - player.getRobot().getDamage()) {
+                        player.getRobot().getProgramRegister()[i] = null;
+                    }
                 }
             }
         }
