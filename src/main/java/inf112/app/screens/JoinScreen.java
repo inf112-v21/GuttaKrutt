@@ -2,6 +2,7 @@ package inf112.app.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -26,12 +27,20 @@ public class JoinScreen implements Screen {
 
         stage = new Stage(new ScreenViewport());
 
-        TextField host = new TextField("localhost", RoboRally.skin);
+        Preferences prefs = Gdx.app.getPreferences("RoboRally");
+
+        String defaultIP = prefs.getString("lastUsedIP");
+        if (defaultIP == "") defaultIP = "localhost";
+
+        String defaultName = prefs.getString("lastUsedName");
+        if (defaultName == "") defaultName = "name";
+
+        TextField host = new TextField(defaultIP, RoboRally.skin);
         host.setWidth(Gdx.graphics.getWidth()/2);
         host.setPosition(Gdx.graphics.getWidth()/2-host.getWidth()/2,Gdx.graphics.getHeight()/2);
         stage.addActor(host);
 
-        TextField name = new TextField("name", RoboRally.skin);
+        TextField name = new TextField(defaultName, RoboRally.skin);
         name.setWidth(Gdx.graphics.getWidth()/2);
         name.setPosition(Gdx.graphics.getWidth()/2-name.getWidth()/2,Gdx.graphics.getHeight()/2-100);
         stage.addActor(name);
@@ -42,6 +51,11 @@ public class JoinScreen implements Screen {
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                prefs.putString("lastUsedIP",host.getText());
+                prefs.putString("lastUsedName",name.getText());
+
+                prefs.flush();
+
                 GameClient client = null;
                 try {
                     client = new GameClient(host.getText(),true);
