@@ -56,7 +56,7 @@ roboten i riktig retning i henhold til fargen på tannhjulet.
 
 29.03 (Mandag, 14:00-14:40)
 - Sassan, Simon og Ørjan var tilstedes.
-- Diskuterte lett hva vi ville jobbe med i påsken.
+- Diskuterte litt hva vi ville jobbe med i påsken.
 - Bestemte oss for at neste møtet skulle være tirsdag 6. april (p.g.a påske).
 
 06.04 (Tirsdag, 12:00 - 12:30)
@@ -65,15 +65,16 @@ roboten i riktig retning i henhold til fargen på tannhjulet.
 - Oppsummerte hvordan vi lå an etter påsken
 - Sassan startet på testing av conveyor belts
 - Ørjan startet på gjenoppliving av robotter.
+- Simon startet å jobbe med tannhjul
 
 07.04 (Onsdag, 12:15 - 14:00)
-- a
-- b
+- Alle var tilstede
+- Simon implementerte tannhjul og skrev tester for det
 
 12.04 (Mandag 14:00 - 16:00)
-- a
+- Alle var tilstede (?)
 - Sassan testet restock() metoden og debugget spillet
-- 
+- Simon startet å implementere at roboter skyter lasere
 
 14.04 (Onsdag 12:15 - 14:00)
 - Alle var tilstede
@@ -81,3 +82,4 @@ roboten i riktig retning i henhold til fargen på tannhjulet.
   robot destruction etter 10 DamageTokens
 - Ørjan endret standardverdi for IP og navn til sist brukt, i stedet for "localhost" og "name".
 - Ørjan jobbet på ny skjerm etter noen vinner, der man kan starte nytt spill.
+- Simon implementerte at roboter skyter lasere og skrev tester for det
