@@ -226,19 +226,20 @@ public class BoardLogic extends InputAdapter {
         return (x < map.get("board").length && x >= 0 && y < map.get("board")[0].length && y >= 0);
     }
 
+    public void laserCleaner(){
+        for(int i=0;i<map.get("laser").length;i++){
+            for(int j=0;j<map.get("laser")[0].length;j++){
+                map.get("laser")[i][j]=0;
+            }
+        }
+    }
     /**
      * Spawns lasers from wall laser spawner map object.
      */
     public void laserSpawner() {
         int dir;
-        for(int i=0;i<5;i++){
-            for(int j=0;j<5;j++){
-                map.get("laser")[i][j]=0;
-            }
-        }
-
-        for(int i = 0; i<5; i++) {
-            for (int j = 0; j < 5; j++) {
+        for(int i = 0; i<map.get("laser").length; i++) {
+            for (int j = 0; j < map.get("laser")[0].length; j++) {
                 int id = map.get("wall")[i][j];
                 switch (id) {
                     case 37:
@@ -299,6 +300,28 @@ public class BoardLogic extends InputAdapter {
                     if(!getWall(x,y)[dir] && !getWall(x+1,y)[(dir + 2) % 4])
                         laser(x+1,y,dir);
                     break;
+            }
+        }
+    }
+
+    /**
+     * Shoots lasers from every robot in the direction the robot is standing.
+     */
+    public void robotsShootsLasers(){
+        for(Player player : players.values()) {
+            Robot robot = player.getRobot();
+            int rotation = robot.getRotation();
+            switch(rotation){
+                case 0:
+                    laser(robot.getX(), robot.getY() + 1, rotation);
+                    break;
+                case 1:
+                    laser(robot.getX() - 1, robot.getY(), rotation);
+                    break;
+                case 2:
+                    laser(robot.getX(), robot.getY() - 1, rotation);
+                default:
+                    laser(robot.getX() + 1, robot.getY(), rotation);
             }
         }
     }
