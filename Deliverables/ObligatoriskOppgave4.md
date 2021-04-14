@@ -72,8 +72,11 @@ roboten i riktig retning i henhold til fargen på tannhjulet.
 
 12.04 (Mandag 14:00 - 16:00)
 - a
-- b
+- Sassan testet restock() metoden og debugget spillet
+- 
 
 14.04 (Onsdag 12:15 - 14:00)
 - a
-- b
+- Sassan erstattet en gammel fix med restock() og la til
+  robot destruction etter 10 DamageTokens
+- 
