@@ -194,7 +194,7 @@ public class BoardLogicTest {
     }
 
     @Test
-    public void robotLaserDoesNotHitTheRobotShootingTest(){
+    public void robotDoesNotGetHitByOwnLaserTest(){
         //Initiates laser from robot at pos (0,0) facing north
         boardLogic.robotsShootsLasers();
 
@@ -204,16 +204,97 @@ public class BoardLogicTest {
 
     @Test
     public void robotLaserDamagesOtherRobotsTest(){
+        //Creating a map with two players
+        Map<UUID,Player> players = new HashMap<>();
+        for(int i = 0; i < 2; i++)
+            players.put(UUID.randomUUID(),new Player());
+        SetUpEmptyMap(players);
+
+        int i = 0;
+        //Placing player 1 at pos (1,1) facing north and player 2 at (1,3) also facing north
+        //which means player 1 is looking directly at player 2
+        for(Player player : players.values()){
+            //Checking that the players are full health
+            assertEquals(0, player.getRobot().getDamage());
+            if(i==0)
+                player.getRobot().setPos(1,1);
+            if(i==1)
+                player.getRobot().setPos(1,3);
+            i++;
+        }
+        ;
+        //Player 2 should be hit by player 1's laser and take 1 damage while player 1 should still have full health
+        boardLogic.robotsShootsLasers();
+        i=0;
+        for(Player player : players.values()){
+            if(i==0)
+                assertEquals(0, player.getRobot().getDamage());
+            if(i==1)
+                assertEquals(1, player.getRobot().getDamage());
+            i++;
+        }
 
     }
 
     @Test
     public void robotLaserDoesNotGoThroughWallTest(){
+        //Placing a wall two tiles in front of the robot at (0,0) facing north
+        map.get("wall")[0][2] = 31;
 
+        boardLogic.robotsShootsLasers();
+        //Vertical laser == 2
+        assertEquals(0, map.get("laser")[0][0]);
+        assertEquals(2, map.get("laser")[0][1]);
+        assertEquals(2, map.get("laser")[0][2]);
+        //Wall between y=2 and y=3
+        assertEquals(0, map.get("laser")[0][3]);
+        assertEquals(0, map.get("laser")[0][4]);
     }
 
     @Test
     public void robotLaserDoesNotGoThroughRobotsTest(){
+        //Creating a map with two players
+        Map<UUID,Player> players = new HashMap<>();
+        for(int i = 0; i < 3; i++)
+            players.put(UUID.randomUUID(),new Player());
+        SetUpEmptyMap(players);
+
+        int i = 0;
+        //Placing player 1 at pos (1,1) facing north and player 2 at (1,3) also facing north
+        //which means player 1 is looking directly at player 2
+        for(Player player : players.values()){
+            //Checking that the players are full health
+            assertEquals(0, player.getRobot().getDamage());
+            if(i==0)
+                player.getRobot().setPos(1,0);
+            if(i==1)
+                player.getRobot().setPos(1,2);
+            if(i==2)
+                player.getRobot().setPos(1,3);
+            i++;
+        }
+
+        boardLogic.robotsShootsLasers();
+
+        i=0;
+        for(Player player : players.values()){
+            //Checking that the players are full health
+            //assertEquals(0, player.getRobot().getDamage());
+            if(i==0)
+                assertEquals(0, player.getRobot().getDamage());
+            if(i==1)
+                assertEquals(1, player.getRobot().getDamage());
+            if(i==2)
+                assertEquals(0, player.getRobot().getDamage());
+            i++;
+        }
+
+        assertEquals(0, map.get("laser")[1][0]);
+        assertEquals(2, map.get("laser")[1][1]);
+        assertEquals(0, map.get("laser")[1][2]);
+        //Robot at y=3
+        assertEquals(2, map.get("laser")[1][3]);
+        assertEquals(0, map.get("laser")[1][4]);
 
     }
 
