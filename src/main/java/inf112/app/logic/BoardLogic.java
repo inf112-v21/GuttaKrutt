@@ -70,7 +70,6 @@ public class BoardLogic extends InputAdapter {
 
             checkForDangers(robot);
         }
-        laserSpawner();
         if(robot.getDamage()==10)
             robot.setAlive(false);
     }

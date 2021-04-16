@@ -144,7 +144,7 @@ public class GameScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(tiledMap, 1F/300);
         renderer.setView(camera);
 
-        Texture playerTexture = new Texture("Robot1.png");
+        Texture playerTexture = new Texture("Robots.png");
         playerTextures = TextureRegion.split(playerTexture,300,300);
 
         robotsTable = new Table();
@@ -154,7 +154,7 @@ public class GameScreen implements Screen {
 
         for (Player player : players.values()) {
             Robot robot = player.getRobot();
-            Image img = new Image(playerTextures[robot.getTexture()[0]][robot.getTexture()[1]]);
+            Image img = new Image(playerTextures[0][robot.getTexture()]);
             img.addListener(new TextTooltip(robot.getDamage() + "", RoboRally.skin));
             Table table = new Table();
             //noinspection SuspiciousNameCombination
@@ -283,15 +283,13 @@ public class GameScreen implements Screen {
         }
     }
 
-
-
     public void drawRobots() {
         clearLayer(playerLayer);
         for (Player player : players.values()) {
             Robot robot = player.getRobot();
             TiledMapTileLayer.Cell currentPlayerCell = new TiledMapTileLayer.Cell();
-            int[] index = robot.getTexture();
-            currentPlayerCell.setTile(new StaticTiledMapTile(playerTextures[index[0]][index[1]]));
+            int index = robot.getTexture();
+            currentPlayerCell.setTile(new StaticTiledMapTile(ColorTexture.colorRobot(playerTextures,Color.GREEN)[robot.getDamage()/3][index]));
 
             currentPlayerCell.setRotation(robot.getRotation());
 

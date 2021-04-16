@@ -1,5 +1,6 @@
 package inf112.app;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -22,7 +23,10 @@ public class Robot {
     Vector2 checkpoint = new Vector2(0,0);
     int rotation = 0;
 
-    int[] textureRegionIndex = new int[]{0,0};
+    int textureRegionIndex = 0;
+    int red = 179;
+    int green = 50;
+    int blue = 50;
 
     public Robot() {}
     
@@ -109,9 +113,9 @@ public class Robot {
         rotation = Math.floorMod(rotation + rot,4);
     }
 
-    public void setTexture(int[] indexes) { textureRegionIndex = indexes; }
+    public void setTexture(int index) { textureRegionIndex = index; }
 
-    public int[] getTexture() {
+    public int getTexture() {
         return textureRegionIndex;
     }
 
@@ -128,4 +132,12 @@ public class Robot {
     public void respawn() { respawn(false); }
 
     public void setCheckpoint(Vector2 pos) { checkpoint = pos; }
+
+    public void setRed(int red) { this.red = red; }
+    public void setGreen(int green) { this.green = green; }
+    public void setBlue(int blue) { this.blue = blue; }
+
+    public int getRed() { return red; }
+    public int getGreen() { return green; }
+    public int getBlue() { return blue; }
 }
