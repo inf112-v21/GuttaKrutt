@@ -35,6 +35,13 @@ public class BoardLogicTest {
         this.boardLogic = new BoardLogic(map, players);
     }
 
+    public void setUpWithXPlayers(int amount){
+        Map<UUID,Player> players = new HashMap<>();
+        for(int i = 0; i < amount; i++)
+            players.put(UUID.randomUUID(),new Player());
+        SetUpEmptyMap(players);
+    }
+
     public void setUpMapWithXFlags(Map<UUID,Player> players, int x){
         //Max four flags
         if(x > 4)
@@ -99,10 +106,7 @@ public class BoardLogicTest {
 
     @Test
     public void RobotsBlockLaserBeams() {
-        Map<UUID,Player> players = new HashMap<>();
-        for(int i=0; i<4; i++)
-            players.put(UUID.randomUUID(),new Player());
-        SetUpEmptyMap(players);
+        setUpWithXPlayers(4);
         map.get("wall")[4][4] = 46;
         map.get("wall")[4][0] = 37;
         map.get("wall")[0][0] = 38;
@@ -204,11 +208,7 @@ public class BoardLogicTest {
 
     @Test
     public void robotLaserDamagesOtherRobotsTest(){
-        //Creating a map with two players
-        Map<UUID,Player> players = new HashMap<>();
-        for(int i = 0; i < 2; i++)
-            players.put(UUID.randomUUID(),new Player());
-        SetUpEmptyMap(players);
+        setUpWithXPlayers(2);
 
         int i = 0;
         //Placing player 1 at pos (1,1) facing north and player 2 at (1,3) also facing north
@@ -253,49 +253,41 @@ public class BoardLogicTest {
 
     @Test
     public void robotLaserDoesNotGoThroughRobotsTest(){
-        //Creating a map with two players
-        Map<UUID,Player> players = new HashMap<>();
-        for(int i = 0; i < 3; i++)
-            players.put(UUID.randomUUID(),new Player());
-        SetUpEmptyMap(players);
+        setUpWithXPlayers(2);
 
         int i = 0;
-        //Placing player 1 at pos (1,1) facing north and player 2 at (1,3) also facing north
+        //Placing player 1 at pos (1,0) facing north and player 2 at (1,2) facing east
         //which means player 1 is looking directly at player 2
         for(Player player : players.values()){
             //Checking that the players are full health
             assertEquals(0, player.getRobot().getDamage());
             if(i==0)
                 player.getRobot().setPos(1,0);
-            if(i==1)
+            if(i==1){
                 player.getRobot().setPos(1,2);
-            if(i==2)
-                player.getRobot().setPos(1,3);
+                player.getRobot().rotate(-1);
+            }
             i++;
         }
 
         boardLogic.robotsShootsLasers();
 
         i=0;
+        //Player 1 should be at full health, while player 2 should have 1 damage token
         for(Player player : players.values()){
-            //Checking that the players are full health
-            //assertEquals(0, player.getRobot().getDamage());
             if(i==0)
                 assertEquals(0, player.getRobot().getDamage());
             if(i==1)
                 assertEquals(1, player.getRobot().getDamage());
-            if(i==2)
-                assertEquals(0, player.getRobot().getDamage());
             i++;
         }
 
         assertEquals(0, map.get("laser")[1][0]);
         assertEquals(2, map.get("laser")[1][1]);
+        //Robot at y=2
         assertEquals(0, map.get("laser")[1][2]);
-        //Robot at y=3
-        assertEquals(2, map.get("laser")[1][3]);
+        assertEquals(0, map.get("laser")[1][3]);
         assertEquals(0, map.get("laser")[1][4]);
-
     }
 
     @Test
@@ -423,10 +415,7 @@ public class BoardLogicTest {
 
     @Test
     public void playerCollisionTest(){
-        Map<UUID,Player> players = new HashMap<>();
-        for(int i=0; i<2; i++)
-            players.put(UUID.randomUUID(),new Player());
-        SetUpEmptyMap(players);
+        setUpWithXPlayers(2);
 
         int i = 0;
         //Placing player1 at pos = (1,2) and player2 at pos = (2,2)
@@ -479,10 +468,7 @@ public class BoardLogicTest {
 
     @Test
     public void playerTryingToPushOtherPlayerIntoWallTest(){
-        Map<UUID,Player> players = new HashMap<>();
-        for(int i=0; i<2; i++)
-            players.put(UUID.randomUUID(),new Player());
-        SetUpEmptyMap(players);
+        setUpWithXPlayers(2);
 
         map.get("wall")[2][2] = 16;
 
