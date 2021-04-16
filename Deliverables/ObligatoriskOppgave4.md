@@ -5,10 +5,15 @@
    slik at spillet blir dypere strategisk og at det blir morsommere å spille med andre.
 
 Akseptansekriterier:
-- Gitt at en robot står på et gult conveyorbelt tile som peker i retning x, skal roboten
-  bli flyttet ett tile i retning x etter roboten har brukt et kort.
-- Gitt at en robot står på et blått conveyorbelt tile som peker i retning x og at neste tile i retning x er et tilsvarende blått conveyorbelt tile, skal roboten
-  bli flyttet to tiles i retning x etter at roboten har brukt et kort.
+- Gitt at en robot bruker et kort og ender opp på et conveyorbelt tile som peker i retning x, skal roboten
+  bli flyttet ett tile i retning x.
+- Gitt at en robot bruker et kort og ender opp på et blått conveyorbelt tile som peker i retning x, og at neste tile i retning x er et tilsvarende blått/gult conveyorbelt tile,
+  skal roboten bli flyttet to tiles i retning x.
+- Gitt at en robot bruker et kort og ender opp på et conveyorbelt tile som peker i retning x, og at neste tile i retning x er et conveyorbelt med en sving.
+  Da skal roboten bli flyttet ett tile i retning x og rotere seg venstre/høyre tilsvarende til retningen av svingen.  
+- Gitt at en robot bruker et kort og ender opp på et conveyorbelt til som peker i retning x, og at neste tile i retning x er okkupert av en robot som ikke står på et conveyorbelt,
+  skal roboten på conveyor-beltet ikke bli beveget av conveyorbeltet.
+- Gitt at en robot bruker et kort og ender opp på et conveyorbelt med en sving, skal roboten ikke rotere med mindre den er flyttet inn i en ny sving av conveyorbeltet.
 
 Arbeidsoppgaver:
 - Implementere gule conveyor belts.
@@ -69,34 +74,51 @@ Arbeidsoppgaver:
 - Implementere robotsShootsLasers() i doTurn() funksjonen i GameLogic, slik at robot laserene fyres av
   samtidig som laserene fra veggene.
 
+6) Brukerhistorie til Sassan *** (5 kort betingelse + robot dør etter 10 DT)
+
 ### Møtereferater:
 
 29.03 (Mandag, 14:00-14:40)
-- Sassan, Simon og Ørjan var tilstedes.
-- Diskuterte litt hva vi ville jobbe med i påsken.
-- Bestemte oss for at neste møtet skulle være tirsdag 6. april (p.g.a påske).
+- Sassan, Simon og Ørjan var tilstedes
+- Diskuterte litt hva vi ville jobbe med i påsken
+- Bestemte oss for at neste møtet skulle være tirsdag 6. april (p.g.a påske)
 
 06.04 (Tirsdag, 12:00 - 12:30)
 - Alle var tilstede
 - Diskuterte hva som må gjøres i sprint 4
 - Oppsummerte hvordan vi lå an etter påsken
 - Sassan startet på testing av conveyor belts
-- Ørjan startet på gjenoppliving av robotter.
+- Ørjan startet på gjenoppliving av robotter
 - Simon startet å jobbe med tannhjul
 
 07.04 (Onsdag, 12:15 - 14:00)
 - Alle var tilstede
+- Asle la til rotasjon på conveyorbelts og fikset bugs
 - Simon implementerte tannhjul og skrev tester for det
+- Ørjan fikset resizing for setupscreen
+- Sassan la til restock metode til deck-klassen
 
 12.04 (Mandag 14:00 - 16:00)
-- Alle var tilstede (?)
+- Alle var tilstedeGitt at en robot bruker et kort og ender opp på et conveyorbel
+- Ørjan fikset et problem med git
+- Asle merget ny conveyorbelt logikk
 - Sassan testet restock() metoden og debugget spillet
 - Simon startet å implementere at roboter skyter lasere
+- Gikk litt gjennom generelle ting som må bli gjort i løpet av sprinten
 
 14.04 (Onsdag 12:15 - 14:00)
 - Alle var tilstede
+- Asle la til pauser, fikset nullpointer i boardlogic via map.get(String), begynte å skrive tester conveyorbelts
 - Sassan erstattet en gammel fix med restock() og la til
   robot destruction etter 10 DamageTokens
-- Ørjan endret standardverdi for IP og navn til sist brukt, i stedet for "localhost" og "name".
-- Ørjan jobbet på ny skjerm etter noen vinner, der man kan starte nytt spill.
+- Ørjan endret standardverdi for IP og navn til sist brukt, i stedet for "localhost" og "name"
+- Ørjan jobbet på ny skjerm etter noen vinner, der man kan starte nytt spill
 - Simon implementerte at roboter skyter lasere og skrev tester for det
+
+16.04 (Fredag 12:00 - 14:30)
+- Alle var tilstede
+- Ørjan jobbet med å farge robotter ved runtime, så det kan være flere typer robotter uten mye ekstra arbeid
+- Simon skrev robot laser tester
+- Sassan la til en betingelse at spillere må velge fem kort før de kan fortsette til neste tur
+  (ikke ferdig; buggy)
+- Asle skrev flere tester til conveyorbelts
