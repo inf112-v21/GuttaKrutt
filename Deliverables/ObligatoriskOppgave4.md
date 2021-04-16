@@ -51,6 +51,23 @@ Arbeidsoppgaver:
 - Implementere kode som sjekker om man står på et tannhjul, og som roterer
 roboten i riktig retning i henhold til fargen på tannhjulet.
 
+5) Som en spiller ønsker jeg at roboten min skal skyte laser i retningen den står i slik at
+jeg kan skade eller ødelegge de andre spillerenes roboter.
+   
+Akseptansekriterier:
+- Gitt at en robot står på brettet, så skal en laser fyres av i retningen roboten står i.
+Laseren skal oppføre seg lik lasere som skytes fra vegger.
+  
+- Gitt at det står to roboter, A og B, på brettet i posisjon (1,1) og (1,2) henholdsvis og robot
+A er vendt mot nord (vendt mot robot B), så skal robot B bli skadet av laseren til robot A.
+
+- Gitt at det står en robot på brettet og at det er en vegg mellom roboten og ruten foran roboten,
+så skal ingen laser fyres av.
+
+Arbeidsoppgaver:
+- Implementere funksjon robotsShootsLasers() i BoardLogic, som skyter laser fra alle robotene på brettet.
+- Implementere robotsShootsLasers() i doTurn() funksjonen i GameLogic, slik at robot laserene fyres av
+  samtidig som laserene fra veggene.
 
 ### Møtereferater:
 
