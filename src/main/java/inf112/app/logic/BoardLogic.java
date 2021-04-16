@@ -109,13 +109,11 @@ public class BoardLogic extends InputAdapter {
 
         if (!inBorder(x,y)) { return; }
 
-        if (layerIsNull("flag")) return;
-        int flag = map.get("flag")[x][y];
+        int[][] flag = map.get("flag");
+        int[][] repair = map.get("repair");
 
-        if (layerIsNull("repair")) return;
-        int repair = map.get("repair")[x][y];
 
-        if (flag != 0 && checkFlags(map.get("flag")[x][y], robot)) {
+        if (flag != null && (flag[x][y] != 0 && checkFlags(flag[x][y], robot))) {
             robot.getFlagVisits().put(map.get("flag")[x][y], true);
             System.out.println("You got the flag!");
             if (robot.checkWin()) {
@@ -125,7 +123,7 @@ public class BoardLogic extends InputAdapter {
             robot.setCheckpoint(new Vector2(x,y));
         }
 
-        if (repair == 7 || repair == 15) {
+        if (repair != null && (repair[x][y] == 7 || repair[x][y] == 15)) {
             robot.setCheckpoint(new Vector2(x,y));
         }
     }
@@ -510,7 +508,7 @@ public class BoardLogic extends InputAdapter {
      * Left rotation for red cog. Right rotation for green cog.
      */
     public void activateGears() {
-        if (layerIsNull("Green cog") || layerIsNull("Red cog")) return;
+        if (layerIsNull("Green cog") && layerIsNull("Red cog")) return;
         int[][] greens = map.get("Green cog");
         int[][] reds = map.get("Red cog");
 
