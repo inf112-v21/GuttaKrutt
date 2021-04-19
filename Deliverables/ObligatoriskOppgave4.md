@@ -122,3 +122,8 @@ Arbeidsoppgaver:
 - Sassan la til en betingelse at spillere må velge fem kort før de kan fortsette til neste tur
   (ikke ferdig; buggy)
 - Asle skrev flere tester til conveyorbelts
+
+19.04 (Mandag 14:00 - 16:00)
+- Alle var tilstede
+- Simon fikset en bug der roboter ikke gikk fram etter å ha dyttet en annen robot
+
