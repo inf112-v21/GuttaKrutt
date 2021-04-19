@@ -127,3 +127,49 @@ Arbeidsoppgaver:
 - Alle var tilstede
 - Simon fikset en bug der roboter ikke gikk fram etter å ha dyttet en annen robot
 
+###Prosjekt og prosjektstruktur
+
+####Retrospektiv
+
+###Krav
+
+###Bugs
+
+###Arbeidsfordeling
+
+###Teknisk informasjon
+####Krav og kjøreinstruksjoner
+Krav til software:
+- Java 9 og opp
+- Maven 3.6.3 og opp
+
+Åpne command prompt (cmd) og skriv følgende kommandoer:
+- cd *lokasjon til spill-filene*
+- mvn clean install
+- mvn exec:java
+
+#### Hvordan manuelt teste programmet
+Det ligger instruksjoner i ManualTest folderen.
+
+#### Spillinstruksjoner
+Når spillet er åpnet får man valget mellom "host" og "join". Trykk "host" for å kjøre en spillserver,
+eller trykk "join" hvis du vil koble til en annen persons server.
+
+Hvis du trykket "host" vil du møte en skjerm hvor du kan velge kart ved å trykke på de ulike kartene på listen.
+Et bilde av kartet vil henholdsvis bli vist på høyresiden. Nede til venstre får du mulighet til å skrive inn spill-taggen din.
+Deretter trykk "play" nede i høyre hjørne for å starte serveren.
+
+Hvis du trykket "join" blir du sendt til en skjerm som lar deg skrive inn en ip-adresse til en annen server i feltet det står "localhost"
+og spill-taggen din i feltet det står "name". Deretter trykk "play" knappen nede i venstre hjørne for å koble til serveren.
+
+Nå vil du komme til spill lobbyen. Hvor man venter på at alle skal få koble seg til serveren før man starter
+spillet. Her kan du også se roboten du vil spille som. Hosten kan da trykke "play" nede i venstre hjørne for å starte spillet.
+
+Når spillet har startet får du muligheten til å programmere roboten din med kortene du får tildelt.
+Trykk på "edit" nede på skjermen for å se kortene dine. Programmering fungerer som et drag and drop system.
+Når du har programmert roboten din, trykk på "ready". Når alle i spillet har trykket ready, så vil spillet oppdateres
+og neste runde vil starte.
+
+Første spiller som er innom alle flaggene i riktig rekkefølge vinner!
+
+For å lukke spillet, lukk vinduet ved å trykke på krysset oppe til høyre. (Server og klient blir automatisk lukket om Gdx-applikasjonen lukkes.)
