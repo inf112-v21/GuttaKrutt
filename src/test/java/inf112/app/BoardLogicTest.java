@@ -486,6 +486,7 @@ public class BoardLogicTest {
 
         //Player1 tries to move into the tile player2 is in (2,2), but the wall stops player1
         //from pushing player2, positions of both player should be the same as starting positions
+        i=0;
         for(Player player : players.values()){
             if(i==0){
                 boardLogic.movePlayer(player.getRobot(), 1,0,true);
