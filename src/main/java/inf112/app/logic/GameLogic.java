@@ -84,25 +84,36 @@ public class GameLogic {
      * to power down receive new cards and a new round starts.
      */
     public void ready() {
-        playerList.get(uuid).setReady(true);
-        client.updatePlayer(uuid,playerList.get(uuid));
+        int cardCounter = 0;
+        for (Card card : playerList.get(uuid).getRobot().getProgramRegister()) {
+            if (card != null) { cardCounter++; }
+        }
+        if (cardCounter == 5) {
 
-        loopTillOthersAreReady();
-
-        deck.restock();
-        doTurn();
-
-        tryCatchSleep(2000);
-        playerList.get(uuid).setReady(false);
-        client.updatePlayer(uuid,playerList.get(uuid));
-        for (Player player : playerList.values())
-            System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
-
-        if(checkIfGameConcluded()){
-            System.out.println("A player has won");
+            playerList.get(uuid).setReady(true);
             client.updatePlayer(uuid, playerList.get(uuid));
-            if(!playerList.get(uuid).getRobot().getWon())
-                System.out.println("You lost, loser!");
+
+            loopTillOthersAreReady();
+
+            deck.restock();
+            doTurn();
+
+            tryCatchSleep(2000);
+            playerList.get(uuid).setReady(false);
+            client.updatePlayer(uuid, playerList.get(uuid));
+            for (Player player : playerList.values())
+                System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
+
+            if (checkIfGameConcluded()) {
+                System.out.println("A player has won");
+                client.updatePlayer(uuid, playerList.get(uuid));
+                if (!playerList.get(uuid).getRobot().getWon())
+                    System.out.println("You lost, loser!");
+            }
+
+        }
+        else {
+            System.out.println("The register has to be filled with five cards.");
         }
     }
 
