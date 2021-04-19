@@ -129,6 +129,7 @@ Arbeidsoppgaver:
 - Sassan fikset minimum antall kort betingelsen og
 forsøkte å legge til en pop-up dialog til power-down
   metoden (klarte ikke det)
+- Ørjan forbedret måten robottene blir farget, og begynte på UIen som viser damage tokens og life tokens.
 
 ###Prosjekt og prosjektstruktur
 
