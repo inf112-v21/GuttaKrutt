@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.ArrayList;
+
 public class ColorTexture {
     static public TextureRegion[][] colorRobot(TextureRegion[][] t, Color color) {
         return colorRobot(t[0][0].getTexture(),color);
@@ -16,19 +18,21 @@ public class ColorTexture {
         t.getTextureData().prepare();
         Pixmap pixmap = t.getTextureData().consumePixmap();
 
-        Color purpleColor = new Color(0.99607843F, 0.0F, 1.0F, 1.0F);
-
         for (int y = 0; y < pixmap.getHeight(); y++) {
             for (int x = 0; x < pixmap.getWidth(); x++) {
                 Color pixelColor = new Color();
                 Color.rgba8888ToColor(pixelColor, pixmap.getPixel(x, y));
 
-                if (pixelColor.equals(purpleColor)) {
+                float[] hsv = new float[3];
+                pixelColor.toHsv(hsv);
+
+                if ((int) hsv[0] == 299) {
                     pixmap.setColor(color);
                     pixmap.fillRectangle(x, y, 1, 1);
                 }
             }
         }
+
         t.getTextureData().disposePixmap();
         return TextureRegion.split(new Texture(pixmap),300,300);
     }

@@ -24,9 +24,9 @@ public class Robot {
     int rotation = 0;
 
     int textureRegionIndex = 0;
-    int red = 179;
-    int green = 50;
-    int blue = 50;
+    int red = 0;
+    int green = 0;
+    int blue = 0;
 
     public Robot() {}
     

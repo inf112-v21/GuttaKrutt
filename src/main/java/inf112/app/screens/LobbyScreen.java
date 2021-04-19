@@ -2,6 +2,7 @@ package inf112.app.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
@@ -18,6 +19,7 @@ import inf112.app.RoboRally;
 import inf112.app.Robot;
 import inf112.app.networking.GameClient;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -29,12 +31,15 @@ public class LobbyScreen implements Screen {
     ButtonGroup robots;
 
     TextureRegion[][] robot;
+    Map<UUID,TextureRegion[][]> colorTextures;
     Table selection;
 
     public LobbyScreen(Game game, GameClient client) {
         this.game = game;
         this.client = client;
         stage = new Stage(new ScreenViewport());
+
+        Preferences prefs = Gdx.app.getPreferences("RoboRally");
 
         names = new Table();
         names.setBounds(50,300,100,500);
@@ -52,40 +57,44 @@ public class LobbyScreen implements Screen {
         selection = new Table();
         table.add(selection);
 
-        drawRobotSelection(179,50,50);
+        drawRobotSelection(prefs.getInteger("lastRed"),prefs.getInteger("lastGreen"),prefs.getInteger("lastBlue"));
 
         table.row();
-        Label redValue = new Label("179",RoboRally.skin);
+        Label redValue = new Label(prefs.getString("lastRed"),RoboRally.skin);
 
         Slider red = new Slider(0,255,1,false,RoboRally.skin);
-        red.setValue(179);
+        red.setValue(prefs.getInteger("lastRed"));
 
         table.add(red);
         table.add(redValue);
 
         table.row();
-        Label greenValue = new Label("50",RoboRally.skin);
+        Label greenValue = new Label(prefs.getString("lastGreen"),RoboRally.skin);
 
         Slider green = new Slider(0,255,1,false,RoboRally.skin);
-        green.setValue(50);
+        green.setValue(prefs.getInteger("lastGreen"));
 
         table.add(green);
         table.add(greenValue);
 
         table.row();
-        Label blueValue = new Label("50",RoboRally.skin);
+        Label blueValue = new Label(prefs.getString("lastRed"),RoboRally.skin);
 
         Slider blue = new Slider(0,255,1,false,RoboRally.skin);
-        blue.setValue(50);
+        blue.setValue(prefs.getInteger("lastBlue"));
 
 
         table.add(blue);
         table.add(blueValue);
 
+        colorTextures = new HashMap<>();
+
         red.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 client.updatePlayer();
+                prefs.putInteger("lastRed",(int) red.getValue());
+                prefs.flush();
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -103,6 +112,8 @@ public class LobbyScreen implements Screen {
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 client.updatePlayer();
+                prefs.putInteger("lastGreen",(int) green.getValue());
+                prefs.flush();
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -120,6 +131,8 @@ public class LobbyScreen implements Screen {
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 client.updatePlayer();
+                prefs.putInteger("lastBlue",(int) blue.getValue());
+                prefs.flush();
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -153,6 +166,12 @@ public class LobbyScreen implements Screen {
             }
         });
         stage.addActor(playButton);
+
+        Robot playerRobot = client.getPlayerList().get(client.clientUUID).getRobot();
+        playerRobot.setRed(prefs.getInteger("lastRed"));
+        playerRobot.setGreen(prefs.getInteger("lastGreen"));
+        playerRobot.setBlue(prefs.getInteger("lastBlue"));
+        client.updatePlayer();
     }
 
     @Override

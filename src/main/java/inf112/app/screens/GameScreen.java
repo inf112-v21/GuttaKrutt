@@ -23,6 +23,7 @@ import inf112.app.*;
 import inf112.app.logic.*;
 import inf112.app.networking.GameClient;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,6 +46,8 @@ public class GameScreen implements Screen {
     OrthographicCamera camera;
 
     TextureRegion[][] playerTextures;
+    Map<UUID,TextureRegion[][]> colorTextures;
+
 
     MapLayers layers;
 
@@ -74,6 +77,8 @@ public class GameScreen implements Screen {
 
     Thread roundThread;
     boolean roundRunning;
+
+
 
     public GameScreen(Game game, GameClient client) {
         this.game = game;
@@ -147,20 +152,27 @@ public class GameScreen implements Screen {
         Texture playerTexture = new Texture("Robots.png");
         playerTextures = TextureRegion.split(playerTexture,300,300);
 
+        colorTextures = new HashMap<>();
+
+        for (UUID uuid : players.keySet()) {
+            Robot robot = players.get(uuid).getRobot();
+            colorTextures.put(uuid,ColorTexture.colorRobot(playerTexture,new Color(robot.getRed()/256F,robot.getGreen()/256F,robot.getBlue()/256F,1)));
+        }
+
         robotsTable = new Table();
         rootTable.add(robotsTable).width(uiWidth).top();
 
         robotsTable.setDebug(true);
 
-        for (Player player : players.values()) {
-            Robot robot = player.getRobot();
-            Image img = new Image(playerTextures[0][robot.getTexture()]);
+        for (Map.Entry<UUID,Player> entry : players.entrySet()) {
+            Robot robot = entry.getValue().getRobot();
+            Image img = new Image(colorTextures.get(entry.getKey())[0][robot.getTexture()]);
             img.addListener(new TextTooltip(robot.getDamage() + "", RoboRally.skin));
             Table table = new Table();
             //noinspection SuspiciousNameCombination
             table.add(img).height(uiWidth);
             table.row();
-            table.add(drawRegister(player));
+            table.add(drawRegister(entry.getValue()));
             robotsTable.add(table);
             robotsTable.row();
 
@@ -285,11 +297,11 @@ public class GameScreen implements Screen {
 
     public void drawRobots() {
         clearLayer(playerLayer);
-        for (Player player : players.values()) {
-            Robot robot = player.getRobot();
+        for (Map.Entry<UUID,Player> entry : players.entrySet()) {
+            Robot robot = entry.getValue().getRobot();
             TiledMapTileLayer.Cell currentPlayerCell = new TiledMapTileLayer.Cell();
             int index = robot.getTexture();
-            currentPlayerCell.setTile(new StaticTiledMapTile(ColorTexture.colorRobot(playerTextures,Color.GREEN)[robot.getDamage()/3][index]));
+            currentPlayerCell.setTile(new StaticTiledMapTile(colorTextures.get(entry.getKey())[robot.getDamage()/3][index]));
 
             currentPlayerCell.setRotation(robot.getRotation());
 
