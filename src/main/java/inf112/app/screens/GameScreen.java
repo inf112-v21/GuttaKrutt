@@ -193,16 +193,22 @@ public class GameScreen implements Screen {
         Pixmap noDamTok = new Pixmap(16,16,Pixmap.Format.RGBA8888);
         noDamTok.setColor(Color.GRAY);
         noDamTok.fillCircle(8,8,8);
+        noDamTok.setColor(Color.BLACK);
+        noDamTok.drawCircle(8,8,8);
         emptyToken = new Texture(noDamTok);
 
         Pixmap damTok = new Pixmap(16,16,Pixmap.Format.RGBA8888);
         damTok.setColor(Color.RED);
         damTok.fillCircle(8,8,8);
+        damTok.setColor(Color.BLACK);
+        damTok.drawCircle(8,8,8);
         damageToken = new Texture(damTok);
 
         Pixmap lifeTok = new Pixmap(16,16,Pixmap.Format.RGBA8888);
         lifeTok.setColor(Color.GREEN);
         lifeTok.fillCircle(8,8,8);
+        lifeTok.setColor(Color.BLACK);
+        lifeTok.drawCircle(8,8,8);
         lifeToken = new Texture(lifeTok);
 
 
