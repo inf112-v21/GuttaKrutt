@@ -65,12 +65,13 @@ public class BoardLogic extends InputAdapter {
         if(enemy != null && playerCollision){
             movePlayer(enemy, (newX-oldX), (newY-oldY), true);
         }
+        enemy = checkForRobot(newX, newY);
         if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4] && (enemy == null) || !playerCollision) {
             robot.setPos(new Vector2(newX, newY));
 
             checkForDangers(robot);
         }
-        //laserSpawner();
+
         if(robot.getDamage()==10)
             robot.setAlive(false);
     }
