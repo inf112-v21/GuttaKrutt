@@ -78,7 +78,9 @@ public class GameScreen implements Screen {
     Thread roundThread;
     boolean roundRunning;
 
-
+    Texture emptyToken;
+    Texture damageToken;
+    Texture lifeToken;
 
     public GameScreen(Game game, GameClient client) {
         this.game = game;
@@ -160,24 +162,49 @@ public class GameScreen implements Screen {
         }
 
         robotsTable = new Table();
-        rootTable.add(robotsTable).width(uiWidth).top();
+        ScrollPane sc = new ScrollPane(robotsTable,RoboRally.skin);
+        rootTable.add(sc).width(uiWidth+5).prefHeight(10000);
 
-        robotsTable.setDebug(true);
+        robotsTable.top();
 
         for (Map.Entry<UUID,Player> entry : players.entrySet()) {
             Robot robot = entry.getValue().getRobot();
             Image img = new Image(colorTextures.get(entry.getKey())[0][robot.getTexture()]);
             img.addListener(new TextTooltip(robot.getDamage() + "", RoboRally.skin));
-            Table table = new Table();
+            Table table = new Table(RoboRally.skin);
+            table.setBackground("default-pane");
+            Table damage = new Table();
+            damage.left();
+            table.add(damage).width(uiWidth).height(uiWidth/10F);
+            table.row();
             //noinspection SuspiciousNameCombination
             table.add(img).height(uiWidth);
             table.row();
+            Table nameAndLife = new Table();
+            nameAndLife.add(new Label(entry.getValue().getName(),RoboRally.skin)).prefWidth(uiWidth);
+            nameAndLife.add(new Table());
+            table.add(nameAndLife);
+            table.row();
             table.add(drawRegister(entry.getValue()));
-            robotsTable.add(table);
+            robotsTable.add(table).padBottom(10).width(uiWidth);
             robotsTable.row();
-
-            table.setDebug(true);
         }
+
+        Pixmap noDamTok = new Pixmap(16,16,Pixmap.Format.RGBA8888);
+        noDamTok.setColor(Color.GRAY);
+        noDamTok.fillCircle(8,8,8);
+        emptyToken = new Texture(noDamTok);
+
+        Pixmap damTok = new Pixmap(16,16,Pixmap.Format.RGBA8888);
+        damTok.setColor(Color.RED);
+        damTok.fillCircle(8,8,8);
+        damageToken = new Texture(damTok);
+
+        Pixmap lifeTok = new Pixmap(16,16,Pixmap.Format.RGBA8888);
+        lifeTok.setColor(Color.GREEN);
+        lifeTok.fillCircle(8,8,8);
+        lifeToken = new Texture(lifeTok);
+
 
         cardSelectDnD = new DragAndDrop();
         cardSwitchDnD = new DragAndDrop();
@@ -349,11 +376,6 @@ public class GameScreen implements Screen {
     public void resize(int i, int i1) {
         stage.getViewport().update(i,i1,true);
         stage.getViewport().getCamera().update();
-
-        robotsTable.setSize(uiWidth,i1-uiWidth);
-        robotsTable.setX(i-uiWidth);
-
-        controlsTable.setSize(i,uiHeight);
     }
 
     @Override
@@ -566,9 +588,31 @@ public class GameScreen implements Screen {
     }
 
     private void updatePlayerTable(Table table, Player player) {
-        TextTooltip tooltip = (TextTooltip) table.getChildren().get(0).getListeners().get(0);
+        Table damage = (Table) table.getChildren().get(0);
+        damage.clearChildren();
+        for (int i=0; i<10; i++) {
+            if (i < player.getRobot().getDamage()) {
+                damage.add(new Image(damageToken));
+            } else {
+                damage.add(new Image(emptyToken));
+            }
+        }
+
+        TextTooltip tooltip = (TextTooltip) table.getChildren().get(1).getListeners().get(0);
         tooltip.getActor().setText(player.getRobot().getDamage() + "\n" + player.getName());
-        table.getChildren().get(1).remove();
+
+        Table life = (Table) ((Table) table.getChildren().get(2)).getChildren().get(1);
+        life.clearChildren();
+        for (int i=0; i<3; i++) {
+            if (i < player.getRobot().getLifeTokens()) {
+                life.add(new Image(lifeToken)).width(10).height(10);
+            } else {
+                life.add(new Image(emptyToken)).width(10).height(10);
+            }
+            life.row();
+        }
+
+        table.getChildren().get(3).remove();
         table.row();
         table.add(drawRegister(player));
     }

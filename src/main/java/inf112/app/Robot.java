@@ -42,10 +42,7 @@ public class Robot {
         /* take away a life token if robot has taken 10 DT
         * if no life tokens left, then robot is destroyed*/
         if (damageTokens == 10) {
-            lifeTokens--;
-            if (lifeTokens == 0) {
-                setAlive(false);
-            }
+            setAlive(false);
         }
     }
 
@@ -97,6 +94,9 @@ public class Robot {
 
     public void setAlive(boolean newAlive) {
         alive = newAlive;
+        if (!newAlive) {
+            lifeTokens--;
+        }
     }
 
     public boolean getWon() {
@@ -125,7 +125,6 @@ public class Robot {
             pos = checkpoint;
             if (first) { damageTokens = 0; }
             else { damageTokens = 2; }
-            lifeTokens--;
         }
     }
 
