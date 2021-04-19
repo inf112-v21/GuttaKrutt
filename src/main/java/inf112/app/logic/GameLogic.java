@@ -125,9 +125,11 @@ public class GameLogic {
         //E. Touch Checkpoints
 
         for (int i=0;i<5;i++) {
-            processCards(); // B. Robots move
+            processCards(i); // B. Robots move
             boardElementsMove(); //C
+            boardLogic.laserCleaner();
             boardLogic.laserSpawner(); //D
+            boardLogic.robotsShootsLasers();
             touchCheckpoints(); //E
         }
 
@@ -260,8 +262,7 @@ public class GameLogic {
     /**
      * Executes the cards in the program register
      */
-    private void processCards() {
-        for (int i=0;i<5;i++) {
+    private void processCards(int i) {
             Array<Player> queue = new Array<>();
             for (Player player : playerList.values()) {
                 queue.add(player);
@@ -277,7 +278,6 @@ public class GameLogic {
                     }
                 }
             }
-        }
         currentCard = null;
     }
 
