@@ -126,6 +126,9 @@ Arbeidsoppgaver:
 19.04 (Mandag 14:00 - 16:00)
 - Alle var tilstede
 - Simon fikset en bug der roboter ikke gikk fram etter å ha dyttet en annen robot
+- Sassan fikset minimum antall kort betingelsen og
+forsøkte å legge til en pop-up dialog til power-down
+  metoden (klarte ikke det)
 
 ###Prosjekt og prosjektstruktur
 
