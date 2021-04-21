@@ -1,6 +1,8 @@
 package inf112.app;
 
 import static org.junit.Assert.*;
+
+import inf112.app.logic.GameLogic;
 import org.junit.Test;
 
 public class DeckTest {

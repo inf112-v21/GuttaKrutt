@@ -12,7 +12,6 @@ import java.util.*;
 /** controls the main loop of the game and executes the game rules */
 public class GameLogic {
     BoardLogic boardLogic;
-    int turn;
     Deck deck;
     Map<UUID, Player> playerList;
     GameClient client;
@@ -22,12 +21,10 @@ public class GameLogic {
 
     public GameLogic() {this(null,null);}
 
-    /** class constructor which sets the initial turn number, builds
-    * a deck and initiates the players */
+    /** class constructor which builds a deck and initiates the players */
     public GameLogic(BoardLogic boardLogic, GameClient client) {
         this.boardLogic = boardLogic;
         this.client = client;
-        turn=0;
         deck = new Deck(1);
         buildDeck();
         deck.shuffle();
@@ -77,11 +74,8 @@ public class GameLogic {
     }
 
     /**
-     * the main loop of the game where the player announces that
-     * they are ready (after choosing their cards) and wait for
-     * other players to press ready as well. Then, the cards are
-     * played in the correct order. Players who did not choose
-     * to power down receive new cards and a new round starts.
+     * Players can use this method to end their turn. They are then
+     * dealt new cards and the main loop is called.
      */
     public void ready() {
         int cardCounter = 0;
@@ -95,8 +89,6 @@ public class GameLogic {
 
 
             loopTillOthersAreReady();
-
-            deck.restock();
             doTurn();
 
             tryCatchSleep(2000);
@@ -119,6 +111,10 @@ public class GameLogic {
         }
     }
 
+    /**
+     * The main loop of the game where the cards are processed and the
+     * robots and board elements are updated according to the new cards.
+     */
     public void doTurn() {
         //A. Reveal Program Cards
         //B. Robots Move
@@ -144,10 +140,11 @@ public class GameLogic {
             player.getRobot().setPowerDown(false);
             boardLogic.checkForRepairs(player.getRobot());
         }
-
-        turn++;
     }
 
+    /**
+     * Updates the board elements one by one
+     */
     public void boardElementsMove() {
         tryCatchSleep(500);
         boardLogic.activateBlueConveyorBelt();
@@ -158,6 +155,9 @@ public class GameLogic {
         boardLogic.activateGears();
     }
 
+    /**
+     * checks if any robots have landed on a checkpoint
+     */
     public void touchCheckpoints() {
         for (Player player : playerList.values()) {
             boardLogic.checkForCheckpoints(player.getRobot());
@@ -211,10 +211,6 @@ public class GameLogic {
                 }
             }
         }
-    }
-
-    public int getTurn() {
-        return turn;
     }
 
     public Map<UUID,Player> getPlayers() { return playerList; }
