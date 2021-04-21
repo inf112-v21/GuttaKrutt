@@ -125,10 +125,11 @@ public class GameLogic {
         for (int i=0;i<5;i++) {
             processCards(i); // B. Robots move
             boardElementsMove(); //C
-            boardLogic.laserCleaner();
             boardLogic.laserSpawner(); //D
             boardLogic.robotsShootsLasers();
             touchCheckpoints(); //E
+            tryCatchSleep(500);
+            boardLogic.laserCleaner();
         }
 
         dealCards();
