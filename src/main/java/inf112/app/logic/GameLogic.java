@@ -28,7 +28,7 @@ public class GameLogic {
         this.boardLogic = boardLogic;
         this.client = client;
         turn=0;
-        deck = new Deck();
+        deck = new Deck(1);
         buildDeck();
         deck.shuffle();
         if (client != null) {
