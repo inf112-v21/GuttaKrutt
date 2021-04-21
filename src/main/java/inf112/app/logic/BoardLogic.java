@@ -65,11 +65,13 @@ public class BoardLogic extends InputAdapter {
         if(enemy != null && playerCollision){
             movePlayer(enemy, (newX-oldX), (newY-oldY), true);
         }
+        enemy = checkForRobot(newX, newY);
         if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4] && (enemy == null) || !playerCollision) {
             robot.setPos(new Vector2(newX, newY));
 
             checkForDangers(robot);
         }
+      
         if(robot.getDamage()==10)
             robot.setAlive(false);
     }
@@ -110,7 +112,6 @@ public class BoardLogic extends InputAdapter {
 
         int[][] flag = map.get("flag");
         int[][] repair = map.get("repair");
-
 
         if (flag != null && (flag[x][y] != 0 && checkFlags(flag[x][y], robot))) {
             robot.getFlagVisits().put(map.get("flag")[x][y], true);
@@ -229,18 +230,22 @@ public class BoardLogic extends InputAdapter {
     }
 
     /**
+     * Cleans the board of all lasers.
+     */
+    public void laserCleaner(){
+        for(int i=0;i<map.get("laser").length;i++){
+            for(int j=0;j<map.get("laser")[0].length;j++){
+                map.get("laser")[i][j]=0;
+            }
+        }
+    }
+    /**
      * Spawns lasers from wall laser spawner map object.
      */
     public void laserSpawner() {
         int dir;
-        for(int i=0;i<5;i++){
-            for(int j=0;j<5;j++){
-                map.get("laser")[i][j]=0;
-            }
-        }
-
-        for(int i = 0; i<5; i++) {
-            for (int j = 0; j < 5; j++) {
+        for(int i = 0; i<map.get("laser").length; i++) {
+            for (int j = 0; j < map.get("laser")[0].length; j++) {
                 int id = map.get("wall")[i][j];
                 switch (id) {
                     case 37:
@@ -267,6 +272,29 @@ public class BoardLogic extends InputAdapter {
     }
 
     /**
+     * Checks for walls between position (x,y) and position (a,b) in direction dir from (x,y).
+     * dir : 0 = north, 1 = west, 2 = south, 3 = east
+     * @param x current x pos
+     * @param y current y pos
+     * @param dir direction
+     * @return True if no wall, else false
+     */
+    public boolean checkForWall(int x, int y, int dir){
+        switch (dir){
+            case 0:
+                return !getWall(x,y)[dir] && !getWall(x,y+1)[(dir + 2) % 4];
+            case 1:
+                return !getWall(x,y)[dir] && !getWall(x-1,y)[(dir + 2) % 4];
+            case 2:
+                return !getWall(x,y)[dir] && !getWall(x,y-1)[(dir + 2) % 4];
+            case 3:
+                return !getWall(x,y)[dir] && !getWall(x+1,y)[(dir + 2) % 4];
+            default:
+                return false;
+        }
+    }
+
+    /**
      * Recursively iterates a laser across the board.
      * @param x initial x pos
      * @param y initial y pos
@@ -283,24 +311,50 @@ public class BoardLogic extends InputAdapter {
             switch (dir) {
                 case 0:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir] && !getWall(x,y+1)[(dir + 2) % 4])
+                    if(checkForWall(x,y,dir))
                         laser(x,y+1,dir);
                     break;
                 case 1:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir] && !getWall(x-1,y)[(dir + 2) % 4])
+                    if(checkForWall(x,y,dir))
                         laser(x-1,y,dir);
                     break;
                 case 2:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir] && !getWall(x,y-1)[(dir + 2) % 4])
+                    if(checkForWall(x,y,dir))
                         laser(x,y-1,dir);
                     break;
                 case 3:
                     checkOverLapLaser(x,y,dir);
-                    if(!getWall(x,y)[dir] && !getWall(x+1,y)[(dir + 2) % 4])
+                    if(checkForWall(x,y,dir))
                         laser(x+1,y,dir);
                     break;
+            }
+        }
+    }
+
+    /**
+     * Shoots lasers from every robot in the direction the robot is standing.
+     */
+    public void robotsShootsLasers(){
+        for(Player player : players.values()) {
+            Robot robot = player.getRobot();
+            if(checkForWall(robot.getX(), robot.getY(), robot.getRotation())) {
+                int rotation = robot.getRotation();
+                switch (rotation) {
+                    case 0:
+                        laser(robot.getX(), robot.getY() + 1, rotation);
+                        break;
+                    case 1:
+                        laser(robot.getX() - 1, robot.getY(), rotation);
+                        break;
+                    case 2:
+                        laser(robot.getX(), robot.getY() - 1, rotation);
+                        break;
+                    default:
+                        laser(robot.getX() + 1, robot.getY(), rotation);
+                        break;
+                }
             }
         }
     }
@@ -330,7 +384,9 @@ public class BoardLogic extends InputAdapter {
     }
 
     private void activateConveyorBelts(String conveyorLayer) {
-        //looper over map som fører til ikke-deterministisk oppførsel
+
+        if (layerIsNull(conveyorLayer)) return;
+
         for(Player player : players.values()) {
             Robot movingRobot = player.getRobot();
             if (map.get(conveyorLayer) == null) return;
@@ -454,10 +510,9 @@ public class BoardLogic extends InputAdapter {
      * Left rotation for red cog. Right rotation for green cog.
      */
     public void activateGears() {
+        if (layerIsNull("Green cog") && layerIsNull("Red cog")) return;
         int[][] greens = map.get("Green cog");
         int[][] reds = map.get("Red cog");
-
-        if (greens == null || reds == null) return;
 
         for (int i=0; i<map.get("board").length; i++) {
             for (int j = 0; j < map.get("board")[0].length; j++) {
@@ -568,10 +623,10 @@ public class BoardLogic extends InputAdapter {
                 default: id = 132; break;
             }
 
-            int[][] layer = map.get("starting spots");
-            if (layer == null) {
+            if (layerIsNull("starting spots")) {
                 startingSpots[i] = new Vector2(0,0);
             } else {
+                int[][] layer = map.get("starting spots");
                 for (int x = 0; x < layer.length; x++) {
                     for (int y = 0; y < layer[0].length; y++) {
                         if (layer[x][y] == id) { startingSpots[i] = new Vector2(x,y); }
@@ -583,5 +638,11 @@ public class BoardLogic extends InputAdapter {
         return startingSpots;
     }
 
+    private boolean layerIsNull(String layerName) {
+        int[][] layer = map.get(layerName);
+        if(layer==null)
+            return true;
+        return false;
+    }
 
 }

@@ -5,10 +5,15 @@
    slik at spillet blir dypere strategisk og at det blir morsommere å spille med andre.
 
 Akseptansekriterier:
-- Gitt at en robot står på et gult conveyorbelt tile som peker i retning x, skal roboten
-  bli flyttet ett tile i retning x etter roboten har brukt et kort.
-- Gitt at en robot står på et blått conveyorbelt tile som peker i retning x og at neste tile i retning x er et tilsvarende blått conveyorbelt tile, skal roboten
-  bli flyttet to tiles i retning x etter at roboten har brukt et kort.
+- Gitt at en robot bruker et kort og ender opp på et conveyorbelt tile som peker i retning x, skal roboten
+  bli flyttet ett tile i retning x.
+- Gitt at en robot bruker et kort og ender opp på et blått conveyorbelt tile som peker i retning x, og at neste tile i retning x er et tilsvarende blått/gult conveyorbelt tile,
+  skal roboten bli flyttet to tiles i retning x.
+- Gitt at en robot bruker et kort og ender opp på et conveyorbelt tile som peker i retning x, og at neste tile i retning x er et conveyorbelt med en sving.
+  Da skal roboten bli flyttet ett tile i retning x og rotere seg venstre/høyre tilsvarende til retningen av svingen.  
+- Gitt at en robot bruker et kort og ender opp på et conveyorbelt til som peker i retning x, og at neste tile i retning x er okkupert av en robot som ikke står på et conveyorbelt,
+  skal roboten på conveyor-beltet ikke bli beveget av conveyorbeltet.
+- Gitt at en robot bruker et kort og ender opp på et conveyorbelt med en sving, skal roboten ikke rotere med mindre den er flyttet inn i en ny sving av conveyorbeltet.
 
 Arbeidsoppgaver:
 - Implementere gule conveyor belts.
@@ -51,32 +56,124 @@ Arbeidsoppgaver:
 - Implementere kode som sjekker om man står på et tannhjul, og som roterer
 roboten i riktig retning i henhold til fargen på tannhjulet.
 
+5) Som en spiller ønsker jeg at roboten min skal skyte laser i retningen den står i slik at
+jeg kan skade eller ødelegge de andre spillerenes roboter.
+   
+Akseptansekriterier:
+- Gitt at en robot står på brettet, så skal en laser fyres av i retningen roboten står i.
+Laseren skal oppføre seg lik lasere som skytes fra vegger.
+  
+- Gitt at det står to roboter, A og B, på brettet i posisjon (1,1) og (1,2) henholdsvis og robot
+A er vendt mot nord (vendt mot robot B), så skal robot B bli skadet av laseren til robot A.
+
+- Gitt at det står en robot på brettet og at det er en vegg mellom roboten og ruten foran roboten,
+så skal ingen laser fyres av.
+
+Arbeidsoppgaver:
+- Implementere funksjon robotsShootsLasers() i BoardLogic, som skyter laser fra alle robotene på brettet.
+- Implementere robotsShootsLasers() i doTurn() funksjonen i GameLogic, slik at robot laserene fyres av
+  samtidig som laserene fra veggene.
+
+6) Brukerhistorie til Sassan *** (5 kort betingelse + robot dør etter 10 DT)
 
 ### Møtereferater:
 
 29.03 (Mandag, 14:00-14:40)
-- Sassan, Simon og Ørjan var tilstedes.
-- Diskuterte lett hva vi ville jobbe med i påsken.
-- Bestemte oss for at neste møtet skulle være tirsdag 6. april (p.g.a påske).
+- Sassan, Simon og Ørjan var tilstedes
+- Diskuterte litt hva vi ville jobbe med i påsken
+- Bestemte oss for at neste møtet skulle være tirsdag 6. april (p.g.a påske)
 
 06.04 (Tirsdag, 12:00 - 12:30)
 - Alle var tilstede
 - Diskuterte hva som må gjøres i sprint 4
 - Oppsummerte hvordan vi lå an etter påsken
 - Sassan startet på testing av conveyor belts
-- Ørjan startet på gjenoppliving av robotter.
+- Ørjan startet på gjenoppliving av robotter
+- Simon startet å jobbe med tannhjul
 
 07.04 (Onsdag, 12:15 - 14:00)
-- a
-- b
+- Alle var tilstede
+- Asle la til rotasjon på conveyorbelts og fikset bugs
+- Simon implementerte tannhjul og skrev tester for det
+- Ørjan fikset resizing for setupscreen
+- Sassan la til restock metode til deck-klassen
 
 12.04 (Mandag 14:00 - 16:00)
-- a
+- Alle var tilstedeGitt at en robot bruker et kort og ender opp på et conveyorbel
+- Ørjan fikset et problem med git
+- Asle merget ny conveyorbelt logikk
 - Sassan testet restock() metoden og debugget spillet
-- 
+- Simon startet å implementere at roboter skyter lasere
+- Gikk litt gjennom generelle ting som må bli gjort i løpet av sprinten
 
 14.04 (Onsdag 12:15 - 14:00)
-- a
+- Alle var tilstede
+- Asle la til pauser, fikset nullpointer i boardlogic via map.get(String), begynte å skrive tester conveyorbelts
 - Sassan erstattet en gammel fix med restock() og la til
   robot destruction etter 10 DamageTokens
-- 
+- Ørjan endret standardverdi for IP og navn til sist brukt, i stedet for "localhost" og "name"
+- Ørjan jobbet på ny skjerm etter noen vinner, der man kan starte nytt spill
+- Simon implementerte at roboter skyter lasere og skrev tester for det
+
+16.04 (Fredag 12:00 - 14:30)
+- Alle var tilstede
+- Ørjan jobbet med å farge robotter ved runtime, så det kan være flere typer robotter uten mye ekstra arbeid
+- Simon skrev robot laser tester
+- Sassan la til en betingelse at spillere må velge fem kort før de kan fortsette til neste tur
+  (ikke ferdig; buggy)
+- Asle skrev flere tester til conveyorbelts
+
+19.04 (Mandag 14:00 - 16:00)
+- Alle var tilstede
+- Simon fikset en bug der roboter ikke gikk fram etter å ha dyttet en annen robot
+- Sassan fikset minimum antall kort betingelsen og
+forsøkte å legge til en pop-up dialog til power-down
+  metoden (klarte ikke det)
+- Ørjan forbedret måten robottene blir farget, og begynte på UIen som viser damage tokens og life tokens.
+
+###Prosjekt og prosjektstruktur
+
+####Retrospektiv
+
+###Krav
+
+###Bugs
+
+###Arbeidsfordeling
+
+###Teknisk informasjon
+####Krav og kjøreinstruksjoner
+Krav til software:
+- Java 9 og opp
+- Maven 3.6.3 og opp
+
+Åpne command prompt (cmd) og skriv følgende kommandoer:
+- cd *lokasjon til spill-filene*
+- mvn clean install
+- mvn exec:java
+
+#### Hvordan manuelt teste programmet
+Det ligger instruksjoner i ManualTest folderen.
+
+#### Spillinstruksjoner
+Når spillet er åpnet får man valget mellom "host" og "join". Trykk "host" for å kjøre en spillserver,
+eller trykk "join" hvis du vil koble til en annen persons server.
+
+Hvis du trykket "host" vil du møte en skjerm hvor du kan velge kart ved å trykke på de ulike kartene på listen.
+Et bilde av kartet vil henholdsvis bli vist på høyresiden. Nede til venstre får du mulighet til å skrive inn spill-taggen din.
+Deretter trykk "play" nede i høyre hjørne for å starte serveren.
+
+Hvis du trykket "join" blir du sendt til en skjerm som lar deg skrive inn en ip-adresse til en annen server i feltet det står "localhost"
+og spill-taggen din i feltet det står "name". Deretter trykk "play" knappen nede i venstre hjørne for å koble til serveren.
+
+Nå vil du komme til spill lobbyen. Hvor man venter på at alle skal få koble seg til serveren før man starter
+spillet. Her kan du også se roboten du vil spille som. Hosten kan da trykke "play" nede i venstre hjørne for å starte spillet.
+
+Når spillet har startet får du muligheten til å programmere roboten din med kortene du får tildelt.
+Trykk på "edit" nede på skjermen for å se kortene dine. Programmering fungerer som et drag and drop system.
+Når du har programmert roboten din, trykk på "ready". Når alle i spillet har trykket ready, så vil spillet oppdateres
+og neste runde vil starte.
+
+Første spiller som er innom alle flaggene i riktig rekkefølge vinner!
+
+For å lukke spillet, lukk vinduet ved å trykke på krysset oppe til høyre. (Server og klient blir automatisk lukket om Gdx-applikasjonen lukkes.)

@@ -13,8 +13,6 @@ public class Robot {
     boolean won = false;
     boolean powerDown = false;
 
-    int fireLaser = 0;
-
     Card[] programRegister = new Card[5];
 
     int damageTokens = 0;

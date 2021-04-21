@@ -35,6 +35,13 @@ public class BoardLogicTest {
         this.boardLogic = new BoardLogic(map, players);
     }
 
+    public void setUpWithXPlayers(int amount){
+        Map<UUID,Player> players = new HashMap<>();
+        for(int i = 0; i < amount; i++)
+            players.put(UUID.randomUUID(),new Player());
+        SetUpEmptyMap(players);
+    }
+
     public void setUpMapWithXFlags(Map<UUID,Player> players, int x){
         //Max four flags
         if(x > 4)
@@ -99,10 +106,7 @@ public class BoardLogicTest {
 
     @Test
     public void RobotsBlockLaserBeams() {
-        Map<UUID,Player> players = new HashMap<>();
-        for(int i=0; i<4; i++)
-            players.put(UUID.randomUUID(),new Player());
-        SetUpEmptyMap(players);
+        setUpWithXPlayers(4);
         map.get("wall")[4][4] = 46;
         map.get("wall")[4][0] = 37;
         map.get("wall")[0][0] = 38;
@@ -175,6 +179,115 @@ public class BoardLogicTest {
             assertEquals(10, player.getRobot().getDamage());
             assertFalse(player.getRobot().getAlive());
         }
+    }
+
+    @Test
+    public void robotsAreAbleToShootLaserTest(){
+        //Checking there are no lasers from position (0,1) to (0,4), which is where the laser would be if the robot at
+        //pos (0,0) facing north would shoot a laser
+        for(int i = 1; i < map.get("board")[0].length; i++)
+            assertEquals(0, map.get("laser")[0][i]);
+
+        //Initiates laser from robot at pos (0,0) facing north
+        boardLogic.robotsShootsLasers();
+
+        //Checking there are vertical lasers from (0,1) to (0,4)
+        for(int i = 1; i < map.get("board")[0].length; i++)
+            //Value 2 equals vertical laser
+            assertEquals(2, map.get("laser")[0][i]);
+    }
+
+    @Test
+    public void robotDoesNotGetHitByOwnLaserTest(){
+        //Initiates laser from robot at pos (0,0) facing north
+        boardLogic.robotsShootsLasers();
+
+        //Checking there is no laser at the robots position, the
+        assertEquals(0, map.get("laser")[0][0]);
+    }
+
+    @Test
+    public void robotLaserDamagesOtherRobotsTest(){
+        setUpWithXPlayers(2);
+
+        int i = 0;
+        //Placing player 1 at pos (1,1) facing north and player 2 at (1,3) also facing north
+        //which means player 1 is looking directly at player 2
+        for(Player player : players.values()){
+            //Checking that the players are full health
+            assertEquals(0, player.getRobot().getDamage());
+            if(i==0)
+                player.getRobot().setPos(1,1);
+            if(i==1)
+                player.getRobot().setPos(1,3);
+            i++;
+        }
+        ;
+        //Player 2 should be hit by player 1's laser and take 1 damage while player 1 should still have full health
+        boardLogic.robotsShootsLasers();
+        i=0;
+        for(Player player : players.values()){
+            if(i==0)
+                assertEquals(0, player.getRobot().getDamage());
+            if(i==1)
+                assertEquals(1, player.getRobot().getDamage());
+            i++;
+        }
+
+    }
+
+    @Test
+    public void robotLaserDoesNotGoThroughWallTest(){
+        //Placing a wall two tiles in front of the robot at (0,0) facing north
+        map.get("wall")[0][2] = 31;
+
+        boardLogic.robotsShootsLasers();
+        //Vertical laser == 2
+        assertEquals(0, map.get("laser")[0][0]);
+        assertEquals(2, map.get("laser")[0][1]);
+        assertEquals(2, map.get("laser")[0][2]);
+        //Wall between y=2 and y=3
+        assertEquals(0, map.get("laser")[0][3]);
+        assertEquals(0, map.get("laser")[0][4]);
+    }
+
+    @Test
+    public void robotLaserDoesNotGoThroughRobotsTest(){
+        setUpWithXPlayers(2);
+
+        int i = 0;
+        //Placing player 1 at pos (1,0) facing north and player 2 at (1,2) facing east
+        //which means player 1 is looking directly at player 2
+        for(Player player : players.values()){
+            //Checking that the players are full health
+            assertEquals(0, player.getRobot().getDamage());
+            if(i==0)
+                player.getRobot().setPos(1,0);
+            if(i==1){
+                player.getRobot().setPos(1,2);
+                player.getRobot().rotate(-1);
+            }
+            i++;
+        }
+
+        boardLogic.robotsShootsLasers();
+
+        i=0;
+        //Player 1 should be at full health, while player 2 should have 1 damage token
+        for(Player player : players.values()){
+            if(i==0)
+                assertEquals(0, player.getRobot().getDamage());
+            if(i==1)
+                assertEquals(1, player.getRobot().getDamage());
+            i++;
+        }
+
+        assertEquals(0, map.get("laser")[1][0]);
+        assertEquals(2, map.get("laser")[1][1]);
+        //Robot at y=2
+        assertEquals(0, map.get("laser")[1][2]);
+        assertEquals(0, map.get("laser")[1][3]);
+        assertEquals(0, map.get("laser")[1][4]);
     }
 
     @Test
@@ -302,10 +415,7 @@ public class BoardLogicTest {
 
     @Test
     public void playerCollisionTest(){
-        Map<UUID,Player> players = new HashMap<>();
-        for(int i=0; i<2; i++)
-            players.put(UUID.randomUUID(),new Player());
-        SetUpEmptyMap(players);
+        setUpWithXPlayers(2);
 
         int i = 0;
         //Placing player1 at pos = (1,2) and player2 at pos = (2,2)
@@ -358,10 +468,7 @@ public class BoardLogicTest {
 
     @Test
     public void playerTryingToPushOtherPlayerIntoWallTest(){
-        Map<UUID,Player> players = new HashMap<>();
-        for(int i=0; i<2; i++)
-            players.put(UUID.randomUUID(),new Player());
-        SetUpEmptyMap(players);
+        setUpWithXPlayers(2);
 
         map.get("wall")[2][2] = 16;
 
@@ -379,6 +486,7 @@ public class BoardLogicTest {
 
         //Player1 tries to move into the tile player2 is in (2,2), but the wall stops player1
         //from pushing player2, positions of both player should be the same as starting positions
+        i=0;
         for(Player player : players.values()){
             if(i==0){
                 boardLogic.movePlayer(player.getRobot(), 1,0,true);
