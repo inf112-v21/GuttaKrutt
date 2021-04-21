@@ -375,11 +375,16 @@ public class BoardLogic extends InputAdapter {
             map.get("laser")[x][y] = 2-(dir % 2);
     }
 
-
+    /***
+     * Activates all the blue conveyorbelts present on the map
+     */
     public void activateBlueConveyorBelt() {
         activateConveyorBelts("Blue conveyor belts");
     }
 
+    /***
+     * Activates all the yellow conveyorbelts present on the map
+     */
     public void activateYellowConveyorBelt() {
         activateConveyorBelts("Yellow conveyor belts");
     }
@@ -432,6 +437,14 @@ public class BoardLogic extends InputAdapter {
         }
     }
 
+    /***
+     * Checks if the conveyorbelt should move the robot. If the robot is blocked by another robot not on a conveyorbelt
+     * the movement should halt.
+     * The conveyorbelt also rotate the robot if the conveyorbelt moves the robot into a turn.
+     * @param movingRobot
+     * @param addedX
+     * @param addedY
+     */
     private void conveyorMoveCheck(Robot movingRobot, int addedX, int addedY) {
         Robot roadBlockRobot = checkForRobot(movingRobot.getX()+addedX,movingRobot.getY()+addedY);
         boolean halt = false;
@@ -443,6 +456,11 @@ public class BoardLogic extends InputAdapter {
             conveyorRotation(movingRobot);
         }
     }
+
+    /***
+     * Rotates the given robot either left or right depending on the conveyorbelt it stands on.
+     * @param rotatingRobot
+     */
 
     private void conveyorRotation(Robot rotatingRobot) {
         int currentConveyor = map.get("Yellow conveyor belts")[rotatingRobot.getX()][rotatingRobot.getY()];
@@ -474,6 +492,7 @@ public class BoardLogic extends InputAdapter {
         }
     }
     /*
+    Reference list for directions of conveyorbelts
     Yellow:
       rotate:
         33: East -> South
