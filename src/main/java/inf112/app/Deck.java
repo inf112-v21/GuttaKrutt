@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-/* an arraylist of cards which has three necessary functions:
+/** an arraylist of cards which has three necessary functions:
 * - take: get and remove the first card from the pile
 * - insert: add a card to the pile
 * - shuffle: change the order of all cards in the pile */

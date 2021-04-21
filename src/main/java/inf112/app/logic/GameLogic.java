@@ -211,10 +211,6 @@ public class GameLogic {
         }
     }
 
-    public int getTurn() {
-        return turn;
-    }
-
     public Map<UUID,Player> getPlayers() { return playerList; }
 
     /** deals cards to each player according to the number
