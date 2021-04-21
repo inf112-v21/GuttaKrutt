@@ -11,7 +11,6 @@ import java.util.*;
 /** controls the main loop of the game and executes the game rules */
 public class GameLogic {
     BoardLogic boardLogic;
-    int turn;
     Deck deck;
     Map<UUID, Player> playerList;
     GameClient client;
@@ -20,13 +19,11 @@ public class GameLogic {
 
     public GameLogic() {this(null,null);}
 
-    /** class constructor which sets the initial turn number, builds
-    * a deck and initiates the players */
+    /** class constructor which builds a deck and initiates the players */
     public GameLogic(BoardLogic boardLogic, GameClient client) {
         this.boardLogic = boardLogic;
         this.client = client;
-        turn=0;
-        deck = new Deck();
+        deck = new Deck(1);
         buildDeck();
         deck.shuffle();
         if (client != null) {
@@ -75,11 +72,8 @@ public class GameLogic {
     }
 
     /**
-     * the main loop of the game where the player announces that
-     * they are ready (after choosing their cards) and wait for
-     * other players to press ready as well. Then, the cards are
-     * played in the correct order. Players who did not choose
-     * to power down receive new cards and a new round starts.
+     * Players can use this method to end their turn. They are then
+     * dealt new cards and the main loop is called.
      */
     public void ready() {
         int cardCounter = 0;
@@ -91,9 +85,8 @@ public class GameLogic {
             playerList.get(uuid).setReady(true);
             client.updatePlayer(uuid, playerList.get(uuid));
 
-            loopTillOthersAreReady();
 
-            deck.restock();
+            loopTillOthersAreReady();
             doTurn();
 
             tryCatchSleep(2000);
@@ -102,11 +95,12 @@ public class GameLogic {
             for (Player player : playerList.values())
                 System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
 
-            if (checkIfGameConcluded()) {
+            if(checkIfGameConcluded()){
                 System.out.println("A player has won");
                 client.updatePlayer(uuid, playerList.get(uuid));
-                if (!playerList.get(uuid).getRobot().getWon())
+                if(!playerList.get(uuid).getRobot().getWon())
                     System.out.println("You lost, loser!");
+                else client.declareVictory();
             }
 
         }
@@ -116,7 +110,8 @@ public class GameLogic {
     }
 
     /**
-     * This function determines how a turn should progress.
+     * The main loop of the game where the cards are processed and the
+     * robots and board elements are updated according to the new cards.
      */
     public void doTurn() {
         //A. Reveal Program Cards
@@ -128,10 +123,11 @@ public class GameLogic {
         for (int i=0;i<5;i++) {
             processCards(i); // B. Robots move
             boardElementsMove(); //C
-            boardLogic.laserCleaner();
             boardLogic.laserSpawner(); //D
             boardLogic.robotsShootsLasers();
             touchCheckpoints(); //E
+            tryCatchSleep(500);
+            boardLogic.laserCleaner();
         }
 
         dealCards();
@@ -143,12 +139,10 @@ public class GameLogic {
             player.getRobot().setPowerDown(false);
             boardLogic.checkForRepairs(player.getRobot());
         }
-
-        turn++;
     }
 
     /**
-     * This function determines in what order the board elements activates.
+     * Updates the board elements one by one
      */
     public void boardElementsMove() {
         tryCatchSleep(500);
@@ -161,7 +155,7 @@ public class GameLogic {
     }
 
     /**
-     * Checks if any player is standing on a checkpoint.
+     * checks if any robots have landed on a checkpoint
      */
     public void touchCheckpoints() {
         for (Player player : playerList.values()) {
@@ -223,6 +217,7 @@ public class GameLogic {
     /** deals cards to each player according to the number
     * of their damage tokens */
     public void dealCards() {
+        deck.shuffle();
         for (Player p : playerList.values()) {
             if (!p.getRobot().getPowerDown()) {
                 Deck newCards = new Deck();
@@ -266,21 +261,23 @@ public class GameLogic {
      * Executes the cards in the program register
      */
     private void processCards(int i) {
-            Array<Player> queue = new Array<>();
-            for (Player player : playerList.values()) {
-                queue.add(player);
-                player.setCards(new Deck());
-            }
-            queue.sort(new CardComparator(i));
-            for (Player player : queue) {
-                Card card = player.getRobot().getProgramRegister()[i];
-                if (card != null) {
-                    useCard(player.getRobot(), card);
-                    if (i < 9 - player.getRobot().getDamage()) {
-                        player.getRobot().getProgramRegister()[i] = null;
-                    }
+        Array<Player> queue = new Array<>();
+        for (Player player : playerList.values()) {
+            deck.addAll(player.getCards());
+            queue.add(player);
+            player.setCards(new Deck());
+        }
+        queue.sort(new CardComparator(i));
+        for (Player player : queue) {
+            Card card = player.getRobot().getProgramRegister()[i];
+            if (card != null) {
+                useCard(player.getRobot(), card);
+                if (i < 9 - player.getRobot().getDamage()) {
+                    player.getRobot().getProgramRegister()[i] = null;
+                    deck.insert(card);
                 }
             }
+        }
         currentCard = null;
     }
 

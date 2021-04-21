@@ -59,6 +59,7 @@ public class JoinScreen implements Screen {
                 GameClient client = null;
                 try {
                     client = new GameClient(host.getText(),true);
+                    client.name = name.getText();
                     client.getClient().sendTCP(name.getText());
                 } catch (IOException e) {
                     e.printStackTrace();

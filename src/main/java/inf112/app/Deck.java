@@ -28,11 +28,4 @@ public class Deck extends ArrayList<Card>{
 
     public void shuffle() { Collections.shuffle(this,rnd); }
 
-    public void restock() {
-        for (Card c : usedCards) {
-            insert(c);
-        }
-        shuffle();
-    }
-
 }
