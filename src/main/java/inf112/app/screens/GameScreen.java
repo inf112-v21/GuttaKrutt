@@ -211,7 +211,6 @@ public class GameScreen implements Screen {
         lifeTok.drawCircle(8,8,8);
         lifeToken = new Texture(lifeTok);
 
-
         cardSelectDnD = new DragAndDrop();
         cardSwitchDnD = new DragAndDrop();
 

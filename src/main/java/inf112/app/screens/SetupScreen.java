@@ -25,17 +25,6 @@ import java.io.IOException;
 
 public class SetupScreen implements Screen {
     Stage stage;
-    Array<String> maps;
-    String selected;
-
-    List<String> list;
-
-    TmxMapLoader mapLoader;
-    TiledMap tiledMap;
-
-    OrthographicCamera camera;
-    OrthogonalTiledMapRenderer renderer;
-    StretchViewport mapPort;
 
     TextField name;
     TextButton playButton;
@@ -43,41 +32,7 @@ public class SetupScreen implements Screen {
     public SetupScreen(Game game) {
         stage = new Stage(new ScreenViewport());
 
-        FileHandle directory = Gdx.files.internal("assets");
-
         Preferences prefs = Gdx.app.getPreferences("RoboRally");
-
-        maps = new Array<>();
-
-        for (FileHandle file : directory.list()) {
-            if (file.extension().equals("tmx")) {
-                maps.add(file.name());
-                System.out.println(file.name());
-            }
-        }
-
-        Table table = new Table();
-        table.setFillParent(true);
-        stage.addActor(table);
-
-        list = new List<>(RoboRally.skin);
-        list.setItems(maps);
-        table.add(list).pad(5);
-
-        selected = list.getSelected();
-
-        mapLoader = new TmxMapLoader();
-        tiledMap = mapLoader.load(selected);
-
-        camera = new OrthographicCamera();
-        int size = Math.max((int) tiledMap.getProperties().get("width"),(int) tiledMap.getProperties().get("height"));
-        camera.setToOrtho(false, size, size);
-
-        renderer = new OrthogonalTiledMapRenderer(tiledMap, 1F/300);
-        renderer.setView(camera);
-
-        mapPort = new StretchViewport(5, 5, camera);
-        table.add(new ViewportWidget(mapPort)).height(300).prefWidth(300);
 
         Table nameTable = new Table();
         nameTable.setFillParent(true);
@@ -104,8 +59,7 @@ public class SetupScreen implements Screen {
 
                 GameClient client = null;
                 try {
-                    GameServer server = new GameServer();
-                    server.setMap(selected);
+                    new GameServer();
                     client = new GameClient();
                     client.name = name.getText();
                     client.getClient().sendTCP(name.getText());
@@ -131,19 +85,6 @@ public class SetupScreen implements Screen {
     public void render(float v) {
         Gdx.gl.glClearColor(0.2F, 0.2F, 0.2F, 0);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-
-        if(!selected.equals(list.getSelected())) {
-            System.out.println(selected + ", " + list.getSelected());
-            selected = list.getSelected();
-            tiledMap = mapLoader.load(selected);
-            renderer = new OrthogonalTiledMapRenderer(tiledMap, 1F/300);
-            int size = Math.max((int) tiledMap.getProperties().get("width"),(int) tiledMap.getProperties().get("height"));
-            camera.setToOrtho(false, size, size);
-            renderer.setView(camera);
-        }
-
-        mapPort.apply();
-        renderer.render();
 
         stage.getViewport().apply();
         stage.act();

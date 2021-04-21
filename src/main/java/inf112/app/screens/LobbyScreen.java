@@ -4,20 +4,25 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import inf112.app.ColorTexture;
-import inf112.app.Player;
-import inf112.app.RoboRally;
-import inf112.app.Robot;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import inf112.app.*;
 import inf112.app.networking.GameClient;
+import inf112.app.networking.Network;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +38,18 @@ public class LobbyScreen implements Screen {
     TextureRegion[][] robot;
     Map<UUID,TextureRegion[][]> colorTextures;
     Table selection;
+
+    Array<String> maps;
+    List<String> list;
+    String selected;
+    Table voteTallies;
+
+    TmxMapLoader mapLoader;
+    TiledMap tiledMap;
+
+    OrthographicCamera camera;
+    OrthogonalTiledMapRenderer renderer;
+    StretchViewport mapPort;
 
     public LobbyScreen(Game game, GameClient client) {
         this.game = game;
@@ -82,7 +99,6 @@ public class LobbyScreen implements Screen {
 
         Slider blue = new Slider(0,255,1,false,RoboRally.skin);
         blue.setValue(prefs.getInteger("lastBlue"));
-
 
         table.add(blue);
         table.add(blueValue);
@@ -151,7 +167,6 @@ public class LobbyScreen implements Screen {
 
         table.setPosition(1000,500);
 
-
         TextButton playButton = new TextButton("Ready", RoboRally.skin);
         playButton.setWidth(Gdx.graphics.getWidth()/10);
         playButton.setPosition(Gdx.graphics.getWidth()/10-playButton.getWidth()/10,Gdx.graphics.getHeight()/10-playButton.getHeight()/10);
@@ -172,6 +187,65 @@ public class LobbyScreen implements Screen {
         playerRobot.setGreen(prefs.getInteger("lastGreen"));
         playerRobot.setBlue(prefs.getInteger("lastBlue"));
         client.updatePlayer();
+
+        FileHandle directory = Gdx.files.internal("assets");
+        maps = new Array<>();
+
+        for (FileHandle file : directory.list()) {
+            if (file.extension().equals("tmx")) {
+                maps.add(file.name());
+            }
+        }
+
+        Table mapSelection = new Table();
+        mapSelection.setFillParent(true);
+        stage.addActor(mapSelection);
+
+        list = new List<>(RoboRally.skin);
+        list.setItems(maps);
+
+        voteTallies = new Table();
+        for (Object ignored : list.getItems()) {
+            Label label = new Label("0",RoboRally.skin);
+            voteTallies.add(label);
+            voteTallies.row();
+        }
+
+        mapSelection.add(voteTallies);
+        mapSelection.add(list).pad(5);
+
+        selected = list.getSelected();
+
+        mapLoader = new TmxMapLoader();
+        tiledMap = mapLoader.load(selected);
+
+        camera = new OrthographicCamera();
+        int size = Math.max((int) tiledMap.getProperties().get("width"),(int) tiledMap.getProperties().get("height"));
+        camera.setToOrtho(false, size, size);
+
+        renderer = new OrthogonalTiledMapRenderer(tiledMap, 1F/300);
+        renderer.setView(camera);
+
+        mapPort = new StretchViewport(5, 5, camera);
+        mapSelection.add(new ViewportWidget(mapPort)).height(300).prefWidth(300);
+
+        mapSelection.row();
+
+        TextButton voteButton = new TextButton("Vote", RoboRally.skin);
+        voteButton.setWidth(Gdx.graphics.getWidth()/10);
+        voteButton.addListener(new InputListener(){
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                Network.MapVote vote = new Network.MapVote();
+                vote.mapName = list.getSelected();
+                client.getClient().sendTCP(vote);
+            }
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+        });
+        mapSelection.add(voteButton);
     }
 
     @Override
@@ -184,6 +258,7 @@ public class LobbyScreen implements Screen {
         Gdx.gl.glClearColor(0.2F, 0.2F, 0.2F, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
 
+        stage.getViewport().apply();
         stage.act();
         stage.draw();
 
@@ -200,6 +275,30 @@ public class LobbyScreen implements Screen {
             }
             names.row();
         }
+
+        int i = 0;
+        for (String map : maps) {
+            Integer tally = client.getMapVotes().get(map);
+            if (tally == null) {
+                ((Label) voteTallies.getChildren().get(i)).setText(0);
+            } else {
+                ((Label) voteTallies.getChildren().get(i)).setText(tally);
+            }
+            i++;
+        }
+
+        if(!selected.equals(list.getSelected())) {
+            System.out.println(selected + ", " + list.getSelected());
+            selected = list.getSelected();
+            tiledMap = mapLoader.load(selected);
+            renderer = new OrthogonalTiledMapRenderer(tiledMap, 1F/300);
+            int size = Math.max((int) tiledMap.getProperties().get("width"),(int) tiledMap.getProperties().get("height"));
+            camera.setToOrtho(false, size, size);
+            renderer.setView(camera);
+        }
+
+        mapPort.apply();
+        renderer.render();
 
         if(client.run) {
             game.setScreen(new GameScreen(game, client));

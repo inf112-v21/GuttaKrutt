@@ -50,6 +50,8 @@ public class Network {
         kryo.register(Ready.class);
         kryo.register(NewGame.class);
         kryo.register(MapName.class);
+        kryo.register(MapVote.class);
+        kryo.register(MapVotes.class);
         kryo.register(TestPacket.class);
         kryo.register(ArrayList.class);
     }
@@ -84,6 +86,13 @@ public class Network {
     }
     static public class RunGame {}
     static public class NewGame {}
+
+    static public class MapVote {
+        public String mapName;
+    }
+    static public class MapVotes {
+        public Map<String,Integer> votes;
+    }
 
     static public  class TestPacket{
         public String packet;

@@ -25,6 +25,7 @@ public class GameClient {
     public String name;
     public UUID winner;
     public ArrayList<UUID> ready = new ArrayList<>();
+    public Map<String,Integer> mapVotes = new HashMap<>();
 
     //Run this if you are hosting the server
     public GameClient() throws IOException {
@@ -88,6 +89,9 @@ public class GameClient {
                 if(object instanceof Network.Ready) {
                     ready.add(((Network.Ready) object).uuid);
                 }
+                if(object instanceof Network.MapVotes) {
+                    mapVotes = ((Network.MapVotes) object).votes;
+                }
                 if(object instanceof Network.TestPacket){
                     System.out.println("Client received test packet");
                     Network.TestPacket packet = (Network.TestPacket) object;
@@ -145,6 +149,6 @@ public class GameClient {
     public Map<UUID,Player> getPlayerList() {
         return playerList;
     }
-
+    public Map<String,Integer> getMapVotes() { return mapVotes; }
 }
 
