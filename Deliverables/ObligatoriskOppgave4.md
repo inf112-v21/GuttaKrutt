@@ -19,7 +19,7 @@ Arbeidsoppgaver:
 - Implementere gule conveyor belts.
 - Implementere blå conveyor belts.
 
-2) Som spiller vil jeg kunne ha tre liv, slik at robotten kan gjenopplives to ganger.
+2) Som spiller vil jeg kunne ha tre liv, slik at robotten kan gjenopplives to ganger på sist checkpoint.
 
 Akseptansekriterer:
 - Om en robot dør og spilleren har ett eller flere liv igjen skal robotten gjenopplives neste runde.
@@ -74,7 +74,37 @@ Arbeidsoppgaver:
 - Implementere robotsShootsLasers() i doTurn() funksjonen i GameLogic, slik at robot laserene fyres av
   samtidig som laserene fra veggene.
 
-6) Brukerhistorie til Sassan *** (5 kort betingelse + robot dør etter 10 DT)
+6) Som spiller vil jeg kun bevege robotten min når jeg har fylt alle fem av mine registers.
+
+Akseptansekriterier:
+- Minst fem kort må bli valgt før spilleren kan avslutte sin tur.
+- Ingen kort blir brukt hvis ikke alle registers er fylt.
+
+Arbedisoppgaver:
+- Implementere en cardCounter som sjekker antall kort i programRegister array-en (i GameScreen) som ikke er
+  lik `null` (virkelige Card variabler).
+- Implementere betingelser til Ready() knappen slik at knappen bare fungerer når antall valgte kort er lik 5.
+
+7) Som spiller vil jeg at roboten min skal dø når den tar 10 eller flere damage tokens.
+
+Akseptansekriterier:
+- Robotten skal dø akkurat når den får >=10 DT.
+- Robotten skal miste et Life Token og respawne (hvis den har >=1 LT) etter den dør.
+
+Arbeidsoppgaver:
+- Implementere en betingelse i addDamage metoden (i Robot) slik at et Life Token er trukket når damageTokens
+  er >=10.
+- Implementere en nested betingelse som setter alive som `false` når LT=0.
+
+8) Som spiller vil jeg kunne stemme på kart i lobby, slik at alle er med på å bestemme kart, og gjør det mulig å bytte kart om spillerene spiller nytt spill.
+
+Akseptansekriterier:
+ - I lobby kan spillere grafisk stemme på kart.
+ - Da spillet startes skal kartet med flest stemmer bli valgt. Om det er uavgjort velges et tilfeldig kart fra vinnerene.
+
+Arbeidsoppgaver:
+ - Implementere stemmingsystem.
+ - Implementere valg av kart fra stemmer.
 
 ### Møtereferater:
 
@@ -130,16 +160,86 @@ Arbeidsoppgaver:
 forsøkte å legge til en pop-up dialog til power-down
   metoden (klarte ikke det)
 - Ørjan forbedret måten robottene blir farget, og begynte på UIen som viser damage tokens og life tokens.
+- Asle fikset bug som gjorde at conveyorbelts forårsaket outOfBoundsException
+  og gjorde at laserene fjernes før robotene beveger seg
+  
+21.04 (Onsdag 12:15 - 16:00)
+- Alle var tilstede
+- Vi hadde en code with me session der vi skrev om prosjektet sammen
 
 ###Prosjekt og prosjektstruktur
+- Roller:
+  Vi står fast på rollebestemmelsene vi nevnte i forrige obligatoriske innlevering, der rollene 
+  for det meste er blitt mer fleksible, mens vi fortsatt har spesialiserte roller som går mer 
+  i dybden i en spesifikk del av programmet. 
+  Rollene som går mer i dybden:
+  GUI - Ørjan
+  Brett-Logikk - Asle
+  Brett-Logikk - Simon
+  Spill-Logikk - Sassan
+  
+
+- Prosjektmetodikk:
+  Vi har samme konklusjon som forrige gang:
+  "Det er ingen nye erfaringer verdt å nevne med henhold til prosjektmetodikk.
+  Vi synes at den blandingen vi har valgt av Scrum og Kanban har fungert bra
+  hittil."
+  Åpenheten til Kanban har gjort det lettere å fordele arbeidsoppgaver og å fremme kunnskapsoverføring, mens den
+  rigide sprint-strukturen til Scrum har gått hånd i hånd med innleveringsfristene.
 
 ###Retrospektiv
+Prosjektet har gått bra siden vi startet i januar. Gruppedynamikken og kommunikasjonen i teamet startet greit og har
+bare blitt bedre etterhvert som vi har blitt bedre kjent og mer komfortable med å jobbe sammen. Som nevnt i forrige 
+innlevering, har den gode kommunikasjonen og trivelige atmosfæren ført til et bra arbeidsmiljø der det er lett for 
+alle å kunne bidra og å lære av hverandre.
+
+
+Da prosjektet startet var prosjektmetodikken litt ubestemt, men vi ble enige mot slutten av første innlevering at
+vi skulle bruke en kombinasjon av Scrum og Kanban. Scrum var naturlig bedre egnet til både første og 
+andre innlevering, siden MVP-kravene ble konkrete mål for project-boardet i henhold til en scrum sprint.
+De to siste innleveringene var derimot mer åpne for valg av gjøremål. Dette førte til at målene vi satt i starten av
+sprintene ble utført før sprinten var over, og dermed ble det mer naturlig med en kombinasjon av Scrum og Kanban der
+vi brukte Scrum-sprints, mens arbeidsoppgavene ble kontinuerlig oppdatert.
+
+Hva hadde vi gjort annerledes:
+- Investert mer tid til å lære om Kanban i begynnelsen.
+- Kanskje implementert uPnP multiplayer istedenfor server-client, fordi da hadde vi sluppet port forwarding.
+  Server-client systemet var også vanskelig å implementere i begynnelsen, men lett å bruke når man først fikk det til,
+  så det hadde sannsynligvis vært lettere for oss å implementere en form for p2p.
+- I større grad være mer proaktive med testing og skriving av brukerhistorier. Vi har til nå hatt en tilstrekkelig test-dekning,
+  men i noen tilfeller har test-skriving vært mer en ettertanke.
 
 ###Krav
+Hva vi har prioritert siden forrige gang:
+- Conveyor belts (Ferdig implementert)
+- Tannhjul (Ferdig implementert)
+- Robot lasere (Ferdig implementert)
+- Grafisk vise damage- og lifetokens (Ferdig implementert)
+- Checkpoints (Ferdig implementert)
+- Grafikk for ferdig spill (Nesten ferdig implementert)
+- Respawning hvis man dør (Ferdig implementert)
+- Fiksing av bugs som beskrevet i forrige innlevering
+
+####Mål hvis vi skulle jobbet videre på prosjektet
+- Option cards
+- Flere maps
+- Lage større utvalg av brikker å velge mellom
+- Velge å respawne i power down, samt velge retningen man står ved respawn 
 
 ###Bugs
+Bugs som er fikset siden forrige innlevering:
+- Fikset hardcoded layers som førte til problemer i BoardLogic
+- Fikset visuell desync
+- Fikset kollisjon på conveyorbelts
+
+Lavprioriterte bugs som fortsatt eksisterer:
+- Logikk rundt conveyorbelts når 2 roboter konvergerer mot en rute
+- Spillet blir låst hvis en spiller forlater spillet før det er fullført
 
 ###Arbeidsfordeling
+Arbeidsfordelingen har vært gjevn. Fikset en bug den 24.03 som gjorde
+at Asle sine commits ikke ble vist på github. Alle code with me sesjonene blir hostet av Simon,
+derfor vil nesten alle commitene komme fra Simon, selv om alle har deltatt.
 
 ###Teknisk informasjon
 ####Krav og kjøreinstruksjoner

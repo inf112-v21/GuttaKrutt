@@ -1,14 +1,11 @@
 package inf112.app.logic;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import inf112.app.MapParser;
 import inf112.app.Player;
 import inf112.app.Robot;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

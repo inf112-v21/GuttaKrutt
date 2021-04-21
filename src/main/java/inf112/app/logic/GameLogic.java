@@ -6,7 +6,6 @@ import inf112.app.Deck;
 import inf112.app.Player;
 import inf112.app.Robot;
 import inf112.app.networking.GameClient;
-
 import java.util.*;
 
 /** controls the main loop of the game and executes the game rules */
@@ -17,7 +16,6 @@ public class GameLogic {
     Map<UUID, Player> playerList;
     GameClient client;
     UUID uuid;
-
     Card currentCard;
 
     public GameLogic() {this(null,null);}
@@ -117,6 +115,9 @@ public class GameLogic {
         }
     }
 
+    /**
+     * This function determines how a turn should progress.
+     */
     public void doTurn() {
         //A. Reveal Program Cards
         //B. Robots Move
@@ -146,6 +147,9 @@ public class GameLogic {
         turn++;
     }
 
+    /**
+     * This function determines in what order the board elements activates.
+     */
     public void boardElementsMove() {
         tryCatchSleep(500);
         boardLogic.activateBlueConveyorBelt();
@@ -156,6 +160,9 @@ public class GameLogic {
         boardLogic.activateGears();
     }
 
+    /**
+     * Checks if any player is standing on a checkpoint.
+     */
     public void touchCheckpoints() {
         for (Player player : playerList.values()) {
             boardLogic.checkForCheckpoints(player.getRobot());
