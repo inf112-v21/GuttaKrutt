@@ -51,6 +51,8 @@ public class LobbyScreen implements Screen {
     OrthogonalTiledMapRenderer renderer;
     StretchViewport mapPort;
 
+    ViewportWidget vpw;
+
     public LobbyScreen(Game game, GameClient client) {
         this.game = game;
         this.client = client;
@@ -58,9 +60,12 @@ public class LobbyScreen implements Screen {
 
         Preferences prefs = Gdx.app.getPreferences("RoboRally");
 
+        Table rootTable = new Table();
+        rootTable.setFillParent(true);
+        stage.addActor(rootTable);
+
         names = new Table();
-        names.setBounds(50,300,100,500);
-        stage.addActor(names);
+        rootTable.add(names).padRight(50);
 
         Texture robotTexture = new Texture("Robots.png");
 
@@ -69,7 +74,7 @@ public class LobbyScreen implements Screen {
         robots = new ButtonGroup();
 
         Table table = new Table();
-        stage.addActor(table);
+        rootTable.add(table);
 
         selection = new Table();
         table.add(selection);
@@ -165,7 +170,11 @@ public class LobbyScreen implements Screen {
         robots.setMinCheckCount(1);
         robots.setMaxCheckCount(1);
 
-        table.setPosition(1000,500);
+        Robot playerRobot = client.getPlayerList().get(client.clientUUID).getRobot();
+        playerRobot.setRed(prefs.getInteger("lastRed"));
+        playerRobot.setGreen(prefs.getInteger("lastGreen"));
+        playerRobot.setBlue(prefs.getInteger("lastBlue"));
+        client.updatePlayer();
 
         TextButton playButton = new TextButton("Ready", RoboRally.skin);
         playButton.setWidth(Gdx.graphics.getWidth()/10);
@@ -180,13 +189,8 @@ public class LobbyScreen implements Screen {
                 return true;
             }
         });
-        stage.addActor(playButton);
-
-        Robot playerRobot = client.getPlayerList().get(client.clientUUID).getRobot();
-        playerRobot.setRed(prefs.getInteger("lastRed"));
-        playerRobot.setGreen(prefs.getInteger("lastGreen"));
-        playerRobot.setBlue(prefs.getInteger("lastBlue"));
-        client.updatePlayer();
+        rootTable.row();
+        rootTable.add(playButton).bottom();
 
         FileHandle directory = Gdx.files.internal("assets");
         maps = new Array<>();
@@ -198,8 +202,7 @@ public class LobbyScreen implements Screen {
         }
 
         Table mapSelection = new Table();
-        mapSelection.setFillParent(true);
-        stage.addActor(mapSelection);
+        rootTable.add(mapSelection);
 
         list = new List<>(RoboRally.skin);
         list.setItems(maps);
@@ -211,8 +214,13 @@ public class LobbyScreen implements Screen {
             voteTallies.row();
         }
 
-        mapSelection.add(voteTallies);
-        mapSelection.add(list).pad(5);
+        Table mapSelectionName = new Table();
+
+        mapSelectionName.add(voteTallies).padRight(5);
+        mapSelectionName.add(list);
+        ScrollPane sc = new ScrollPane(mapSelectionName,RoboRally.skin);
+
+        mapSelection.add(sc).pad(5);
 
         selected = list.getSelected();
 
@@ -227,12 +235,12 @@ public class LobbyScreen implements Screen {
         renderer.setView(camera);
 
         mapPort = new StretchViewport(5, 5, camera);
-        mapSelection.add(new ViewportWidget(mapPort)).height(300).prefWidth(300);
+        vpw = new ViewportWidget(mapPort);
+        mapSelection.add(vpw).prefHeight(300).prefWidth(300);
 
         mapSelection.row();
 
         TextButton voteButton = new TextButton("Vote", RoboRally.skin);
-        voteButton.setWidth(Gdx.graphics.getWidth()/10);
         voteButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -307,7 +315,10 @@ public class LobbyScreen implements Screen {
 
     @Override
     public void resize(int i, int i1) {
+        stage.getViewport().update(i,i1,true);
+        stage.getViewport().getCamera().update();
 
+        vpw.setWidth(vpw.getHeight());
     }
 
     @Override
@@ -348,7 +359,7 @@ public class LobbyScreen implements Screen {
             });
 
             robots.add(button);
-            table.add(button).width(150);
+            table.add(button).width(150).height(150);
         }
 
         selection.reset();
