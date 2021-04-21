@@ -282,6 +282,7 @@ public class GameLogic {
                     deck.insert(card);
                 }
             }
+        }
         currentCard = null;
     }
 
