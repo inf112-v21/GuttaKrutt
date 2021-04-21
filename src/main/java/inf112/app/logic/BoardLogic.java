@@ -65,12 +65,13 @@ public class BoardLogic extends InputAdapter {
         if(enemy != null && playerCollision){
             movePlayer(enemy, (newX-oldX), (newY-oldY), true);
         }
+        enemy = checkForRobot(newX, newY);
         if (!getWall(oldX,oldY)[direction] && !getWall(newX,newY)[(direction + 2) % 4] && (enemy == null) || !playerCollision) {
             robot.setPos(new Vector2(newX, newY));
 
             checkForDangers(robot);
         }
-        //laserSpawner();
+      
         if(robot.getDamage()==10)
             robot.setAlive(false);
     }
@@ -109,13 +110,10 @@ public class BoardLogic extends InputAdapter {
 
         if (!inBorder(x,y)) { return; }
 
-        if (layerIsNull("flag")) return;
-        int flag = map.get("flag")[x][y];
+        int[][] flag = map.get("flag");
+        int[][] repair = map.get("repair");
 
-        if (layerIsNull("repair")) return;
-        int repair = map.get("repair")[x][y];
-
-        if (flag != 0 && checkFlags(map.get("flag")[x][y], robot)) {
+        if (flag != null && (flag[x][y] != 0 && checkFlags(flag[x][y], robot))) {
             robot.getFlagVisits().put(map.get("flag")[x][y], true);
             System.out.println("You got the flag!");
             if (robot.checkWin()) {
@@ -125,7 +123,7 @@ public class BoardLogic extends InputAdapter {
             robot.setCheckpoint(new Vector2(x,y));
         }
 
-        if (repair == 7 || repair == 15) {
+        if (repair != null && (repair[x][y] == 7 || repair[x][y] == 15)) {
             robot.setCheckpoint(new Vector2(x,y));
         }
     }
@@ -140,10 +138,11 @@ public class BoardLogic extends InputAdapter {
 
         if (!inBorder(x,y)) { return; }
 
-        if (layerIsNull("repair")) return;
-        int repair = map.get("repair")[x][y];
+        int[][] repair = map.get("repair");
 
-        if (repair == 7 || repair == 15) {
+        if (repair == null) return;
+
+        if (repair[x][y] == 7 || repair[x][y] == 15) {
             robot.addDamage(-1);
         }
     }
@@ -395,43 +394,42 @@ public class BoardLogic extends InputAdapter {
 
         for(Player player : players.values()) {
             Robot movingRobot = player.getRobot();
-            if (movingRobot.getAlive()) {
-                if (map.get(conveyorLayer)[movingRobot.getX()][movingRobot.getY()] != 0) {
-                    int type = map.get(conveyorLayer)[movingRobot.getX()][movingRobot.getY()];
-                    switch (type) {
-                        case 42: //west -> north
-                        case 43: //east -> north
-                        case 49:
-                        case 26: //west -> north
-                        case 27: //east -> north
-                        case 13:
-                            conveyorMoveCheck(movingRobot, 0, 1);
-                            break;
-                        case 34: //south -> west
-                        case 44: //north -> west
-                        case 51:
-                        case 18: //south -> west
-                        case 28: //north -> west
-                        case 22:
-                            conveyorMoveCheck(movingRobot, -1, 0);
-                            break;
-                        case 33: //east -> south
-                        case 36: //west -> south
-                        case 50:
-                        case 17: //east -> south
-                        case 20: //west -> south
-                        case 21:
-                            conveyorMoveCheck(movingRobot, 0, -1);
-                            break;
-                        case 35: //south -> east
-                        case 41: //north -> east
-                        case 52:
-                        case 19: //south -> east
-                        case 25: //north -> east
-                        case 14:
-                            conveyorMoveCheck(movingRobot, 1, 0);
-                            break;
-                    }
+            if (map.get(conveyorLayer) == null) return;
+            if (map.get(conveyorLayer)[movingRobot.getX()][movingRobot.getY()]!=0) {
+                int type = map.get(conveyorLayer)[movingRobot.getX()][movingRobot.getY()];
+                switch (type) {
+                    case 42: //west -> north
+                    case 43: //east -> north
+                    case 49:
+                    case 26: //west -> north
+                    case 27: //east -> north
+                    case 13:
+                        conveyorMoveCheck(movingRobot, 0, 1);
+                        break;
+                    case 34: //south -> west
+                    case 44: //north -> west
+                    case 51:
+                    case 18: //south -> west
+                    case 28: //north -> west
+                    case 22:
+                        conveyorMoveCheck(movingRobot, -1, 0);
+                        break;
+                    case 33: //east -> south
+                    case 36: //west -> south
+                    case 50:
+                    case 17: //east -> south
+                    case 20: //west -> south
+                    case 21:
+                        conveyorMoveCheck(movingRobot, 0, -1);
+                        break;
+                    case 35: //south -> east
+                    case 41: //north -> east
+                    case 52:
+                    case 19: //south -> east
+                    case 25: //north -> east
+                    case 14:
+                        conveyorMoveCheck(movingRobot, 1, 0);
+                        break;
                 }
             }
         }
@@ -531,7 +529,7 @@ public class BoardLogic extends InputAdapter {
      * Left rotation for red cog. Right rotation for green cog.
      */
     public void activateGears() {
-        if (layerIsNull("Green cog") || layerIsNull("Red cog")) return;
+        if (layerIsNull("Green cog") && layerIsNull("Red cog")) return;
         int[][] greens = map.get("Green cog");
         int[][] reds = map.get("Red cog");
 
