@@ -44,9 +44,14 @@ public class Network {
         kryo.register(RegisterName.class);
         kryo.register(UpdatePlayer.class);
         kryo.register(UpdatePlayers.class);
+        kryo.register(NewWinner.class);
         kryo.register(NewConnection.class);
         kryo.register(RunGame.class);
+        kryo.register(Ready.class);
+        kryo.register(NewGame.class);
         kryo.register(MapName.class);
+        kryo.register(MapVote.class);
+        kryo.register(MapVotes.class);
         kryo.register(TestPacket.class);
         kryo.register(ArrayList.class);
     }
@@ -71,8 +76,23 @@ public class Network {
         public Map<UUID,Player> playerList;
     }
 
+    static public class NewWinner {
+        public UUID uuid;
+    }
+
     static public class NewConnection {}
+    static public class Ready {
+        public UUID uuid;
+    }
     static public class RunGame {}
+    static public class NewGame {}
+
+    static public class MapVote {
+        public String mapName;
+    }
+    static public class MapVotes {
+        public Map<String,Integer> votes;
+    }
 
     static public  class TestPacket{
         public String packet;
@@ -82,13 +102,13 @@ public class Network {
 
         @Override
         public void write(Kryo kryo, Output output, UUID uuid) {
-            output.writeInt((int) uuid.getLeastSignificantBits());
-            output.writeInt((int) uuid.getMostSignificantBits());
+            output.writeString(uuid.toString());
         }
 
         @Override
         public UUID read(Kryo kryo, Input input, Class<UUID> aClass) {
-            return new UUID(input.readInt(),input.readInt());
+            return UUID.fromString(input.readString());
+
         }
     }
 }

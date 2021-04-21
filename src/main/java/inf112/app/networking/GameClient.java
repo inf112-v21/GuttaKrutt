@@ -1,10 +1,7 @@
 package inf112.app.networking;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
@@ -25,6 +22,10 @@ public class GameClient {
     public Map<UUID,Player> playerList = new HashMap<>();
     public boolean run = false;
     public String mapName;
+    public String name;
+    public UUID winner;
+    public ArrayList<UUID> ready = new ArrayList<>();
+    public Map<String,Integer> mapVotes = new HashMap<>();
 
     //Run this if you are hosting the server
     public GameClient() throws IOException {
@@ -70,6 +71,27 @@ public class GameClient {
                     Network.UpdatePlayers players = (Network.UpdatePlayers) object;
                     playerList = players.playerList;
                 }
+                if(object instanceof Network.NewWinner){
+                    winner = ((Network.NewWinner) object).uuid;
+
+                    run = false;
+                }
+                if(object instanceof Network.NewGame){
+                    clientUUID = null;
+                    playerList = new HashMap<>();
+                    run = false;
+                    //mapName = null;
+                    winner = null;
+                    ready = new ArrayList<>();
+
+                    client.sendTCP(name);
+                }
+                if(object instanceof Network.Ready) {
+                    ready.add(((Network.Ready) object).uuid);
+                }
+                if(object instanceof Network.MapVotes) {
+                    mapVotes = ((Network.MapVotes) object).votes;
+                }
                 if(object instanceof Network.TestPacket){
                     System.out.println("Client received test packet");
                     Network.TestPacket packet = (Network.TestPacket) object;
@@ -100,6 +122,26 @@ public class GameClient {
         }
     }
 
+    public void readyForGame() {
+        if(!client.isConnected()){
+            System.out.println("You are not connected to a server!");
+        } else {
+            Network.Ready packet = new Network.Ready();
+            packet.uuid = clientUUID;
+            client.sendTCP(packet);
+        }
+    }
+
+    public void declareVictory() {
+        if (!client.isConnected()){
+            System.out.println("You are not connected to a server!");
+        } else {
+            Network.NewWinner packet = new Network.NewWinner();
+            packet.uuid = clientUUID;
+            client.sendTCP(packet);
+        }
+    }
+
     public Client getClient(){
         return client;
     }
@@ -107,5 +149,6 @@ public class GameClient {
     public Map<UUID,Player> getPlayerList() {
         return playerList;
     }
+    public Map<String,Integer> getMapVotes() { return mapVotes; }
 }
 

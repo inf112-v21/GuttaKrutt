@@ -23,6 +23,7 @@ import inf112.app.*;
 import inf112.app.logic.*;
 import inf112.app.networking.GameClient;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,6 +46,8 @@ public class GameScreen implements Screen {
     OrthographicCamera camera;
 
     TextureRegion[][] playerTextures;
+    Map<UUID,TextureRegion[][]> colorTextures;
+
 
     MapLayers layers;
 
@@ -75,6 +78,10 @@ public class GameScreen implements Screen {
     Thread roundThread;
     boolean roundRunning;
 
+    Texture emptyToken;
+    Texture damageToken;
+    Texture lifeToken;
+
     public GameScreen(Game game, GameClient client) {
         this.game = game;
         stage = new Stage(new ScreenViewport()) {
@@ -91,6 +98,8 @@ public class GameScreen implements Screen {
         this.client = client;
 
         String map = client.mapName;
+
+        System.out.println(map);
 
         TmxMapLoader mapLoader = new TmxMapLoader();
         tiledMap = mapLoader.load(map);
@@ -142,28 +151,65 @@ public class GameScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(tiledMap, 1F/300);
         renderer.setView(camera);
 
-        Texture playerTexture = new Texture("Robot1.png");
+        Texture playerTexture = new Texture("Robots.png");
         playerTextures = TextureRegion.split(playerTexture,300,300);
 
+        colorTextures = new HashMap<>();
+
+        for (UUID uuid : players.keySet()) {
+            Robot robot = players.get(uuid).getRobot();
+            colorTextures.put(uuid,ColorTexture.colorRobot(playerTexture,new Color(robot.getRed()/256F,robot.getGreen()/256F,robot.getBlue()/256F,1)));
+        }
+
         robotsTable = new Table();
-        rootTable.add(robotsTable).width(uiWidth).top();
+        ScrollPane sc = new ScrollPane(robotsTable,RoboRally.skin);
+        rootTable.add(sc).width(uiWidth+5).prefHeight(10000);
 
-        robotsTable.setDebug(true);
+        robotsTable.top();
 
-        for (Player player : players.values()) {
-            Robot robot = player.getRobot();
-            Image img = new Image(playerTextures[robot.getTexture()[0]][robot.getTexture()[1]]);
+        for (Map.Entry<UUID,Player> entry : players.entrySet()) {
+            Robot robot = entry.getValue().getRobot();
+            Image img = new Image(colorTextures.get(entry.getKey())[0][robot.getTexture()]);
             img.addListener(new TextTooltip(robot.getDamage() + "", RoboRally.skin));
-            Table table = new Table();
+            Table table = new Table(RoboRally.skin);
+            table.setBackground("default-pane");
+            Table damage = new Table();
+            damage.left();
+            table.add(damage).width(uiWidth).height(uiWidth/10F);
+            table.row();
             //noinspection SuspiciousNameCombination
             table.add(img).height(uiWidth);
             table.row();
-            table.add(drawRegister(player));
-            robotsTable.add(table);
+            Table nameAndLife = new Table();
+            nameAndLife.add(new Label(entry.getValue().getName(),RoboRally.skin)).prefWidth(uiWidth);
+            nameAndLife.add(new Table());
+            table.add(nameAndLife);
+            table.row();
+            table.add(drawRegister(entry.getValue()));
+            robotsTable.add(table).padBottom(10).width(uiWidth);
             robotsTable.row();
-
-            table.setDebug(true);
         }
+
+        Pixmap noDamTok = new Pixmap(16,16,Pixmap.Format.RGBA8888);
+        noDamTok.setColor(Color.GRAY);
+        noDamTok.fillCircle(8,8,8);
+        noDamTok.setColor(Color.BLACK);
+        noDamTok.drawCircle(8,8,8);
+        emptyToken = new Texture(noDamTok);
+
+        Pixmap damTok = new Pixmap(16,16,Pixmap.Format.RGBA8888);
+        damTok.setColor(Color.RED);
+        damTok.fillCircle(8,8,8);
+        damTok.setColor(Color.BLACK);
+        damTok.drawCircle(8,8,8);
+        damageToken = new Texture(damTok);
+
+        Pixmap lifeTok = new Pixmap(16,16,Pixmap.Format.RGBA8888);
+        lifeTok.setColor(Color.GREEN);
+        lifeTok.fillCircle(8,8,8);
+        lifeTok.setColor(Color.BLACK);
+        lifeTok.drawCircle(8,8,8);
+        lifeToken = new Texture(lifeTok);
 
         cardSelectDnD = new DragAndDrop();
         cardSwitchDnD = new DragAndDrop();
@@ -213,6 +259,7 @@ public class GameScreen implements Screen {
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 roundThread = new Thread(() -> gameLogic.ready());
                 roundThread.start();
+                System.out.println(roundThread.getName());
                 roundRunning = true;
             }
             @Override
@@ -273,17 +320,20 @@ public class GameScreen implements Screen {
 
         stage.act();
         stage.draw();
+
+        //End game if necessary
+        if (!client.run) {
+            game.setScreen(new EndScreen(game,players.get(client.winner),client));
+        }
     }
-
-
 
     public void drawRobots() {
         clearLayer(playerLayer);
-        for (Player player : players.values()) {
-            Robot robot = player.getRobot();
+        for (Map.Entry<UUID,Player> entry : players.entrySet()) {
+            Robot robot = entry.getValue().getRobot();
             TiledMapTileLayer.Cell currentPlayerCell = new TiledMapTileLayer.Cell();
-            int[] index = robot.getTexture();
-            currentPlayerCell.setTile(new StaticTiledMapTile(playerTextures[index[0]][index[1]]));
+            int index = robot.getTexture();
+            currentPlayerCell.setTile(new StaticTiledMapTile(colorTextures.get(entry.getKey())[robot.getDamage()/3][index]));
 
             currentPlayerCell.setRotation(robot.getRotation());
 
@@ -331,11 +381,6 @@ public class GameScreen implements Screen {
     public void resize(int i, int i1) {
         stage.getViewport().update(i,i1,true);
         stage.getViewport().getCamera().update();
-
-        robotsTable.setSize(uiWidth,i1-uiWidth);
-        robotsTable.setX(i-uiWidth);
-
-        controlsTable.setSize(i,uiHeight);
     }
 
     @Override
@@ -548,9 +593,31 @@ public class GameScreen implements Screen {
     }
 
     private void updatePlayerTable(Table table, Player player) {
-        TextTooltip tooltip = (TextTooltip) table.getChildren().get(0).getListeners().get(0);
+        Table damage = (Table) table.getChildren().get(0);
+        damage.clearChildren();
+        for (int i=0; i<10; i++) {
+            if (i < player.getRobot().getDamage()) {
+                damage.add(new Image(damageToken));
+            } else {
+                damage.add(new Image(emptyToken));
+            }
+        }
+
+        TextTooltip tooltip = (TextTooltip) table.getChildren().get(1).getListeners().get(0);
         tooltip.getActor().setText(player.getRobot().getDamage() + "\n" + player.getName());
-        table.getChildren().get(1).remove();
+
+        Table life = (Table) ((Table) table.getChildren().get(2)).getChildren().get(1);
+        life.clearChildren();
+        for (int i=0; i<3; i++) {
+            if (i < player.getRobot().getLifeTokens()) {
+                life.add(new Image(lifeToken)).width(10).height(10);
+            } else {
+                life.add(new Image(emptyToken)).width(10).height(10);
+            }
+            life.row();
+        }
+
+        table.getChildren().get(3).remove();
         table.row();
         table.add(drawRegister(player));
     }

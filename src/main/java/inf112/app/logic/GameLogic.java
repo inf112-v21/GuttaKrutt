@@ -28,7 +28,7 @@ public class GameLogic {
         this.boardLogic = boardLogic;
         this.client = client;
         turn=0;
-        deck = new Deck();
+        deck = new Deck(1);
         buildDeck();
         deck.shuffle();
         if (client != null) {
@@ -93,6 +93,7 @@ public class GameLogic {
             playerList.get(uuid).setReady(true);
             client.updatePlayer(uuid, playerList.get(uuid));
 
+
             loopTillOthersAreReady();
 
             deck.restock();
@@ -104,11 +105,12 @@ public class GameLogic {
             for (Player player : playerList.values())
                 System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
 
-            if (checkIfGameConcluded()) {
+            if(checkIfGameConcluded()){
                 System.out.println("A player has won");
                 client.updatePlayer(uuid, playerList.get(uuid));
-                if (!playerList.get(uuid).getRobot().getWon())
+                if(!playerList.get(uuid).getRobot().getWon())
                     System.out.println("You lost, loser!");
+                else client.declareVictory();
             }
 
         }
@@ -220,6 +222,7 @@ public class GameLogic {
     /** deals cards to each player according to the number
     * of their damage tokens */
     public void dealCards() {
+        deck.shuffle();
         for (Player p : playerList.values()) {
             if (!p.getRobot().getPowerDown()) {
                 Deck newCards = new Deck();
@@ -263,21 +266,23 @@ public class GameLogic {
      * Executes the cards in the program register
      */
     private void processCards(int i) {
-            Array<Player> queue = new Array<>();
-            for (Player player : playerList.values()) {
-                queue.add(player);
-                player.setCards(new Deck());
-            }
-            queue.sort(new CardComparator(i));
-            for (Player player : queue) {
-                Card card = player.getRobot().getProgramRegister()[i];
-                if (card != null) {
-                    useCard(player.getRobot(), card);
-                    if (i < 9 - player.getRobot().getDamage()) {
-                        player.getRobot().getProgramRegister()[i] = null;
-                    }
+        Array<Player> queue = new Array<>();
+        for (Player player : playerList.values()) {
+            deck.addAll(player.getCards());
+            queue.add(player);
+            player.setCards(new Deck());
+        }
+        queue.sort(new CardComparator(i));
+        for (Player player : queue) {
+            Card card = player.getRobot().getProgramRegister()[i];
+            if (card != null) {
+                useCard(player.getRobot(), card);
+                if (i < 9 - player.getRobot().getDamage()) {
+                    player.getRobot().getProgramRegister()[i] = null;
+                    deck.insert(card);
                 }
             }
+        }
         currentCard = null;
     }
 

@@ -71,7 +71,7 @@ public class BoardLogic extends InputAdapter {
 
             checkForDangers(robot);
         }
-
+      
         if(robot.getDamage()==10)
             robot.setAlive(false);
     }
@@ -113,7 +113,6 @@ public class BoardLogic extends InputAdapter {
         int[][] flag = map.get("flag");
         int[][] repair = map.get("repair");
 
-
         if (flag != null && (flag[x][y] != 0 && checkFlags(flag[x][y], robot))) {
             robot.getFlagVisits().put(map.get("flag")[x][y], true);
             System.out.println("You got the flag!");
@@ -139,10 +138,11 @@ public class BoardLogic extends InputAdapter {
 
         if (!inBorder(x,y)) { return; }
 
-        if (layerIsNull("repair")) return;
-        int repair = map.get("repair")[x][y];
+        int[][] repair = map.get("repair");
 
-        if (repair == 7 || repair == 15) {
+        if (repair == null) return;
+
+        if (repair[x][y] == 7 || repair[x][y] == 15) {
             robot.addDamage(-1);
         }
     }
@@ -389,6 +389,7 @@ public class BoardLogic extends InputAdapter {
 
         for(Player player : players.values()) {
             Robot movingRobot = player.getRobot();
+            if (map.get(conveyorLayer) == null) return;
             if (map.get(conveyorLayer)[movingRobot.getX()][movingRobot.getY()]!=0) {
                 int type = map.get(conveyorLayer)[movingRobot.getX()][movingRobot.getY()];
                 switch (type) {
