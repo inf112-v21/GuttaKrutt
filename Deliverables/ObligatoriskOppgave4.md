@@ -296,4 +296,5 @@ Regler for spillet:
 Første spiller som er innom alle flaggene i riktig rekkefølge vinner!
 Hvis roboten din dør 3 ganger er du derimot ute av spillet.
 
-For å lukke spillet, lukk vinduet ved å trykke på krysset oppe til høyre. (Server og klient blir automatisk lukket om Gdx-applikasjonen lukkes.)
+Når spillet er konkludert kan en av spillerene trykke på "New Game" for å starte et nytt spill.
+For å avslutte spillet, lukk vinduet ved å trykke på krysset oppe til høyre. (Server og klient blir automatisk lukket om Gdx-applikasjonen lukkes.)
