@@ -460,32 +460,34 @@ public class BoardLogic extends InputAdapter {
      */
 
     private void conveyorRotation(Robot rotatingRobot) {
-        int currentConveyor = map.get("Yellow conveyor belts")[rotatingRobot.getX()][rotatingRobot.getY()];
-        if (currentConveyor==0)
-            currentConveyor = map.get("Blue conveyor belts")[rotatingRobot.getX()][rotatingRobot.getY()];
-        switch (currentConveyor) {
-            //rotate left
-            case 42: //west -> north
-            case 26: //west -> north
-            case 34: //south -> west
-            case 18: //south -> west
-            case 33: //east -> south
-            case 17: //east -> south
-            case 41: //north -> east
-            case 25: //north -> east
-                rotatingRobot.rotate(1);
-                break;
-            //rotate right
-            case 43: //east -> north
-            case 27: //east -> north
-            case 44: //north -> west
-            case 28: //north -> west
-            case 36: //west -> south
-            case 20: //west -> south
-            case 35: //south -> east
-            case 19: //south -> east
-                rotatingRobot.rotate(-1);
-                break;
+        if(inBorder(rotatingRobot.getX(),rotatingRobot.getY())) {
+            int currentConveyor = map.get("Yellow conveyor belts")[rotatingRobot.getX()][rotatingRobot.getY()];
+            if (currentConveyor==0)
+                currentConveyor = map.get("Blue conveyor belts")[rotatingRobot.getX()][rotatingRobot.getY()];
+            switch (currentConveyor) {
+                //rotate left
+                case 42: //west -> north
+                case 26: //west -> north
+                case 34: //south -> west
+                case 18: //south -> west
+                case 33: //east -> south
+                case 17: //east -> south
+                case 41: //north -> east
+                case 25: //north -> east
+                    rotatingRobot.rotate(1);
+                    break;
+                //rotate right
+                case 43: //east -> north
+                case 27: //east -> north
+                case 44: //north -> west
+                case 28: //north -> west
+                case 36: //west -> south
+                case 20: //west -> south
+                case 35: //south -> east
+                case 19: //south -> east
+                    rotatingRobot.rotate(-1);
+                    break;
+            }
         }
     }
     /*
