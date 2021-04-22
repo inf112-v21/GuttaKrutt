@@ -80,11 +80,11 @@ public class GameLogic {
         for (Card card : playerList.get(uuid).getRobot().getProgramRegister()) {
             if (card != null) { cardCounter++; }
         }
-        if (cardCounter == 5) {
+        System.out.println(playerList.get(uuid).getRobot().getPowerDown());
+        if (cardCounter == 5 || playerList.get(uuid).getRobot().getPowerDown()) {
 
             playerList.get(uuid).setReady(true);
             client.updatePlayer(uuid, playerList.get(uuid));
-
 
             loopTillOthersAreReady();
             doTurn();
@@ -129,6 +129,11 @@ public class GameLogic {
                 player.getRobot().respawn();
             }
             player.getRobot().setPowerDown(false);
+            if (player.getRobot().getPowerDownNext()) {
+                player.getRobot().setPowerDownNext(false);
+                player.getRobot().discardDamage();
+                player.getRobot().setPowerDown(true);
+            }
             boardLogic.checkForRepairs(player.getRobot());
         }
     }
@@ -166,8 +171,7 @@ public class GameLogic {
     public void powerDown() {
         Robot robot = playerList.get(uuid).getRobot();
         if (robot.getDamage() > 0) {
-            robot.setPowerDown(true);
-            robot.discardDamage();
+            robot.setPowerDownNext(true);
             client.updatePlayer(uuid,playerList.get(uuid));
         }
     }

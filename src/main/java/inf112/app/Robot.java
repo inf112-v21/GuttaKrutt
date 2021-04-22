@@ -12,6 +12,7 @@ public class Robot {
     boolean alive = true;
     boolean won = false;
     boolean powerDown = false;
+    boolean powerDownNext = false;
 
     Card[] programRegister = new Card[5];
 
@@ -137,4 +138,9 @@ public class Robot {
     public int getRed() { return red; }
     public int getGreen() { return green; }
     public int getBlue() { return blue; }
+
+    public void setPowerDownNext(boolean b) {
+        powerDownNext = b;
+    }
+    public boolean getPowerDownNext() { return powerDownNext; }
 }
