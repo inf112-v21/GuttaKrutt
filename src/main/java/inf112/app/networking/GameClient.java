@@ -92,6 +92,9 @@ public class GameClient {
                 if(object instanceof Network.MapVotes) {
                     mapVotes = ((Network.MapVotes) object).votes;
                 }
+                if(object instanceof Network.RemovePlayer) {
+                    playerList.remove(((Network.RemovePlayer) object).uuid);
+                }
                 if(object instanceof Network.TestPacket){
                     System.out.println("Client received test packet");
                     Network.TestPacket packet = (Network.TestPacket) object;
