@@ -44,6 +44,7 @@ public class Network {
         kryo.register(RegisterName.class);
         kryo.register(UpdatePlayer.class);
         kryo.register(UpdatePlayers.class);
+        kryo.register(RemovePlayer.class);
         kryo.register(NewWinner.class);
         kryo.register(NewConnection.class);
         kryo.register(RunGame.class);
@@ -74,6 +75,10 @@ public class Network {
     //Field for updating all players
     static public class UpdatePlayers {
         public Map<UUID,Player> playerList;
+    }
+
+    static public class RemovePlayer {
+        public UUID uuid;
     }
 
     static public class NewWinner {

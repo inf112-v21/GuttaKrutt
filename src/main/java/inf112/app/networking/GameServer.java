@@ -115,11 +115,12 @@ public class GameServer {
             }
             public void disconnected(Connection connection) {
                 playerList.remove(connectionList.get(connection.getID()));
-                connectionList.remove(connection.getID());
 
-                Network.UpdatePlayers players = new Network.UpdatePlayers();
-                players.playerList = playerList;
-                server.sendToAllTCP(players);
+                Network.RemovePlayer packet = new Network.RemovePlayer();
+                packet.uuid = connectionList.get(connection.getID());
+                server.sendToAllTCP(packet);
+
+                connectionList.remove(connection.getID());
             }
         });
     }

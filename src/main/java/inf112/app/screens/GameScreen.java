@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -173,6 +174,7 @@ public class GameScreen implements Screen {
             img.addListener(new TextTooltip(robot.getDamage() + "", RoboRally.skin));
             Table table = new Table(RoboRally.skin);
             table.setBackground("default-pane");
+            table.setName(entry.getKey().toString());
             Table damage = new Table();
             damage.left();
             table.add(damage).width(uiWidth).height(uiWidth/10F);
@@ -311,11 +313,13 @@ public class GameScreen implements Screen {
         PRTable.reset();
         PRTable.add(drawRegister(players.get(clientUUID),true,82,129));
 
-        int i = 0;
-        for (Player player : players.values()) {
-            Table table = (Table) robotsTable.getChildren().get(i);
-            updatePlayerTable(table,player);
-            i++;
+        for (Actor table : robotsTable.getChildren()) {
+            Player player = players.get(UUID.fromString(table.getName()));
+            if (player != null) {
+                updatePlayerTable((Table) table, player);
+            } else {
+                table.remove();
+            }
         }
 
         stage.act();
