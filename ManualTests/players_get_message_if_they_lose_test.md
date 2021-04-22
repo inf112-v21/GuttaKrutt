@@ -2,8 +2,8 @@
 
 Start game by following technical documentation, connect with two players.
 Choose the map "TiledTestWithOneFlag".
-Then one player moves to the flag, while the other player stands still
-(do one rotation or power down).
+Then one player moves to the flag, while the other player moves somewhere else
+(do not die or walk on the flag).
 
 ####Fail
 - Any of the players are able to move after the player on the flag won (rotating is allowed).

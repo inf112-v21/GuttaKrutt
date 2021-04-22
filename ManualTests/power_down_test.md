@@ -8,7 +8,7 @@ again.
 
 Pay attention that a requirement for the power-down method to function as
 intended is for the robot to be damaged (as stated in the rules). You can
-either change this requirement in line 115 in GameLogic (by changing it to
+either change this requirement in the powerDown() function in GameLogic (by changing it to
 `if (robot.getDamage() == 0) {`), or damage the robot by running into a
 laser in order to test this functionality.
 

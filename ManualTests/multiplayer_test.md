@@ -10,4 +10,4 @@ server to respond.
 both players see the same movement, then it is working properly.
 
 ####Fail
-- If the other players moves are not updated on your screen.
+- If the other player's moves are not updated on your screen.
