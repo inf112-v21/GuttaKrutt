@@ -164,4 +164,12 @@ public class GameServer {
 
         return highS.random();
     }
+
+    static public void main(String[] args) {
+        try {
+            new GameServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
