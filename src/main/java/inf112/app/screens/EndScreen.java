@@ -65,6 +65,8 @@ public class EndScreen implements Screen {
         stage.act();
         stage.draw();
 
+        if (!client.getClient().isConnected()) System.exit(0);
+
         if(client.winner == null) {
             game.setScreen(new LobbyScreen(game, client));
         }
