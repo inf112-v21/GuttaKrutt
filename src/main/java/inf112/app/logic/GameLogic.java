@@ -135,6 +135,14 @@ public class GameLogic {
                 player.getRobot().setPowerDown(true);
             }
             boardLogic.checkForRepairs(player.getRobot());
+
+            for (int i=0; i<5; i++) {
+                if (i < 9 - player.getRobot().getDamage()) {
+                    Card card = player.getRobot().getProgramRegister()[i];
+                    player.getRobot().getProgramRegister()[i] = null;
+                    deck.insert(card);
+                }
+            }
         }
     }
 
@@ -280,10 +288,6 @@ public class GameLogic {
             Card card = player.getRobot().getProgramRegister()[i];
             if (card != null) {
                 useCard(player.getRobot(), card);
-                if (i < 9 - player.getRobot().getDamage()) {
-                    player.getRobot().getProgramRegister()[i] = null;
-                    deck.insert(card);
-                }
             }
         }
         currentCard = null;
