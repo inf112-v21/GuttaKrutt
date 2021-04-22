@@ -220,7 +220,9 @@ public class LobbyScreen implements Screen {
         mapSelectionName.add(list);
         ScrollPane sc = new ScrollPane(mapSelectionName,RoboRally.skin);
 
-        mapSelection.add(sc).pad(5);
+        Table left = new Table();
+        left.add(sc);
+        mapSelection.add(left).pad(5);
 
         selected = list.getSelected();
 
@@ -238,8 +240,6 @@ public class LobbyScreen implements Screen {
         vpw = new ViewportWidget(mapPort);
         mapSelection.add(vpw).prefHeight(300).prefWidth(300);
 
-        mapSelection.row();
-
         TextButton voteButton = new TextButton("Vote", RoboRally.skin);
         voteButton.addListener(new InputListener(){
             @Override
@@ -253,7 +253,8 @@ public class LobbyScreen implements Screen {
                 return true;
             }
         });
-        mapSelection.add(voteButton);
+        left.row();
+        left.add(voteButton);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -34,22 +35,29 @@ public class SetupScreen implements Screen {
 
         Preferences prefs = Gdx.app.getPreferences("RoboRally");
 
-        Table nameTable = new Table();
-        nameTable.setFillParent(true);
-        stage.addActor(nameTable);
-        nameTable.bottom();
-
-        Label nameField = new Label("Name:", RoboRally.skin);
-        nameTable.add(nameField).padLeft(50).padBottom(15).left();
-        nameTable.row();
-
         String defaultName = prefs.getString("lastUsedName");
         if (defaultName == "") defaultName = "name";
 
-        name = new TextField(defaultName, RoboRally.skin);
-        nameTable.add(name).prefWidth(99999).padLeft(50).padBottom(15).padRight(20).left();
+        Table rootTable = new Table();
+        stage.addActor(rootTable);
+        rootTable.setFillParent(true);
+
+        rootTable.add(new Label("IP: ", RoboRally.skin));
+        TextField host = new TextField("localhost", RoboRally.skin);
+        host.setWidth(Gdx.graphics.getWidth()/2);
+        host.setPosition(Gdx.graphics.getWidth()/2-host.getWidth()/2,Gdx.graphics.getHeight()/2);
+        rootTable.add(host).prefWidth(500).padBottom(10);
+        host.setDisabled(true);
+        host.setColor(Color.LIGHT_GRAY);
+
+        rootTable.row();
+        rootTable.add(new Label("Name: ", RoboRally.skin));
+        TextField name = new TextField(defaultName, RoboRally.skin);
+        rootTable.add(name).prefWidth(500);
 
         playButton = new TextButton("Play!", RoboRally.skin);
+        playButton.setWidth(Gdx.graphics.getWidth()/10);
+        playButton.setPosition(Gdx.graphics.getWidth()/10-playButton.getWidth()/10,Gdx.graphics.getHeight()/10-playButton.getHeight()/10);
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -73,7 +81,7 @@ public class SetupScreen implements Screen {
                 return true;
             }
         });
-        nameTable.add(playButton).right().padRight(15).padBottom(15).width(100);
+        stage.addActor(playButton);
     }
 
     @Override

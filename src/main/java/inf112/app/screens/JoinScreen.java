@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import inf112.app.RoboRally;
 import inf112.app.networking.GameClient;
-import inf112.app.networking.GameServer;
 
 import java.io.IOException;
 
@@ -35,15 +35,20 @@ public class JoinScreen implements Screen {
         String defaultName = prefs.getString("lastUsedName");
         if (defaultName == "") defaultName = "name";
 
+        Table rootTable = new Table();
+        stage.addActor(rootTable);
+        rootTable.setFillParent(true);
+
+        rootTable.add(new Label("IP: ", RoboRally.skin));
         TextField host = new TextField(defaultIP, RoboRally.skin);
         host.setWidth(Gdx.graphics.getWidth()/2);
         host.setPosition(Gdx.graphics.getWidth()/2-host.getWidth()/2,Gdx.graphics.getHeight()/2);
-        stage.addActor(host);
+        rootTable.add(host).prefWidth(500).padBottom(10);
 
+        rootTable.row();
+        rootTable.add(new Label("Name: ", RoboRally.skin));
         TextField name = new TextField(defaultName, RoboRally.skin);
-        name.setWidth(Gdx.graphics.getWidth()/2);
-        name.setPosition(Gdx.graphics.getWidth()/2-name.getWidth()/2,Gdx.graphics.getHeight()/2-100);
-        stage.addActor(name);
+        rootTable.add(name).prefWidth(500);
 
         TextButton playButton = new TextButton("Play!", RoboRally.skin);
         playButton.setWidth(Gdx.graphics.getWidth()/10);
@@ -90,7 +95,8 @@ public class JoinScreen implements Screen {
 
     @Override
     public void resize(int i, int i1) {
-
+        stage.getViewport().update(i,i1,true);
+        stage.getViewport().getCamera().update();
     }
 
     @Override
