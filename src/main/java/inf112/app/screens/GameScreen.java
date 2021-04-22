@@ -259,10 +259,12 @@ public class GameScreen implements Screen {
         button.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                roundThread = new Thread(() -> gameLogic.ready());
-                roundThread.start();
-                System.out.println(roundThread.getName());
-                roundRunning = true;
+                if(!roundRunning) {
+                    roundThread = new Thread(() -> gameLogic.ready());
+                    roundThread.start();
+                    System.out.println(roundThread.getName());
+                    roundRunning = true;
+                }
             }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
