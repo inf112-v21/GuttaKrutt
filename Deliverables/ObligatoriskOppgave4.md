@@ -167,9 +167,10 @@ forsøkte å legge til en pop-up dialog til power-down
 - Alle var tilstede
 - Vi hadde en code with me session der vi skrev om prosjektet sammen
 
-22.04 (Torsdag 12:00 - 14:00)
+22.04 (Torsdag 12:00 - 16:00)
 - Alle var tilstede
 - Vi hadde en ny code with me session der vi fullførte skrive-arbeidet fra dagen før
+- Alle play-testet spillet sammen
 
 ###Prosjekt og prosjektstruktur
 - Roller:
