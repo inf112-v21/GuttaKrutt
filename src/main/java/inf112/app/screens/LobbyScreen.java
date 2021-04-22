@@ -73,20 +73,23 @@ public class LobbyScreen implements Screen {
 
         robots = new ButtonGroup();
 
-        Table table = new Table();
-        rootTable.add(table);
+        Table robotCustom = new Table();
+        rootTable.add(robotCustom);
 
         selection = new Table();
-        table.add(selection);
+        robotCustom.add(selection);
+        Table table = new Table();
+        robotCustom.row();
+        robotCustom.add(table);
 
         drawRobotSelection(prefs.getInteger("lastRed"),prefs.getInteger("lastGreen"),prefs.getInteger("lastBlue"));
 
-        table.row();
         Label redValue = new Label(prefs.getString("lastRed"),RoboRally.skin);
 
         Slider red = new Slider(0,255,1,false,RoboRally.skin);
         red.setValue(prefs.getInteger("lastRed"));
 
+        table.add(new Label("Red",RoboRally.skin)).padRight(10);
         table.add(red);
         table.add(redValue);
 
@@ -96,6 +99,8 @@ public class LobbyScreen implements Screen {
         Slider green = new Slider(0,255,1,false,RoboRally.skin);
         green.setValue(prefs.getInteger("lastGreen"));
 
+
+        table.add(new Label("Green",RoboRally.skin)).padRight(10);
         table.add(green);
         table.add(greenValue);
 
@@ -105,6 +110,7 @@ public class LobbyScreen implements Screen {
         Slider blue = new Slider(0,255,1,false,RoboRally.skin);
         blue.setValue(prefs.getInteger("lastBlue"));
 
+        table.add(new Label("Blue",RoboRally.skin)).padRight(10);
         table.add(blue);
         table.add(blueValue);
 
