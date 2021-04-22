@@ -95,14 +95,6 @@ public class GameLogic {
             for (Player player : playerList.values())
                 System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
 
-            if(checkIfGameConcluded()){
-                System.out.println("A player has won");
-                client.updatePlayer(uuid, playerList.get(uuid));
-                if(!playerList.get(uuid).getRobot().getWon())
-                    System.out.println("You lost, loser!");
-                else client.declareVictory();
-            }
-
         }
         else {
             System.out.println("The register has to be filled with five cards.");
@@ -155,9 +147,11 @@ public class GameLogic {
     }
 
     /**
-     * checks if any robots have landed on a checkpoint
+     * Checks if any robots have landed on a checkpoint and if anyone has won the game.
      */
     public void touchCheckpoints() {
+        gameConclusion();
+
         for (Player player : playerList.values()) {
             boardLogic.checkForCheckpoints(player.getRobot());
         }
@@ -226,6 +220,16 @@ public class GameLogic {
                 }
                 p.setCards(newCards);
             }
+        }
+    }
+
+    private void gameConclusion(){
+        if(checkIfGameConcluded()){
+            System.out.println("A player has won");
+            client.updatePlayer(uuid, playerList.get(uuid));
+            if(!playerList.get(uuid).getRobot().getWon())
+                System.out.println("You lost, loser!");
+            else client.declareVictory();
         }
     }
 
