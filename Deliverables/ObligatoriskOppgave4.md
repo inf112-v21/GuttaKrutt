@@ -167,6 +167,10 @@ forsøkte å legge til en pop-up dialog til power-down
 - Alle var tilstede
 - Vi hadde en code with me session der vi skrev om prosjektet sammen
 
+22.04 (Torsdag 12:00 - 14:00)
+- Alle var tilstede
+- Vi hadde en ny code with me session der vi fullførte skrive-arbeidet fra dagen før
+
 ###Prosjekt og prosjektstruktur
 - Roller:
   Vi står fast på rollebestemmelsene vi nevnte i forrige obligatoriske innlevering, der rollene 
@@ -205,7 +209,7 @@ Hva hadde vi gjort annerledes:
 - Investert mer tid til å lære om Kanban i begynnelsen.
 - Kanskje implementert uPnP multiplayer istedenfor server-client, fordi da hadde vi sluppet port forwarding.
   Server-client systemet var også vanskelig å implementere i begynnelsen, men lett å bruke når man først fikk det til,
-  så det hadde sannsynligvis vært lettere for oss å implementere en form for p2p.
+  så det hadde sannsynligvis vært lettere for oss i begynnelsen hvis vi implementerte en form for p2p.
 - I større grad være mer proaktive med testing og skriving av brukerhistorier. Vi har til nå hatt en tilstrekkelig test-dekning,
   men i noen tilfeller har test-skriving vært mer en ettertanke.
 
@@ -259,21 +263,36 @@ Det ligger instruksjoner i ManualTest folderen.
 Når spillet er åpnet får man valget mellom "host" og "join". Trykk "host" for å kjøre en spillserver,
 eller trykk "join" hvis du vil koble til en annen persons server.
 
-Hvis du trykket "host" vil du møte en skjerm hvor du kan velge kart ved å trykke på de ulike kartene på listen.
-Et bilde av kartet vil henholdsvis bli vist på høyresiden. Nede til venstre får du mulighet til å skrive inn spill-taggen din.
-Deretter trykk "play" nede i høyre hjørne for å starte serveren.
-
-Hvis du trykket "join" blir du sendt til en skjerm som lar deg skrive inn en ip-adresse til en annen server i feltet det står "localhost"
-og spill-taggen din i feltet det står "name". Deretter trykk "play" knappen nede i venstre hjørne for å koble til serveren.
+Begge disse er veldig like i forhold til brukergrensesnitt. Det er to tekstfelt. Den første er IP-adressen, og den andre
+er navnet på spilleren. I "host" er IPen alltid "localhost". I "join" skal man skrive inn IP-adressen til verten.
+Navn kan være hva som helst, og blir brukt til å gjenkjenne deg.
 
 Nå vil du komme til spill lobbyen. Hvor man venter på at alle skal få koble seg til serveren før man starter
-spillet. Her kan du også se roboten du vil spille som. Hosten kan da trykke "play" nede i venstre hjørne for å starte spillet.
+spillet. Her kan du også se roboten du vil spille som og velge farge på den ved å flytte på de tre glidebryterene, som ligger rett
+under robotfigurene. I lobbyen skal spillerene også stemme på kartet de har lyst til å spille. Når alle spillerene har trykket på "ready", så
+starter spillet på kartet med flest stemmer. Hvis to eller flere kart har like mange stemmer, så blir ett av dem valgt tilfeldig. 
 
 Når spillet har startet får du muligheten til å programmere roboten din med kortene du får tildelt.
+På høyresiden av skjermen kan du se alle robotene som er med, samt hvor mange life- og damagetokens de har.
 Trykk på "edit" nede på skjermen for å se kortene dine. Programmering fungerer som et drag and drop system.
 Når du har programmert roboten din, trykk på "ready". Når alle i spillet har trykket ready, så vil spillet oppdateres
 og neste runde vil starte.
 
+Regler for spillet:
+- Du må gå innom alle flaggene i riktig rekkefølge.
+- Flagg og skiftenøkler virker som checkpoints, så hvis roboten din dør blir du gjenopplivet på siste checkpoint.
+- Samlebåndene flytter på roboten din etter hvert kort er spilt. Gule flytter deg 1 rute, mens blå flytter deg 2 ruter.
+- Tannhjul roterer deg 90 grader etter hvert kort som blir spilt. Grønne tannhjul roterer mot høyre, mens røde roterer mot venstre.
+- Tannhjul og samlebånd aktiveres etter hvert kort blir spilt.
+- Du kan ikke gå gjennom vegger.
+- Lasere blir skutt fra veggene med laserskytere og ut fra fronten på robotene.
+- Laserskudd blir registrert etter samlebånd og tannhjul aktiveres.
+- Hvis roboten din blir truffet av en laser, så mottar roboten en damage token.
+- Hvis du går utenfor kartet eller over et hull, så dør roboten din.
+- Hvis roboten din får 10 damage tokens, så dør den.
+- Hvis roboten din går tom for life tokens (dør 2 ganger), kan du ikke gjenopplives lenger.
+
 Første spiller som er innom alle flaggene i riktig rekkefølge vinner!
+Hvis roboten din dør 3 ganger er du derimot ute av spillet.
 
 For å lukke spillet, lukk vinduet ved å trykke på krysset oppe til høyre. (Server og klient blir automatisk lukket om Gdx-applikasjonen lukkes.)
