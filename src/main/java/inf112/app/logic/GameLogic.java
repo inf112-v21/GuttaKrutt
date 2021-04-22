@@ -204,7 +204,7 @@ public class GameLogic {
             }
             allPlayerReady = true;
             for (Player player : playerList.values()) {
-                if (!player.getReady()) {
+                if (!player.getReady() && player.getRobot().getLifeTokens() > 0) {
                     allPlayerReady = false;
                     break;
                 }
