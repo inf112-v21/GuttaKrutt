@@ -350,6 +350,11 @@ public class LobbyScreen implements Screen {
     public void drawRobotSelection(int r, int g, int b) {
         TextureRegion[][] robot = ColorTexture.colorRobot(this.robot,new Color(r/256F,g/256F,b/256F,1));
         Table table = new Table();
+
+        robots = new ButtonGroup<>();
+        robots.setMinCheckCount(1);
+        robots.setMaxCheckCount(1);
+
         for (TextureRegion tr : robot[0]) {
             ImageButton button = new ImageButton(new Image(tr).getDrawable());
             button.addListener(new InputListener(){
