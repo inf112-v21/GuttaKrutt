@@ -30,10 +30,10 @@ public class JoinScreen implements Screen {
         Preferences prefs = Gdx.app.getPreferences("RoboRally");
 
         String defaultIP = prefs.getString("lastUsedIP");
-        if (defaultIP == "") defaultIP = "localhost";
+        if (defaultIP.equals("")) defaultIP = "localhost";
 
         String defaultName = prefs.getString("lastUsedName");
-        if (defaultName == "") defaultName = "name";
+        if (defaultName.equals("")) defaultName = "name";
 
         Table rootTable = new Table();
         stage.addActor(rootTable);
@@ -41,8 +41,6 @@ public class JoinScreen implements Screen {
 
         rootTable.add(new Label("IP: ", RoboRally.skin));
         TextField host = new TextField(defaultIP, RoboRally.skin);
-        host.setWidth(Gdx.graphics.getWidth()/2);
-        host.setPosition(Gdx.graphics.getWidth()/2-host.getWidth()/2,Gdx.graphics.getHeight()/2);
         rootTable.add(host).prefWidth(500).padBottom(10);
 
         rootTable.row();
@@ -51,8 +49,6 @@ public class JoinScreen implements Screen {
         rootTable.add(name).prefWidth(500);
 
         TextButton playButton = new TextButton("Play!", RoboRally.skin);
-        playButton.setWidth(Gdx.graphics.getWidth()/10);
-        playButton.setPosition(Gdx.graphics.getWidth()/10-playButton.getWidth()/10,Gdx.graphics.getHeight()/10-playButton.getHeight()/10);
         playButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -76,7 +72,9 @@ public class JoinScreen implements Screen {
                 return true;
             }
         });
-        stage.addActor(playButton);
+        rootTable.row();
+        rootTable.add();
+        rootTable.add(playButton).padTop(50).width(100);
     }
 
     @Override

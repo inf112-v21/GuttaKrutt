@@ -17,13 +17,13 @@ public class GameLogic {
     UUID uuid;
     Card currentCard;
 
-    public GameLogic() {this(null,null);}
+    public GameLogic() { this(null,null); }
 
     /** class constructor which builds a deck and initiates the players */
-    public GameLogic(BoardLogic boardLogic, GameClient client) {
+    public GameLogic(BoardLogic boardLogic,GameClient client) {
         this.boardLogic = boardLogic;
         this.client = client;
-        deck = new Deck(1);
+        deck = new Deck(client != null ? client.seed : 0);
         buildDeck();
         deck.shuffle();
         if (client != null) {
@@ -248,7 +248,7 @@ public class GameLogic {
      * When used in a sort, sorts a list of players by the priority of a card in their program register, starting with the biggest.
      * Which program registers to compare is inputted in the constructor.
      */
-    private class CardComparator implements Comparator<Player> {
+    private static class CardComparator implements Comparator<Player> {
         int i;
 
         public CardComparator(int i) { this.i = i; }

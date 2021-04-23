@@ -40,6 +40,9 @@ public class Card {
         return type;
     }
 
+    /**
+     * Draws the current card and returns it as a Texture.
+     */
     public Texture draw() {
         Pixmap pixmap;
         pixmap = new Pixmap(Gdx.files.internal("Card_" + type + ".png"));

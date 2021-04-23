@@ -18,7 +18,6 @@ public class GameClient {
     private Client client;
     public boolean gotPackage = false;
     public boolean clientTesting;
-    private String host;
     public Map<UUID,Player> playerList = new HashMap<>();
     public boolean run = false;
     public String mapName;
@@ -45,7 +44,6 @@ public class GameClient {
         this.client = new Client();
         client.start();
         this.clientTesting = clientTesting;
-        this.host = host;
         client.connect(5000, host, 54555);
 
         Network.register(client);
@@ -98,9 +96,7 @@ public class GameClient {
                 }
                 if(object instanceof Network.TestPacket){
                     System.out.println("Client received test packet");
-                    Network.TestPacket packet = (Network.TestPacket) object;
-                    if(packet != null)
-                        gotPackage = true;
+                    gotPackage = true;
                 }
             }
         });
@@ -112,8 +108,8 @@ public class GameClient {
 
     /**
      * Creates an UpdatePlayer packet and sends it to the server
-     * @param uuid
-     * @param player
+     * @param uuid UUID of player.
+     * @param player Player object.
      */
     public void updatePlayer(UUID uuid, Player player){
         if(!client.isConnected()){

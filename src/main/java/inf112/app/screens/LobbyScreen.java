@@ -26,6 +26,7 @@ import inf112.app.networking.Network;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class LobbyScreen implements Screen {
@@ -33,7 +34,7 @@ public class LobbyScreen implements Screen {
     GameClient client;
     Stage stage;
     Table names;
-    ButtonGroup robots;
+    ButtonGroup<ImageButton> robots;
 
     TextureRegion[][] robot;
     Map<UUID,TextureRegion[][]> colorTextures;
@@ -71,7 +72,7 @@ public class LobbyScreen implements Screen {
 
         robot = TextureRegion.split(robotTexture,300,300);
 
-        robots = new ButtonGroup();
+        robots = new ButtonGroup<>();
 
         Table robotCustom = new Table();
         rootTable.add(robotCustom);
@@ -182,10 +183,8 @@ public class LobbyScreen implements Screen {
         playerRobot.setBlue(prefs.getInteger("lastBlue"));
         client.updatePlayer();
 
-        TextButton playButton = new TextButton("Ready", RoboRally.skin);
-        playButton.setWidth(Gdx.graphics.getWidth()/10);
-        playButton.setPosition(Gdx.graphics.getWidth()/10-playButton.getWidth()/10,Gdx.graphics.getHeight()/10-playButton.getHeight()/10);
-        playButton.addListener(new InputListener(){
+        TextButton readyButton = new TextButton("Ready", RoboRally.skin);
+        readyButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 client.readyForGame();
@@ -196,7 +195,7 @@ public class LobbyScreen implements Screen {
             }
         });
         rootTable.row();
-        rootTable.add(playButton).bottom();
+        rootTable.add(readyButton).bottom();
 
         FileHandle directory = Gdx.files.internal("assets");
         maps = new Array<>();
@@ -294,11 +293,7 @@ public class LobbyScreen implements Screen {
         int i = 0;
         for (String map : maps) {
             Integer tally = client.getMapVotes().get(map);
-            if (tally == null) {
-                ((Label) voteTallies.getChildren().get(i)).setText(0);
-            } else {
-                ((Label) voteTallies.getChildren().get(i)).setText(tally);
-            }
+            ((Label) voteTallies.getChildren().get(i)).setText(Objects.requireNonNullElse(tally, 0));
             i++;
         }
 

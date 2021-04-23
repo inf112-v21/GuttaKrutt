@@ -83,8 +83,12 @@ public class GameServer {
 
                     boolean send = true;
 
+                    //Checks for all players if they have pressed ready.
                     for (UUID uuid : playerList.keySet()) {
-                        if (!ready.contains(uuid)) send = false;
+                        if (!ready.contains(uuid)) {
+                            send = false; //If at least one person has not pressed ready, do not start the game.
+                            break;
+                        }
                     }
 
                     if (send) {
@@ -138,6 +142,9 @@ public class GameServer {
         this.mapName = mapName;
     }
 
+    /**
+     * @return Map from all voted on maps as keys and vote count as value.
+     */
     private Map<String,Integer> getVoteCount() {
         Map<String,Integer> count = new HashMap<>();
 
@@ -153,6 +160,11 @@ public class GameServer {
         return count;
     }
 
+    /**
+     * Finds the map with the most votes and returns its String value. If more than one map is tied for most a
+     * random map will be returned from the winners.
+     * @return Most voted on map.
+     */
     private String getVotedMap() {
         Map<String,Integer> count = getVoteCount();
 
@@ -169,7 +181,7 @@ public class GameServer {
             }
         }
 
-        return highS.random();
+        return highS.random(); //Selects random from all top maps. If highS only contains one map, it will always be that one.
     }
 
     static public void main(String[] args) {

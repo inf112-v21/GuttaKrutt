@@ -11,9 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import inf112.app.RoboRally;
-import inf112.app.networking.GameClient;
-
-import java.io.IOException;
 
 public class MenuScreen implements Screen {
     Stage stage;
@@ -23,15 +20,15 @@ public class MenuScreen implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
 
+        Table rootTable = new Table();
+        rootTable.setFillParent(true);
+        stage.addActor(rootTable);
+
         Image title = new Image(new Texture(Gdx.files.internal("RoboRallyLogo.png")));
-        title.setX(Gdx.graphics.getWidth()/2-(305/2));
-        title.setY(Gdx.graphics.getHeight()*2/3);
-        title.setWidth(305);
-        stage.addActor(title);
+        rootTable.add(title).width(305).padBottom(50);
+        rootTable.row();
 
         TextButton hostButton = new TextButton("Host", RoboRally.skin);
-        hostButton.setWidth(Gdx.graphics.getWidth()/2);
-        hostButton.setPosition(Gdx.graphics.getWidth()/2-hostButton.getWidth()/2,Gdx.graphics.getHeight()/2-hostButton.getHeight()/2);
         hostButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -42,11 +39,10 @@ public class MenuScreen implements Screen {
                 return true;
             }
         });
-        stage.addActor(hostButton);
+        rootTable.add(hostButton).prefWidth(500).padBottom(10);
+        rootTable.row();
 
         TextButton joinButton = new TextButton("Join", RoboRally.skin);
-        joinButton.setWidth(Gdx.graphics.getWidth()/2);
-        joinButton.setPosition(Gdx.graphics.getWidth()/2-hostButton.getWidth()/2,Gdx.graphics.getHeight()/2-hostButton.getHeight()/2-100);
         joinButton.addListener(new InputListener(){
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
@@ -57,7 +53,7 @@ public class MenuScreen implements Screen {
                 return true;
             }
         });
-        stage.addActor(joinButton);
+        rootTable.add(joinButton).prefWidth(500);
     }
 
     @Override
@@ -76,7 +72,8 @@ public class MenuScreen implements Screen {
 
     @Override
     public void resize(int i, int i1) {
-
+        stage.getViewport().update(i,i1,true);
+        stage.getViewport().getCamera().update();
     }
 
     @Override

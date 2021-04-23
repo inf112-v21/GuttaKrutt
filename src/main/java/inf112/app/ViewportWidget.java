@@ -10,6 +10,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class ViewportWidget extends Widget {
     private final Viewport vp;
 
+    /** Class that resizes a viewport as a widget would.
+     * Useful for adding to tables, etc. to provide a specific layout.
+     * @param vp Viewport to control with widget.
+     */
     public ViewportWidget(Viewport vp) { this.vp = vp; }
 
     public Viewport getViewport() { return vp; }
