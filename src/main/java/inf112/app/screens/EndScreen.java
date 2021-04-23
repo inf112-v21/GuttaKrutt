@@ -3,21 +3,27 @@ package inf112.app.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.esotericsoftware.kryonet.Server;
+import inf112.app.ColorTexture;
 import inf112.app.Player;
 import inf112.app.RoboRally;
+import inf112.app.Robot;
 import inf112.app.networking.GameClient;
 import inf112.app.networking.Network;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 public class EndScreen implements Screen {
@@ -25,31 +31,45 @@ public class EndScreen implements Screen {
     GameClient client;
     Stage stage;
 
+    Map<UUID, TextureRegion[][]> colorTextures;
+    Table names;
+
     public EndScreen(Game game, Player player, GameClient client) {
         this.game = game;
         this.client = client;
         stage = new Stage(new ScreenViewport());
 
-        System.out.println(client.run);
+        Table rootTable = new Table();
+        rootTable.setFillParent(true);
+        stage.addActor(rootTable);
+
+        colorTextures = new HashMap<>();
+
+        Map<UUID, Player> players = client.getPlayerList();
+
+        for (UUID uuid : players.keySet()) {
+            Robot robot = players.get(uuid).getRobot();
+            colorTextures.put(uuid, ColorTexture.colorRobot(new Texture("Robots.png"),new Color(robot.getRed()/256F,robot.getGreen()/256F,robot.getBlue()/256F,1)));
+        }
+
+        names = new Table();
+        rootTable.add(names).padRight(50);
 
         Label winText = new Label(player.getName() + " has won!",RoboRally.skin);
         winText.setBounds(50,50,300,300);
-        stage.addActor(winText);
+        rootTable.add(winText);
 
         TextButton playButton = new TextButton("New Game", RoboRally.skin);
-        playButton.setWidth(Gdx.graphics.getWidth()/10);
-        playButton.setPosition(Gdx.graphics.getWidth()/10-playButton.getWidth()/10,Gdx.graphics.getHeight()/10-playButton.getHeight()/10);
         playButton.addListener(new InputListener(){
             @Override
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                client.getClient().sendTCP(new Network.NewGame());
-            }
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) { client.readyForGame(); }
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
         });
-        stage.addActor(playButton);
+        rootTable.row();
+        rootTable.add(playButton).width(50);
     }
 
     @Override
@@ -65,7 +85,23 @@ public class EndScreen implements Screen {
         stage.act();
         stage.draw();
 
-        if (!client.getClient().isConnected()) System.exit(0);
+        for (UUID uuid : client.remove) {
+            client.getPlayerList().remove(uuid);
+        }
+
+        names.reset();
+        for (Map.Entry<UUID,Player> entry : client.getPlayerList().entrySet()) {
+            Player player = entry.getValue();
+            names.add(new Label(player.getName(),RoboRally.skin));
+            Robot rob = player.getRobot();
+            int tr = rob.getTexture();
+            Image image = new Image(colorTextures.get(entry.getKey())[0][tr]);
+            names.add(image).width(50).height(50);
+            if (client.ready.contains(entry.getKey())) {
+                names.add(new Image(new Texture(Gdx.files.internal("default/raw/check-on.png"))));
+            }
+            names.row();
+        }
 
         if(client.winner == null) {
             game.setScreen(new LobbyScreen(game, client));

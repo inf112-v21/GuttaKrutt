@@ -23,6 +23,7 @@ public class GameServer {
     String mapName;
     public boolean run = false;
     int seed;
+    UUID winner;
     ArrayList<UUID> ready = new ArrayList<>();
     public Map<UUID,String> mapVotes = new HashMap<>();
 
@@ -72,6 +73,8 @@ public class GameServer {
 
                 if(object instanceof Network.NewWinner){
                     System.out.println("Game won by " + playerList.get(((Network.NewWinner) object).uuid).getName());
+                    winner = ((Network.NewWinner) object).uuid;
+                    ready = new ArrayList<>();
                     server.sendToAllTCP(object);
 
                     run = false;
@@ -91,25 +94,25 @@ public class GameServer {
                         }
                     }
 
-                    if (send) {
+                    if (send && winner == null) {
                         System.out.println("All players ready. Starting game.");
                         Network.MapName packet = new Network.MapName();
                         packet.mapName = getVotedMap();
                         server.sendToAllTCP(packet);
                         server.sendToAllTCP(new Network.RunGame());
+                    } else if (send && winner != null) {
+                        System.out.println("Setting up new game...");
+                        playerList = new HashMap<>();
+                        connectionList = new HashMap<>();
+                        run = false;
+                        ready = new ArrayList<>();
+                        mapVotes = new HashMap<>();
+                        winner = null;
+
+                        server.sendToAllTCP(new Network.NewGame());
                     }
                 }
 
-                if(object instanceof Network.NewGame) {
-                    System.out.println("Setting up new game...");
-                    playerList = new HashMap<>();
-                    connectionList = new HashMap<>();
-                    run = false;
-                    ready = new ArrayList<>();
-                    mapVotes = new HashMap<>();
-
-                    server.sendToAllTCP(object);
-                }
                 if(object instanceof Network.MapVote) {
                     mapVotes.put(connectionList.get(connection.getID()),((Network.MapVote) object).mapName);
                     Network.MapVotes votes = new Network.MapVotes();

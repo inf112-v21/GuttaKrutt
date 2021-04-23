@@ -49,7 +49,6 @@ public class GameScreen implements Screen {
     TextureRegion[][] playerTextures;
     Map<UUID,TextureRegion[][]> colorTextures;
 
-
     MapLayers layers;
 
     Map<UUID,Player> players;

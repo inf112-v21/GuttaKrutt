@@ -26,6 +26,7 @@ public class GameClient {
     public int seed;
     public ArrayList<UUID> ready = new ArrayList<>();
     public Map<String,Integer> mapVotes = new HashMap<>();
+    public ArrayList<UUID> remove = new ArrayList<>();
 
     //Run this if you are hosting the server
     public GameClient() throws IOException {
@@ -51,6 +52,7 @@ public class GameClient {
         client.addListener(new Listener() {
             public void received(Connection connection, Object object) {
                 if (object instanceof Network.RunGame) {
+                    ready = new ArrayList<>();
                     run = true;
                 }
                 if (object instanceof Network.MapName) {
@@ -92,7 +94,7 @@ public class GameClient {
                     mapVotes = ((Network.MapVotes) object).votes;
                 }
                 if(object instanceof Network.RemovePlayer) {
-                    playerList.remove(((Network.RemovePlayer) object).uuid);
+                    remove.add(((Network.RemovePlayer) object).uuid);
                 }
                 if(object instanceof Network.TestPacket){
                     System.out.println("Client received test packet");

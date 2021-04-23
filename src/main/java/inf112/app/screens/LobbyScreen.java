@@ -276,6 +276,11 @@ public class LobbyScreen implements Screen {
         stage.act();
         stage.draw();
 
+        for (UUID uuid : client.remove) {
+            client.getPlayerList().remove(uuid);
+            client.remove.remove(uuid);
+        }
+
         names.reset();
         for (Map.Entry<UUID,Player> entry : client.getPlayerList().entrySet()) {
             Player player = entry.getValue();
