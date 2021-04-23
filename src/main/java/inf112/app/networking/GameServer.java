@@ -100,7 +100,7 @@ public class GameServer {
                         packet.mapName = getVotedMap();
                         server.sendToAllTCP(packet);
                         server.sendToAllTCP(new Network.RunGame());
-                    } else if (send && winner != null) {
+                    } else if (send) {
                         System.out.println("Setting up new game...");
                         playerList = new HashMap<>();
                         connectionList = new HashMap<>();
