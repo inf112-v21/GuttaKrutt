@@ -20,7 +20,6 @@ import inf112.app.Player;
 import inf112.app.RoboRally;
 import inf112.app.Robot;
 import inf112.app.networking.GameClient;
-import inf112.app.networking.Network;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -105,6 +104,7 @@ public class EndScreen implements Screen {
         }
 
         if(client.winner == null) {
+            client.getClient().sendTCP(client.name);
             game.setScreen(new LobbyScreen(game, client));
         }
     }
