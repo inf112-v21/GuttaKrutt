@@ -217,8 +217,6 @@ public class GameScreen implements Screen {
         rootTable.row();
         rootTable.add(controlsTable).height(uiHeight);
 
-        controlsTable.setDebug(true);
-
         PRTable = new Table();
 
         controlsTable.add(PRTable);
