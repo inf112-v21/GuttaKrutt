@@ -69,7 +69,7 @@ public class EndScreen implements Screen {
             }
         });
         rootTable.row();
-        rootTable.add(playButton).width(50);
+        rootTable.add(playButton).width(100).padTop(20);
     }
 
     @Override
