@@ -278,7 +278,7 @@ public class LobbyScreen implements Screen {
 
         for (UUID uuid : client.remove) {
             client.getPlayerList().remove(uuid);
-            client.remove.remove(uuid);
+            //client.remove.remove(uuid);
         }
 
         names.reset();

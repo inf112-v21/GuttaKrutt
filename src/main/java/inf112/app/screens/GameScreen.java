@@ -313,7 +313,7 @@ public class GameScreen implements Screen {
 
         for (UUID uuid : client.remove) {
             players.remove(uuid);
-            client.remove.remove(uuid);
+            //client.remove.remove(uuid);
         }
 
         for (Actor table : robotsTable.getChildren()) {
