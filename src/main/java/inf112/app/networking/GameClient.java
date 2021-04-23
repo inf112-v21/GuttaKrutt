@@ -24,6 +24,7 @@ public class GameClient {
     public String mapName;
     public String name;
     public UUID winner;
+    public int seed;
     public ArrayList<UUID> ready = new ArrayList<>();
     public Map<String,Integer> mapVotes = new HashMap<>();
 
@@ -51,23 +52,23 @@ public class GameClient {
 
         client.addListener(new Listener() {
             public void received(Connection connection, Object object) {
-                //System.out.println("connected to server");
                 if (object instanceof Network.RunGame) {
                     run = true;
                 }
                 if (object instanceof Network.MapName) {
                     mapName = ((Network.MapName) object).mapName;
                 }
+                if (object instanceof Network.Seed) {
+                    seed = ((Network.Seed) object).seed;
+                }
                 if (object instanceof UUID) {
                     clientUUID = (UUID) object;
                 }
                 if(object instanceof Network.UpdatePlayer){
-                    System.out.println("received player robot");
                     Network.UpdatePlayer player = (Network.UpdatePlayer) object;
                     playerList.put(player.uuid,player.player);
                 }
                 if(object instanceof Network.UpdatePlayers){
-                    System.out.println("received player robots");
                     Network.UpdatePlayers players = (Network.UpdatePlayers) object;
                     playerList = players.playerList;
                 }
@@ -80,9 +81,9 @@ public class GameClient {
                     clientUUID = null;
                     playerList = new HashMap<>();
                     run = false;
-                    //mapName = null;
                     winner = null;
                     ready = new ArrayList<>();
+                    mapVotes = new HashMap<>();
 
                     client.sendTCP(name);
                 }

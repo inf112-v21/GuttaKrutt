@@ -22,6 +22,7 @@ public class GameServer {
     Map<Integer,UUID> connectionList;
     String mapName;
     public boolean run = false;
+    int seed;
     ArrayList<UUID> ready = new ArrayList<>();
     public Map<UUID,String> mapVotes = new HashMap<>();
 
@@ -37,14 +38,14 @@ public class GameServer {
         this.serverTesting = serverTesting;
         Network.register(server);
 
+        seed = new Random().nextInt(10000);
+
         playerList = new HashMap<>();
         connectionList = new HashMap<>();
 
         //Server listening for connections (clients)
         server.addListener(new Listener() {
             public void received (Connection connection, Object object) {
-                //System.out.println("Client connected");
-
                 if(object instanceof String) {
                     if (run) { connection.close();
                     } else {
@@ -53,6 +54,10 @@ public class GameServer {
                         connectionList.put(connection.getID(),uuid);
                         connection.sendTCP(uuid);
 
+                        Network.Seed packet = new Network.Seed();
+                        packet.seed = seed;
+                        connection.sendTCP(packet);
+
                         Network.UpdatePlayers players = new Network.UpdatePlayers();
                         players.playerList = playerList;
                         server.sendToAllTCP(players);
@@ -60,13 +65,13 @@ public class GameServer {
                 }
 
                 if(object instanceof Network.UpdatePlayer){
-                    System.out.println("Received player update");
                     Network.UpdatePlayer player = (Network.UpdatePlayer) object;
                     playerList.put(player.uuid, player.player);
                     server.sendToAllExceptTCP(connection.getID(), player);
                 }
 
                 if(object instanceof Network.NewWinner){
+                    System.out.println("Game won by " + playerList.get(((Network.NewWinner) object).uuid).getName());
                     server.sendToAllTCP(object);
 
                     run = false;
@@ -83,6 +88,7 @@ public class GameServer {
                     }
 
                     if (send) {
+                        System.out.println("All players ready. Starting game.");
                         Network.MapName packet = new Network.MapName();
                         packet.mapName = getVotedMap();
                         server.sendToAllTCP(packet);
@@ -91,11 +97,12 @@ public class GameServer {
                 }
 
                 if(object instanceof Network.NewGame) {
+                    System.out.println("Setting up new game...");
                     playerList = new HashMap<>();
                     connectionList = new HashMap<>();
-                    //mapName = null;
                     run = false;
                     ready = new ArrayList<>();
+                    mapVotes = new HashMap<>();
 
                     server.sendToAllTCP(object);
                 }

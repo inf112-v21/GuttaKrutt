@@ -303,7 +303,6 @@ public class LobbyScreen implements Screen {
         }
 
         if(!selected.equals(list.getSelected())) {
-            System.out.println(selected + ", " + list.getSelected());
             selected = list.getSelected();
             tiledMap = mapLoader.load(selected);
             renderer = new OrthogonalTiledMapRenderer(tiledMap, 1F/300);

@@ -100,8 +100,6 @@ public class GameScreen implements Screen {
 
         String map = client.mapName;
 
-        System.out.println(map);
-
         TmxMapLoader mapLoader = new TmxMapLoader();
         tiledMap = mapLoader.load(map);
 
@@ -262,7 +260,6 @@ public class GameScreen implements Screen {
                 if(!roundRunning) {
                     roundThread = new Thread(() -> gameLogic.ready());
                     roundThread.start();
-                    System.out.println(roundThread.getName());
                     roundRunning = true;
                 }
             }

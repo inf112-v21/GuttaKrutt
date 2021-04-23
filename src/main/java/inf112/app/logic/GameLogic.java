@@ -80,7 +80,6 @@ public class GameLogic {
         for (Card card : playerList.get(uuid).getRobot().getProgramRegister()) {
             if (card != null) { cardCounter++; }
         }
-        System.out.println(playerList.get(uuid).getRobot().getPowerDown());
         if (cardCounter == 5 || playerList.get(uuid).getRobot().getPowerDown()) {
 
             playerList.get(uuid).setReady(true);
@@ -92,9 +91,6 @@ public class GameLogic {
             tryCatchSleep(2000);
             playerList.get(uuid).setReady(false);
             client.updatePlayer(uuid, playerList.get(uuid));
-            for (Player player : playerList.values())
-                System.out.println("player: " + player.getName() + " rot: " + player.getRobot().getRotation());
-
         }
         else {
             System.out.println("The register has to be filled with five cards.");
@@ -118,6 +114,7 @@ public class GameLogic {
             boardLogic.laserSpawner(); //D
             boardLogic.robotsShootsLasers();
             touchCheckpoints(); //E
+            if (gameConclusion()) return;
             tryCatchSleep(500);
             boardLogic.laserCleaner();
         }
@@ -163,8 +160,6 @@ public class GameLogic {
      * Checks if any robots have landed on a checkpoint and if anyone has won the game.
      */
     public void touchCheckpoints() {
-        gameConclusion();
-
         for (Player player : playerList.values()) {
             boardLogic.checkForCheckpoints(player.getRobot());
         }
@@ -235,14 +230,16 @@ public class GameLogic {
         }
     }
 
-    private void gameConclusion(){
+    private boolean gameConclusion(){
         if(checkIfGameConcluded()){
             System.out.println("A player has won");
             client.updatePlayer(uuid, playerList.get(uuid));
             if(!playerList.get(uuid).getRobot().getWon())
                 System.out.println("You lost, loser!");
             else client.declareVictory();
+            return true;
         }
+        return false;
     }
 
     public Card getCurrentCard() { return currentCard; }

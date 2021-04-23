@@ -46,13 +46,13 @@ public class Network {
         kryo.register(UpdatePlayers.class);
         kryo.register(RemovePlayer.class);
         kryo.register(NewWinner.class);
-        kryo.register(NewConnection.class);
         kryo.register(RunGame.class);
         kryo.register(Ready.class);
         kryo.register(NewGame.class);
         kryo.register(MapName.class);
         kryo.register(MapVote.class);
         kryo.register(MapVotes.class);
+        kryo.register(Seed.class);
         kryo.register(TestPacket.class);
         kryo.register(ArrayList.class);
     }
@@ -85,7 +85,6 @@ public class Network {
         public UUID uuid;
     }
 
-    static public class NewConnection {}
     static public class Ready {
         public UUID uuid;
     }
@@ -97,6 +96,10 @@ public class Network {
     }
     static public class MapVotes {
         public Map<String,Integer> votes;
+    }
+
+    static public class Seed {
+        public int seed;
     }
 
     static public  class TestPacket{
