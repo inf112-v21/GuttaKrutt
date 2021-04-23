@@ -183,6 +183,10 @@ forsøkte å legge til en pop-up dialog til power-down
 - Alle play-testet spillet sammen
 - Jobbet på bugs som ble funnet i løpet av play-testingen.
 
+23.04 (Fredag 12:00 - 14:30)
+- Alle var tilstede
+- Play-testet sammen
+
 ###Prosjekt og prosjektstruktur
 - Roller:
   Vi står fast på rollebestemmelsene vi nevnte i forrige obligatoriske innlevering, der rollene 
