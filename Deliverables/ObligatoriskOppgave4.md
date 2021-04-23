@@ -244,7 +244,8 @@ Hva vi har prioritert siden forrige gang:
 - Option cards
 - Flere maps
 - Lage større utvalg av brikker å velge mellom
-- Velge å respawne i power down, samt velge retningen man står ved respawn 
+- Velge å respawne i power down, samt velge retningen man står ved respawn
+- Forbedre minne-administrering
 
 ###Bugs
 Bugs som er fikset siden forrige innlevering:
