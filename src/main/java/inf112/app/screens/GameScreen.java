@@ -311,6 +311,11 @@ public class GameScreen implements Screen {
         PRTable.reset();
         PRTable.add(drawRegister(players.get(clientUUID),true,82,129));
 
+        for (UUID uuid : client.remove) {
+            players.remove(uuid);
+            client.remove.remove(uuid);
+        }
+
         for (Actor table : robotsTable.getChildren()) {
             Player player = players.get(UUID.fromString(table.getName()));
             if (player != null) {
