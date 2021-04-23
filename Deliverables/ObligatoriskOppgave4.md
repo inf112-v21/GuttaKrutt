@@ -106,6 +106,15 @@ Arbeidsoppgaver:
  - Implementere stemmingsystem.
  - Implementere valg av kart fra stemmer.
 
+9) Som spiller vil jeg kunne spille på nytt om spillet konkluderer, slik at alle spillere og vert må starte programmet på nytt.
+
+Akseptansekriterer:
+ - I EndScreen kan spillere velge "New Game" for å stemme for nytt spill.
+ - Om alle spillere har valgt "New Game" skal spillet bytte til lobby igjen.
+
+Arbeidsoppgaver:
+ - Implementere system for å resette spillet (fjerne alle spillere, etc.)
+
 ### Møtereferater:
 
 29.03 (Mandag, 14:00-14:40)
@@ -165,12 +174,14 @@ forsøkte å legge til en pop-up dialog til power-down
   
 21.04 (Onsdag 12:15 - 16:00)
 - Alle var tilstede
+- Ørjan implementerte stemmingsystem for kart.
 - Vi hadde en code with me session der vi skrev om prosjektet sammen
 
 22.04 (Torsdag 12:00 - 17:00)
 - Alle var tilstede
 - Vi hadde en ny code with me session der vi fullførte skrive-arbeidet fra dagen før
 - Alle play-testet spillet sammen
+- Jobbet på bugs som ble funnet i løpet av play-testingen.
 
 ###Prosjekt og prosjektstruktur
 - Roller:
@@ -240,6 +251,7 @@ Bugs som er fikset siden forrige innlevering:
 Lavprioriterte bugs som fortsatt eksisterer:
 - Logikk rundt conveyorbelts når 2 roboter konvergerer mot en rute
 - Spillet blir låst hvis en spiller forlater spillet før det er fullført
+- GLFW er ikke støttet på Apple Silicon, så grafikken kan kræsje på en Apple Silicon mac.
 
 ###Arbeidsfordeling
 Arbeidsfordelingen har vært gjevn. Fikset en bug den 24.03 som gjorde
@@ -296,5 +308,8 @@ Regler for spillet:
 Første spiller som er innom alle flaggene i riktig rekkefølge vinner!
 Hvis roboten din dør 3 ganger er du derimot ute av spillet.
 
-Når spillet er konkludert kan en av spillerene trykke på "New Game" for å starte et nytt spill.
+Når spillet er konkludert kan spillerene spille på nytt om alle aktive spillere
+trykker på på "New Game".
+
 For å avslutte spillet, lukk vinduet ved å trykke på krysset oppe til høyre. (Server og klient blir automatisk lukket om Gdx-applikasjonen lukkes.)
+Om en spiller forlater skal spillet fortsatt fortsette for alle andre (Med mindre verten forlater).
