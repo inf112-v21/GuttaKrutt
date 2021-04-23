@@ -76,8 +76,8 @@ public class GameLogicTest {
 
         assertEquals(66,gameLogic.getDeck().size());
         gameLogic.doTurn();
-        assertEquals(66,gameLogic.getDeck().size());
+        assertEquals(84,gameLogic.getDeck().size());
         gameLogic.doTurn();
-        assertEquals(66,gameLogic.getDeck().size());
+        assertEquals(84,gameLogic.getDeck().size());
     }
 }
