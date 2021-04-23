@@ -105,6 +105,11 @@ public class EndScreen implements Screen {
 
         if(client.winner == null) {
             client.getClient().sendTCP(client.name);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             game.setScreen(new LobbyScreen(game, client));
         }
     }
