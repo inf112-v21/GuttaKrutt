@@ -220,12 +220,8 @@ public class GameLogic {
     public void dealCards() {
         deck.shuffle();
         for (Player p : playerList.values()) {
-            if (!p.getRobot().getPowerDown()) {
-                Deck newCards = new Deck();
-                for (int i = 0; i < (9 - p.getRobot().getDamage()); i++) {
-                    newCards.add(deck.take());
-                }
-                p.setCards(newCards);
+            for (int i = 0; i < (9 - p.getRobot().getDamage()); i++) {
+                p.getCards().add(deck.take());
             }
         }
     }
